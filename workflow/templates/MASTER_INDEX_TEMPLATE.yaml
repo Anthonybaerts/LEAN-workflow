@@ -1,0 +1,12 @@
+features:
+  - id: F-000
+    title: Bootstrap (Infra)
+    type: infra            # [infra, feature, enhancement, nfr]
+    priority: 1
+    deps: []
+    source: MASTER_PRD.md#f-000-bootstrap-infra
+    screens: []
+    ac_ids: []             # optional
+    epic: null             # optional
+    mvp: true              # optional
+

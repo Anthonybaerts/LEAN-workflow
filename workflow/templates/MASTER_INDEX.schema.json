@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["features"],
+  "properties": {
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "type", "priority", "deps", "source"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^F-\\d{3}$" },
+          "title": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "enum": ["infra", "feature", "enhancement", "nfr"] },
+          "priority": { "type": "integer", "minimum": 1 },
+          "deps": { "type": "array", "items": { "type": "string", "pattern": "^F-\\d{3}$" } },
+          "source": { "type": "string", "pattern": "^MASTER_PRD\\.md#.+$" },
+          "screens": { "type": "array", "items": { "type": "string" } },
+          "ac_ids": { "type": "array", "items": { "type": "string" } },
+          "epic": { "type": ["string", "null"] },
+          "mvp": { "type": ["boolean", "null"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
+

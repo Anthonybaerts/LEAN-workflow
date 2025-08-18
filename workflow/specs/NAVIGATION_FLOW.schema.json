@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["app", "rules"],
+  "properties": {
+    "app": {
+      "type": "object",
+      "properties": {
+        "tabs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["key", "stack"],
+            "properties": {
+              "key": { "type": "string" },
+              "stack": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["route"],
+                  "properties": { "route": { "type": "string" } },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "modals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["route"],
+            "properties": { "route": { "type": "string" } },
+            "additionalProperties": false
+          }
+        },
+        "deep_links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["route", "pattern"],
+            "properties": {
+              "route": { "type": "string" },
+              "pattern": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "use_modal_for_creation": { "type": "boolean" },
+        "back_button_closes_modals": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
+

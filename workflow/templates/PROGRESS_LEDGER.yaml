@@ -1,0 +1,49 @@
+# Progress Ledger — tracks feature completion and deliverables to prevent duplication
+# DO NOT EDIT BY HAND — updated by implementation_planner and validated by qa_static
+
+features:
+  - id: F-000
+    status: done  # pending | in_progress | done
+    acs:
+      - id: F-000-AC1
+        status: done
+      - id: F-000-AC2
+        status: done
+    deliverables:
+      - id: F-000-D1
+        title: "Project Bootstrap"
+        screens: []
+        routes: []
+        entities: []
+        apis: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: "2024-01-15"
+
+  - id: F-101
+    status: pending
+    acs:
+      - id: F-101-AC1
+        status: pending
+      - id: F-101-AC2
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+# Global registries (cumulative across all features)
+global_deliverables:
+  - F-000-D1  # track all deliverable IDs to prevent duplicates
+
+global_touched_areas:
+  screens: []     # all screens touched by any completed feature
+  routes: []      # all routes touched by any completed feature  
+  entities: []    # all data entities created/modified
+  apis: []        # all API endpoints created/modified

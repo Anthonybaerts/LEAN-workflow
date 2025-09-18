@@ -1,0 +1,214 @@
+import * as React from 'react';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import {
+  Header,
+  Input,
+  CustomerCard,
+  TabButton,
+  RoundButton,
+} from '../../components';
+import {
+  Search,
+  Calendar,
+  Group,
+  AddUser,
+  Briefcase,
+  User,
+  Call,
+  Location,
+  ChevronRight,
+} from '../../icons';
+import { theme } from '../../tokens';
+
+// Context: Displays the main clients list screen with search functionality,
+// client cards showing contact details, and navigation to add new clients
+export function ClientsScreen() {
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  // Sample client data - in real app this would come from props/state management
+  const clients = [
+    {
+      id: '1',
+      name: 'Bakker Appartementen',
+      type: 'Zakelijk',
+      contactPerson: 'Mevr. Emma Bakker',
+      phone: '+31 6 45678901',
+      address: 'Herengracht 89, Amsterdam',
+    },
+    {
+      id: '2',
+      name: 'De Vries Woonhuis',
+      type: 'Particulier',
+      contactPerson: 'Dhr. Johan de Vries',
+      phone: '+31 6 34567890',
+      address: 'Prinsengracht 45, Amsterdam',
+    },
+    {
+      id: '3',
+      name: 'Jansen Installatiewerken',
+      type: 'Zakelijk',
+      contactPerson: 'Mevr. Lisa Jansen',
+      phone: '+31 6 23456789',
+      address: 'Keizersgracht 123, Amsterdam',
+    },
+  ];
+
+  const handleAddClient = () => {
+    // Context: Navigate to add new client screen
+    console.log('Navigate to add client');
+  };
+
+  const handleClientPress = (clientId: string) => {
+    // Context: Navigate to client details screen
+    console.log('Navigate to client details:', clientId);
+  };
+
+  const handleTabPress = (tab: 'calendar' | 'clients') => {
+    // Context: Handle bottom navigation tab selection
+    console.log('Navigate to:', tab);
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Context: Main header with screen title */}
+      <Header title="Klanten" />
+
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.searchSection}>
+          {/* Context: Search input for filtering clients */}
+          <Input
+            icon={<Search width={20} height={20} />}
+            placeholder="Zoek klanten..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
+
+        {/* Context: Section header showing total client count */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Alle Klanten</Text>
+          <View style={styles.countRow}>
+            <Text style={styles.count}>{clients.length}</Text>
+            <Text style={styles.countLabel}>klanten in totaal</Text>
+          </View>
+        </View>
+
+        {/* Context: Separator line between header and content */}
+        <View style={styles.separator} />
+
+        {/* Context: List of client cards displaying contact information */}
+        <View style={styles.clientsList}>
+          {clients.map((client) => (
+            <CustomerCard
+              key={client.id}
+              title={client.name}
+              subtitle={client.type}
+              subtitleIcon={<Briefcase width={20} height={20} />}
+              chevronIcon={<ChevronRight width={20} height={20} />}
+              onPress={() => handleClientPress(client.id)}
+              items={[
+                {
+                  icon: <User width={16} height={16} />,
+                  text: client.contactPerson,
+                },
+                { icon: <Call width={16} height={16} />, text: client.phone },
+                {
+                  icon: <Location width={16} height={16} />,
+                  text: client.address,
+                },
+              ]}
+            />
+          ))}
+        </View>
+      </ScrollView>
+
+      {/* Context: Bottom navigation with Calendar and Clients tabs */}
+      <View style={styles.bottomNav}>
+        <TabButton
+          icon={<Calendar width={28} height={28} />}
+          label="Kalender"
+          onPress={() => handleTabPress('calendar')}
+        />
+        <TabButton
+          icon={<Group width={28} height={28} />}
+          label="Klanten"
+          active
+          onPress={() => handleTabPress('clients')}
+        />
+      </View>
+
+      {/* Context: Floating action button to add new clients */}
+      <View style={styles.fab}>
+        <RoundButton
+          icon={<AddUser width={28} height={28} />}
+          onPress={handleAddClient}
+        />
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.gray[900],
+  },
+  content: {
+    flex: 1,
+  },
+  searchSection: {
+    paddingHorizontal: theme.spacing[5],
+    paddingTop: theme.spacing[6],
+    paddingBottom: theme.spacing[3],
+  },
+  sectionHeader: {
+    paddingHorizontal: theme.spacing[5],
+    paddingBottom: theme.spacing[3],
+  },
+  sectionTitle: {
+    color: theme.colors.white,
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: theme.spacing[1],
+  },
+  countRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing[1],
+  },
+  count: {
+    color: theme.colors.gray[500],
+    fontSize: 14,
+    fontWeight: '400',
+  },
+  countLabel: {
+    color: theme.colors.gray[500],
+    fontSize: 14,
+    fontWeight: '400',
+    flex: 1,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: theme.colors.gray[700],
+    marginBottom: theme.spacing[3],
+  },
+  clientsList: {
+    paddingHorizontal: theme.spacing[5],
+    gap: theme.spacing[3],
+    paddingBottom: theme.spacing[5],
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    paddingHorizontal: theme.spacing[5],
+    paddingVertical: theme.spacing[3],
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.gray[700],
+    backgroundColor: theme.colors.gray[900],
+    gap: theme.spacing[5],
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 32 + 64 + 12, // Bottom nav height + button height + margin
+    right: theme.spacing[8],
+  },
+});

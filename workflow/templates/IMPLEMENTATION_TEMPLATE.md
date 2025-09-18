@@ -1,3 +1,12 @@
+---
+docType: implementation
+id: <F-101>
+phases: []
+deliverables: []
+acCoverage: []
+generatedBy: implementation_planner
+---
+
 # Implementation — <ID e.g., F-101>
 
 Links:
@@ -15,6 +24,7 @@ Links:
   - Steps:
     - S1: <small, testable step>
     - S2: <small, testable step>
+    - S3: <add more steps as needed for complex phases>
   - Entry criteria: deps met: [F-000]
   - Exit criteria: ACs satisfied: [F-101-AC1]
   - Feature flags: <flag-name> (default off)

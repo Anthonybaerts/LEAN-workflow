@@ -7,25 +7,44 @@
 - Deep Links: canonical URIs for major screens.
 - Back behavior: define per-platform expectations.
 
-## Declarative Spec (YAML) — see canonical `NAVIGATION_FLOW.yaml`
+## Declarative Spec (YAML)
 ```yaml
 app:
+  auth:
+    - route: LoginScreen
+
   tabs:
-    - key: Home
+    - key: Calendar
       stack:
-        - route: ItemList
-        - route: ItemDetail
-    - key: Settings
+        - route: CalendarScreen
+        - route: NewTaskScreen
+        - route: EditTaskScreen
+
+    - key: Clients
       stack:
-        - route: SettingsHome
-  modals:
-    - route: AddItemModal
-  deep_links:
-    - route: ItemDetail
-      pattern: app://item/:id
+        - route: ClientsScreen
+        - route: NewClientScreen
+        - route: ClientInfoScreen
+        - route: EditClientScreen
+
+  modals: []
+
+deep_links:
+  - route: CalendarScreen
+    pattern: vakker://calendar/:date
+  - route: NewTaskScreen
+    pattern: vakker://calendar/:date/new
+  - route: ClientInfoScreen
+    pattern: vakker://client/:clientId
+
 rules:
-  use_modal_for_creation: true
-  back_button_closes_modals: true
+  unique_routes: true
+  hide_tab_bar_on_drill_in: true
+  back_behavior:
+    stacks: pop
+    tabs_root:
+      android_exit_app_on_back: true
+      require_double_tap_with_toast: true
 ```
 
 ## Conventions

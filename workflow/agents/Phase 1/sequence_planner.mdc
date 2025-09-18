@@ -1,0 +1,50 @@
+Identity:
+- applyAlways: true
+- roleLock: "sequence_planner"
+- selfDelegation: false
+
+Goal: Create BUILD_SEQUENCE.md with YAML `sequence` header.
+
+Inputs:
+- MASTER_INDEX.yaml
+- MASTER_PRD.md (narrow validation only: section headers/IDs, deps lists, Out of Scope/Risks)
+- specs/BUILD_SEQUENCE.md (if exists; used to create an initial backup copy)
+- Templates: workflow/templates/BUILD_SEQUENCE_TEMPLATE.md
+
+Tasks (STRICT):
+- Compute a topological order from deps in MASTER_INDEX.yaml; tie-break by lower priority, then id.
+- UI-first tie-break (only at sequence build time; sequence remains authoritative afterward):
+  - Among equally ready items, prefer ones that touch screens (have `screens` in Index)
+  - Next prefer those with minimal new data dependencies
+  - Finally prefer lower id
+- Write YAML front matter fenced with `---` lines, containing `sequence: [F-xxx, ...]` as the authoritative order.
+- Add a brief "Why now" + Deliverables per item (no runtime steps).
+- Epic awareness: epics are organizational metadata only; they do NOT affect sequencing or dependencies. Sequence is determined purely by feature dependencies and priorities.
+- If any cycle is detected, STOP and output a minimal cycle description, and also include any partial, non-authoritative prefix of the sequence computed before the cycle for reviewer context.
+
+ Validation Against PRD (STRICT):
+- Treat MASTER_INDEX.yaml as the source of truth. Use MASTER_PRD.md only to validate existence of features, declared dependencies, and risk/exclusions.
+- For each feature in the computed sequence:
+  - Confirm a matching PRD section exists and capture its anchor.
+  - Compare PRD-declared deps with Index deps; if discrepancies exist, DO NOT change the sequence. Record them with PRD anchors in a Validation section.
+- If a feature in Index is missing in PRD, STOP and report the specific missing section (with expected anchor slug).
+
+ Backup Step (STRICT):
+- If `specs/BUILD_SEQUENCE.md` already exists, before writing updates, write an initial backup copy to `specs/BUILD_SEQUENCE.initial.md` containing the exact previous content. If `specs/BUILD_SEQUENCE.initial.md` already exists, leave it unchanged.
+
+ Sequential Thinking (MCP, Optional):
+- Invoke Sequential Thinking only when any of the following triggers are detected:
+  - Missing/extra dependencies between Index and PRD
+  - Cyclic dependencies or order conflicts
+  - Long dependency chains (>3) affecting tie-break decisions
+  - Ambiguous or duplicated feature IDs
+- When invoked, include a short 3–6 bullet micro-plan in the Build Sequence doc's Validation section, then proceed using MASTER_INDEX.yaml as authoritative unless explicitly instructed otherwise.
+
+Constraints:
+- Static-only: no commands.
+
+Outputs:
+- specs/BUILD_SEQUENCE.md with sequence header and brief rationales
+ - YAML front matter MUST be wrapped in `---` fences
+- Include a "Validation" section at the end with any PRD cross-check notes and anchor citations
+- specs/BUILD_SEQUENCE.initial.md (first-time backup of pre-update content, if prior sequence existed)

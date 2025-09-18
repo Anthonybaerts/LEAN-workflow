@@ -1,0 +1,1126 @@
+# Vakker UI Library - Component Map
+# Machine-readable specification of all UI components, icons, and design tokens
+
+library_name: 'Vakker UI Library'
+version: '1.0.0'
+description: 'React Native UI library for client management mobile apps'
+
+# Design Tokens
+tokens:
+  colors:
+    import: '@ui/tokens'
+    file: 'src/ui/tokens/colors.ts'
+    type: 'Colors'
+  spacing:
+    import: '@ui/tokens'
+    file: 'src/ui/tokens/spacing.ts'
+    type: 'Spacing'
+  radius:
+    import: '@ui/tokens'
+    file: 'src/ui/tokens/radius.ts'
+    type: 'Radius'
+  typography:
+    import: '@ui/tokens'
+    file: 'src/ui/tokens/typography.ts'
+    type: 'Typography'
+  theme:
+    import: '@ui/tokens'
+    file: 'src/ui/tokens/theme.ts'
+    type: 'Theme'
+
+# Icons
+icons:
+  - name: 'Search'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Search.tsx'
+    default_size: 20
+    default_color: '#D1D5DB'
+    description: 'Search icon'
+
+  - name: 'User'
+    import: '@ui/icons'
+    file: 'src/ui/icons/User.tsx'
+    default_size: 16
+    default_color: '#4285F3'
+    description: 'Single user icon'
+
+  - name: 'AddUser'
+    import: '@ui/icons'
+    file: 'src/ui/icons/AddUser.tsx'
+    default_size: 28
+    default_color: 'white'
+    description: 'Add user icon'
+
+  - name: 'Call'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Call.tsx'
+    default_size: 16
+    default_color: '#4285F3'
+    description: 'Phone call icon'
+
+  - name: 'Briefcase'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Briefcase.tsx'
+    default_size: 20
+    default_color: '#4285F3'
+    description: 'Work/business icon'
+
+  - name: 'Location'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Location.tsx'
+    default_size: 16
+    default_color: '#4285F3'
+    description: 'Map pin/location icon'
+
+  - name: 'Group'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Group.tsx'
+    default_size: 28
+    default_color: '#4285F3'
+    description: 'Group of people icon'
+
+  - name: 'ChevronRight'
+    import: '@ui/icons'
+    file: 'src/ui/icons/ChevronRight.tsx'
+    default_size: 20
+    default_color: '#4285F3'
+    description: 'Right arrow chevron'
+
+  - name: 'Calendar'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Calendar.tsx'
+    default_size: 28
+    default_color: '#9CA3AF'
+    description: 'Calendar/date icon'
+
+  - name: 'ArrowLeft'
+    import: '@ui/icons'
+    file: 'src/ui/icons/ArrowLeft.tsx'
+    default_size: 28
+    default_color: 'white'
+    description: 'Left arrow icon'
+
+  - name: 'Add'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Add.tsx'
+    default_size: 24
+    default_color: 'white'
+    description: 'Plus/add icon'
+
+  - name: 'Clock'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Clock.tsx'
+    default_size: 20
+    default_color: '#4285F4'
+    description: 'Clock/time icon'
+
+  - name: 'Lock'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Lock.tsx'
+    default_size: 20
+    default_color: '#4285F3'
+    description: 'Lock/security icon'
+
+  - name: 'Close'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Close.tsx'
+    default_size: 16
+    default_color: '#9CA3AF'
+    description: 'Close/X icon'
+
+  - name: 'Email'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Email.tsx'
+    default_size: 24
+    default_color: 'white'
+    description: 'Email/mail icon'
+
+  - name: 'ContactCard'
+    import: '@ui/icons'
+    file: 'src/ui/icons/ContactCard.tsx'
+    default_size: 20
+    default_color: '#4285F4'
+    description: 'Business card/contact icon'
+
+  - name: 'Pencil'
+    import: '@ui/icons'
+    file: 'src/ui/icons/Pencil.tsx'
+    default_size: 20
+    default_color: '#4285F4'
+    description: 'Edit/pencil icon'
+
+  - name: 'ThreeDotsVertical'
+    import: '@ui/icons'
+    file: 'src/ui/icons/ThreeDotsVertical.tsx'
+    default_size: 28
+    default_color: 'white'
+    description: 'Vertical menu (three dots) icon'
+
+# Components
+components:
+  - name: 'Button'
+    import: '@ui/components'
+    file: 'src/ui/components/Button/Button.tsx'
+    description: 'Main button component with multiple variants'
+    variants:
+      - 'primary'
+      - 'secondary'
+      - 'tertiary'
+      - 'outline'
+      - 'text'
+    sizes:
+      - 'large'
+      - 'medium'
+    states:
+      - 'default'
+      - 'pressed'
+      - 'disabled'
+    props:
+      - name: 'children'
+        type: 'string'
+        required: true
+        description: 'Button text content'
+      - name: 'variant'
+        type: "'primary' | 'secondary' | 'tertiary' | 'outline' | 'text'"
+        optional: true
+        default: 'primary'
+        description: 'Visual variant'
+      - name: 'size'
+        type: "'large' | 'medium'"
+        optional: true
+        default: 'large'
+        description: 'Button size'
+      - name: 'icon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Icon to display alongside text'
+      - name: 'showIcon'
+        type: 'boolean'
+        optional: true
+        default: true
+        description: 'Whether to show the icon'
+      - name: 'disabled'
+        type: 'boolean'
+        optional: true
+        default: false
+        description: 'Disabled state'
+
+  - name: 'RoundButton'
+    import: '@ui/components'
+    file: 'src/ui/components/RoundButton/RoundButton.tsx'
+    description: 'Circular button component designed for icons'
+    variants: []
+    sizes: ['64px']
+    states:
+      - 'default'
+      - 'pressed'
+      - 'disabled'
+    props:
+      - name: 'icon'
+        type: 'React.ReactNode'
+        required: true
+        description: 'Icon to display in the button'
+      - name: 'disabled'
+        type: 'boolean'
+        optional: true
+        default: false
+        description: 'Disabled state'
+
+  - name: 'TabButton'
+    import: '@ui/components'
+    file: 'src/ui/components/TabButton/TabButton.tsx'
+    description: 'Tab button component with icon and label support'
+    variants: []
+    sizes: []
+    states:
+      - 'active'
+      - 'inactive'
+    props:
+      - name: 'label'
+        type: 'string'
+        required: true
+        description: 'Tab label text'
+      - name: 'icon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Icon to display above the label'
+      - name: 'showIcon'
+        type: 'boolean'
+        optional: true
+        default: true
+        description: 'Whether to show the icon'
+      - name: 'active'
+        type: 'boolean'
+        optional: true
+        default: false
+        description: 'Active state'
+
+  - name: 'TabSelection'
+    import: '@ui/components'
+    file: 'src/ui/components/TabSelection/TabSelection.tsx'
+    description: 'Tab selection component with circular indicator'
+    variants:
+      - 'blue'
+      - 'green'
+      - 'yellow'
+      - 'gray'
+    sizes: []
+    states:
+      - 'active'
+      - 'inactive'
+    props:
+      - name: 'label'
+        type: 'string'
+        required: true
+        description: 'Selection label text'
+      - name: 'color'
+        type: "'blue' | 'green' | 'yellow' | 'gray'"
+        optional: true
+        default: 'blue'
+        description: 'Color variant'
+      - name: 'active'
+        type: 'boolean'
+        optional: true
+        default: false
+        description: 'Active/selected state'
+
+  - name: 'Input'
+    import: '@ui/components'
+    file: 'src/ui/components/Input/Input.tsx'
+    description: 'Search input component with multiple states and icon styles'
+    variants:
+      - 'simple'
+      - 'bordered'
+    sizes: []
+    states:
+      - 'default'
+      - 'selected'
+      - 'typing'
+      - 'filled'
+    props:
+      - name: 'placeholder'
+        type: 'string'
+        optional: true
+        default: 'Placeholder'
+        description: 'Placeholder text'
+      - name: 'leftIcon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Left side icon'
+      - name: 'rightIcon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Right side icon'
+      - name: 'showLeftIcon'
+        type: 'boolean'
+        optional: true
+        default: true
+        description: 'Whether to show the left icon'
+      - name: 'showRightIcon'
+        type: 'boolean'
+        optional: true
+        default: false
+        description: 'Whether to show the right icon'
+      - name: 'iconStyle'
+        type: "'simple' | 'bordered'"
+        optional: true
+        default: 'simple'
+        description: 'Icon style variant'
+      - name: 'state'
+        type: "'default' | 'selected' | 'typing' | 'filled'"
+        optional: true
+        description: 'Input state (auto-detected if not provided)'
+      - name: 'containerStyle'
+        type: 'ViewStyle'
+        optional: true
+        description: 'Custom container style'
+
+  - name: 'Header'
+    import: '@ui/components'
+    file: 'src/ui/components/Header/Header.tsx'
+    description: 'Navigation header with back button, title, and menu actions'
+    variants: []
+    sizes: []
+    states: []
+    props:
+      - name: 'title'
+        type: 'string'
+        required: true
+        description: 'Header title text'
+      - name: 'leftIcon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Left side icon (usually back arrow)'
+      - name: 'rightIcon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Right side icon (usually menu or action)'
+      - name: 'onLeftPress'
+        type: '() => void'
+        optional: true
+        description: 'Handler for left icon press'
+      - name: 'onRightPress'
+        type: '() => void'
+        optional: true
+        description: 'Handler for right icon press'
+
+  - name: 'Card'
+    import: '@ui/components'
+    file: 'src/ui/components/Card/Card.tsx'
+    description: 'Base card container component'
+    variants: []
+    sizes: []
+    states: []
+    props:
+      - name: 'children'
+        type: 'React.ReactNode'
+        required: true
+        description: 'Card content'
+      - name: 'padding'
+        type: 'keyof typeof theme.spacing'
+        optional: true
+        default: '4'
+        description: 'Card padding'
+
+  - name: 'Tag'
+    import: '@ui/components'
+    file: 'src/ui/components/Tag/Tag.tsx'
+    description: 'Tag/label component with color variants'
+    variants:
+      - 'blue'
+      - 'green'
+      - 'yellow'
+      - 'gray'
+    sizes: []
+    states: []
+    props:
+      - name: 'label'
+        type: 'string'
+        required: true
+        description: 'Tag label text'
+      - name: 'color'
+        type: "'blue' | 'green' | 'yellow' | 'gray'"
+        optional: true
+        default: 'blue'
+        description: 'Tag color variant'
+
+  - name: 'Note'
+    import: '@ui/components'
+    file: 'src/ui/components/Note/Note.tsx'
+    description: 'Note item with text and date'
+    variants: []
+    sizes: []
+    states: []
+    props:
+      - name: 'text'
+        type: 'string'
+        required: true
+        description: 'Note text content'
+      - name: 'date'
+        type: 'string'
+        required: true
+        description: 'Note date'
+
+  - name: 'ContactDetailsCard'
+    import: '@ui/components'
+    file: 'src/ui/components/ContactDetailsCard/ContactDetailsCard.tsx'
+    description: 'Contact details card with edit functionality'
+    variants: []
+    sizes: []
+    states: []
+    props:
+      - name: 'title'
+        type: 'string'
+        required: true
+        description: 'Card title'
+      - name: 'titleIcon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Title icon'
+      - name: 'editIcon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Edit icon'
+      - name: 'items'
+        type: 'ContactDetailsItem[]'
+        required: true
+        description: 'Contact details items'
+      - name: 'onEdit'
+        type: '() => void'
+        optional: true
+        description: 'Edit button press handler'
+
+  - name: 'CustomerCard'
+    import: '@ui/components'
+    file: 'src/ui/components/CustomerCard/CustomerCard.tsx'
+    description: 'Customer/client card with navigation'
+    variants: []
+    sizes: []
+    states: []
+    props:
+      - name: 'title'
+        type: 'string'
+        required: true
+        description: 'Card title'
+      - name: 'subtitle'
+        type: 'string'
+        optional: true
+        description: 'Subtitle text'
+      - name: 'subtitleIcon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Subtitle icon'
+      - name: 'chevronIcon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Navigation/chevron icon'
+      - name: 'items'
+        type: 'CustomerItem[]'
+        required: true
+        description: 'Customer items'
+      - name: 'onPress'
+        type: '() => void'
+        optional: true
+        description: 'Card press handler'
+
+  - name: 'RecentTasksCard'
+    import: '@ui/components'
+    file: 'src/ui/components/RecentTasksCard/RecentTasksCard.tsx'
+    description: 'Recent tasks card with task items and tags'
+    variants: []
+    sizes: []
+    states: []
+    props:
+      - name: 'title'
+        type: 'string'
+        required: true
+        description: 'Card title'
+      - name: 'titleIcon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Title icon'
+      - name: 'actionText'
+        type: 'string'
+        optional: true
+        description: 'Action link text'
+      - name: 'tasks'
+        type: 'TaskItem[]'
+        required: true
+        description: 'Task items'
+      - name: 'onActionPress'
+        type: '() => void'
+        optional: true
+        description: 'Action press handler'
+
+  - name: 'NotesCard'
+    import: '@ui/components'
+    file: 'src/ui/components/NotesCard/NotesCard.tsx'
+    description: 'Notes card with note items and add note button'
+    variants: []
+    sizes: []
+    states: []
+    props:
+      - name: 'title'
+        type: 'string'
+        required: true
+        description: 'Card title'
+      - name: 'titleIcon'
+        type: 'React.ReactNode'
+        optional: true
+        description: 'Title icon'
+      - name: 'addButtonText'
+        type: 'string'
+        optional: true
+        default: '+ Add Note'
+        description: 'Add button text'
+      - name: 'notes'
+        type: 'NoteItem[]'
+        required: true
+        description: 'Note items'
+      - name: 'onAddNote'
+        type: '() => void'
+        optional: true
+        description: 'Add note handler'
+
+# Screens
+screens:
+  - name: 'ClientsScreen'
+    import: '@ui/screens'
+    file: 'src/ui/screens/ClientsScreen/ClientsScreen.tsx'
+    description: 'Main clients list screen with search functionality, client cards, and navigation'
+    components_used:
+      - name: 'Header'
+        purpose: 'Screen title display'
+        props_used:
+          - "title: 'Klanten'"
+      - name: 'Input'
+        purpose: 'Client search functionality'
+        props_used:
+          - 'icon: <Search />'
+          - "placeholder: 'Zoek klanten...'"
+          - 'value: searchQuery'
+          - 'onChangeText: setSearchQuery'
+      - name: 'CustomerCard'
+        purpose: 'Client information display'
+        props_used:
+          - 'title: client.name'
+          - 'clientType: client.type'
+          - 'contactPerson: client.contactPerson'
+          - 'phone: client.phone'
+          - 'address: client.address'
+          - 'onPress: () => handleClientPress(client.id)'
+      - name: 'TabButton'
+        purpose: 'Bottom navigation tabs'
+        props_used:
+          - 'icon: <Calendar /> or <Group />'
+          - "label: 'Kalender' or 'Klanten'"
+          - 'active: boolean'
+          - 'onPress: () => handleTabPress(tab)'
+      - name: 'RoundButton'
+        purpose: 'Floating add client action'
+        props_used:
+          - 'icon: <AddUser />'
+          - 'onPress: handleAddClient'
+    screen_structure:
+      - 'Header with screen title'
+      - 'Search input for filtering clients'
+      - 'Section header with client count'
+      - 'List of client cards with contact information'
+      - 'Bottom navigation tabs'
+      - 'Floating add button'
+    sample_data:
+      clients:
+        - id: '1'
+          name: 'Bakker Appartementen'
+          type: 'Zakelijk'
+          contactPerson: 'Mevr. Emma Bakker'
+          phone: '+31 6 45678901'
+          address: 'Herengracht 89, Amsterdam'
+        - id: '2'
+          name: 'De Vries Woonhuis'
+          type: 'Particulier'
+          contactPerson: 'Dhr. Johan de Vries'
+          phone: '+31 6 34567890'
+          address: 'Prinsengracht 45, Amsterdam'
+        - id: '3'
+          name: 'Jansen Installatiewerken'
+          type: 'Zakelijk'
+          contactPerson: 'Mevr. Lisa Jansen'
+          phone: '+31 6 23456789'
+          address: 'Keizersgracht 123, Amsterdam'
+
+  - name: 'ClientInfoScreen'
+    import: '@ui/screens'
+    file: 'src/ui/screens/ClientInfoScreen/ClientInfoScreen.tsx'
+    description: 'Detailed client information screen with contact details, recent tasks, notes, and quick action buttons'
+    components_used:
+      - name: 'Header'
+        purpose: 'Navigation with back button and menu'
+        props_used:
+          - "title: 'Bakker Appartementen'"
+          - 'leftIcon: <ArrowLeft />'
+          - 'rightIcon: <ThreeDotsVertical />'
+          - 'onLeftPress: handleBack'
+          - 'onRightPress: handleMenu'
+      - name: 'ClientBanner'
+        purpose: 'Client information display with status'
+        props_used:
+          - 'name: clientData.name'
+          - 'type: clientData.type'
+          - 'date: clientData.since'
+          - 'tagLabel: clientData.status'
+          - "tagColor: 'green'"
+      - name: 'Button'
+        purpose: 'Action buttons for communication and tasks'
+        props_used:
+          - "variant: 'secondary'"
+          - "size: 'large'"
+          - 'icon: <Call /> | <Email /> | <Add />'
+          - "children: 'Bellen' | 'E-mail' | 'Taak'"
+          - 'onPress: handler function'
+      - name: 'ContactDetailsCard'
+        purpose: 'Contact information display with edit'
+        props_used:
+          - "title: 'Contactgegevens'"
+          - 'titleIcon: <ContactCard />'
+          - 'editIcon: <Pencil />'
+          - 'items: contactDetails array'
+          - 'onEdit: handleEditContact'
+      - name: 'RecentTasksCard'
+        purpose: 'Task history with status indicators'
+        props_used:
+          - "title: 'Recente Taken'"
+          - 'titleIcon: <Clock />'
+          - "actionText: 'All Taken'"
+          - 'tasks: recentTasks array'
+          - 'onActionPress: handleViewAllTasks'
+      - name: 'NotesCard'
+        purpose: 'Client notes with add functionality'
+        props_used:
+          - "title: 'Notities'"
+          - 'titleIcon: <ContactCard />'
+          - "addButtonText: '+ Notitie toevoegen'"
+          - 'notes: notes array'
+          - 'onAddNote: handleAddNote'
+    screen_structure:
+      - 'Header with navigation and client name'
+      - 'Client information banner with status tag'
+      - 'Action buttons row for quick communication and task creation'
+      - 'Contact details card with edit functionality'
+      - 'Recent tasks card with task history and status'
+      - 'Notes card with client notes and add functionality'
+    sample_data:
+      client:
+        id: '1'
+        name: 'Bakker Appartementen'
+        type: 'Zakelijk'
+        since: 'Sinds 2019'
+        status: 'Actief'
+        contactPerson: 'Mevr. Emma Bakker'
+        phone: '+31 6 45678901'
+        email: 'emma@bakker-app.nl'
+        address: 'Herengracht 89, Amsterdam'
+      recent_tasks:
+        - id: '1'
+          name: 'Onderhoud verwarmingssysteem'
+          date: '15 Jan 2024'
+          time: '09:00'
+          color: 'blue'
+          tag: { label: 'Label', color: 'green' }
+        - id: '2'
+          name: 'Renovatie badkamer app 3A'
+          date: '22 Jan 2024'
+          time: '14:00'
+          color: 'yellow'
+          tag: { label: 'Label', color: 'green' }
+        - id: '3'
+          name: 'Klantbezoek nieuw project'
+          date: '28 Jan 2024'
+          time: '11:00'
+          color: 'green'
+          tag: { label: 'Label', color: 'blue' }
+      notes:
+        - id: '1'
+          text: 'Voorkeur voor werkzaamheden in de ochtend. Altijd vooraf bellen.'
+          date: '12 Jan 2024'
+        - id: '2'
+          text: 'Sleutels ophalen bij de receptie. Vraag naar Piet.'
+          date: '8 Jan 2024'
+
+  - name: 'NewClientScreen'
+    import: '@ui/screens'
+    file: 'src/ui/screens/NewClientScreen/NewClientScreen.tsx'
+    description: 'Form screen for adding a new client with type selection and contact details input fields'
+    components_used:
+      - name: 'Custom Header'
+        purpose: 'Navigation with back button and save text button'
+        props_used:
+          - "title: 'Nieuwe Klant'"
+          - 'leftIcon: <ArrowLeft />'
+          - "rightText: 'Opslaan'"
+          - 'onLeftPress: handleBack'
+          - 'onRightPress: handleSave'
+      - name: 'Custom Tab Buttons'
+        purpose: 'Client type selection with icons'
+        props_used:
+          - 'icon: <Briefcase /> | <User />'
+          - "label: 'Zakelijk' | 'Particulier'"
+          - 'active: boolean'
+          - 'onPress: () => setClientType(type)'
+      - name: 'Input'
+        purpose: 'Form fields with bordered icons and clear functionality'
+        props_used:
+          - 'placeholder: Dutch placeholder text'
+          - 'leftIcon: <User /> | <Email /> | <Call /> | <Location />'
+          - 'rightIcon: <Close /> (conditionally)'
+          - 'showRightIcon: boolean based on value'
+          - "iconStyle: 'bordered'"
+          - "state: 'filled'"
+          - 'keyboardType: appropriate type'
+          - 'value: formData field'
+          - 'onChangeText: field update handler'
+      - name: 'Button'
+        purpose: 'Save and cancel actions'
+        props_used:
+          - "variant: 'primary' | 'outline'"
+          - "size: 'large'"
+          - 'showIcon: false'
+          - 'onPress: handler function'
+          - "children: 'Opslaan' | 'Annuleren'"
+    screen_structure:
+      - 'Header with back navigation and save action'
+      - 'Client type selection with Zakelijk/Particulier tabs'
+      - 'Form fields for name, email, phone, address, and postal code'
+      - 'All inputs use bordered icon style with appropriate icons'
+      - 'Action buttons for save and cancel'
+    form_fields:
+      - field: 'name'
+        label: 'Naam'
+        placeholder: 'Voer naam in'
+        icon: 'User'
+        keyboard_type: 'default'
+      - field: 'email'
+        label: 'E-mailadres'
+        placeholder: 'voorbeeld@email.com'
+        icon: 'Email'
+        keyboard_type: 'email-address'
+      - field: 'phone'
+        label: 'Telefoonnummer'
+        placeholder: '+31 6 12345678'
+        icon: 'Call'
+        keyboard_type: 'phone-pad'
+      - field: 'address'
+        label: 'Adres'
+        placeholder: 'Straatnaam en huisnummer'
+        icon: 'Location'
+        keyboard_type: 'default'
+      - field: 'postalCode'
+        label: 'Postcode en Plaats'
+        placeholder: '1234 AB Amsterdam'
+        icon: 'Location'
+        keyboard_type: 'default'
+    client_types:
+      - type: 'business'
+        label: 'Zakelijk'
+        icon: 'Briefcase'
+      - type: 'personal'
+        label: 'Particulier'
+        icon: 'User'
+
+  - name: 'CalendarScreen'
+    import: '@ui/screens'
+    file: 'src/ui/screens/CalendarScreen/CalendarScreen.tsx'
+    description: 'Calendar screen displaying monthly overview with time-based schedule and events'
+    components_used:
+      - name: 'Header'
+        purpose: 'Screen title display'
+        props_used:
+          - "title: 'Kalender'"
+      - name: 'TimeSlot'
+        purpose: 'Individual time slot with events display'
+        props_used:
+          - "time: string (e.g. '07:00')"
+          - 'events: EventItem[] with id, title, color'
+      - name: 'Calendar'
+        purpose: 'Calendar placeholder icon in dashed area'
+        props_used:
+          - 'width: 32'
+          - 'height: 36'
+          - 'color: theme.colors.gray[500]'
+      - name: 'ChevronLeft'
+        purpose: 'Previous month navigation'
+        props_used:
+          - 'width: 28'
+          - 'height: 28'
+          - "color: 'white'"
+      - name: 'ChevronRight'
+        purpose: 'Next month navigation'
+        props_used:
+          - 'width: 28'
+          - 'height: 28'
+          - "color: 'white'"
+      - name: 'Pencil'
+        purpose: 'Date edit icon'
+        props_used:
+          - 'width: 24'
+          - 'height: 24'
+          - 'color: theme.colors.primary.main'
+      - name: 'Group'
+        purpose: 'Bottom navigation clients icon'
+        props_used:
+          - 'width: 28'
+          - 'height: 28'
+          - 'color: theme.colors.gray[500]'
+    screen_structure:
+      - "Main header with 'Kalender' title"
+      - 'Month navigation header with arrows and month/year'
+      - 'Calendar placeholder area (dashed border with instructional text)'
+      - 'Date selection bar with current date and edit icon'
+      - 'Time slots list (06:00 - 13:00) with color-coded events'
+      - 'Bottom navigation with active calendar tab'
+    sample_data:
+      selected_date: 'Donderdag, 2 November'
+      selected_month: 'November 2023'
+      time_slots:
+        - time: '06:00'
+          events: []
+        - time: '07:00'
+          events:
+            - id: '1'
+              title: 'Jansen Inst...'
+              color: 'yellow'
+            - id: '2'
+              title: 'Bakker App...'
+              color: 'blue'
+        - time: '08:00'
+          events: []
+        - time: '09:00'
+          events:
+            - id: '3'
+              title: 'De Vries Woonh...'
+              color: 'green'
+        - time: '10:00'
+          events: []
+        - time: '11:00'
+          events:
+            - id: '4'
+              title: 'Jansen Inst...'
+              color: 'yellow'
+            - id: '5'
+              title: 'Bakker App...'
+              color: 'blue'
+        - time: '12:00'
+          events: []
+        - time: '13:00'
+          events:
+            - id: '6'
+              title: 'Client Name ...'
+              color: 'gray'
+    event_colors:
+      yellow: 'Jansen installations'
+      blue: 'Bakker applications'
+      green: 'De Vries housing'
+      gray: 'General client events'
+    calendar_placeholder:
+      border: '2px dashed theme.colors.gray[600]'
+      background: 'theme.colors.gray[800]'
+      messages:
+        - 'Calendar Placeholder'
+        - 'This is where the calendar goes.'
+        - "Don't make it on your own,"
+        - 'wait for a stage in implementation plan.'
+
+  - name: 'NewTaskScreen'
+    import: '@ui/screens'
+    file: 'src/ui/screens/NewTaskScreen/NewTaskScreen.tsx'
+    description: 'New task creation screen with time selection, client selection, work type options, and description'
+    components_used:
+      - name: 'Header'
+        purpose: 'Navigation with back button and save text button'
+        props_used:
+          - "title: 'Nieuwe Taak'"
+          - 'leftIcon: <ArrowLeft />'
+          - "rightText: 'Opslaan'"
+          - 'rightTextColor: theme.colors.primary.main'
+          - 'onLeftPress: onBack'
+          - 'onRightPress: onSave'
+      - name: 'HourSelector'
+        purpose: 'Start and end time selection with selected state'
+        props_used:
+          - "label: 'Starttijd' | 'Eindtijd'"
+          - "time: string (e.g. '08:00', '09:00|')"
+          - 'selected: boolean'
+          - 'onPress: handler function'
+      - name: 'InfoCard'
+        purpose: 'Duration display with clock icon'
+        props_used:
+          - "text: 'Duur: 1 uur'"
+      - name: 'Input'
+        purpose: 'Client search and description fields'
+        props_used:
+          - 'placeholder: Dutch placeholder text'
+          - 'leftIcon: <User /> (for client field)'
+          - 'rightIcon: <Close /> (conditional)'
+          - "iconStyle: 'bordered'"
+          - 'multiline: true (for description)'
+          - 'numberOfLines: 4 (for description)'
+          - 'showRightIcon: boolean based on content'
+      - name: 'TabSelection'
+        purpose: 'Work type selection with colored indicators'
+        props_used:
+          - 'label: work type name'
+          - "color: 'blue' | 'yellow' | 'green' | 'gray'"
+          - 'active: boolean'
+          - 'onPress: selection handler'
+      - name: 'Button'
+        purpose: 'Save and cancel actions'
+        props_used:
+          - "variant: 'primary' | 'outline'"
+          - "size: 'large'"
+          - 'showIcon: false'
+          - 'onPress: handler function'
+          - "children: 'Taak Opslaan' | 'Annuleren'"
+    screen_structure:
+      - "Header with back navigation and 'Opslaan' save button"
+      - 'Date display header'
+      - 'Time selection container with start/end selectors and duration info'
+      - 'Client search input with user icon'
+      - 'Work type selection grid (2x2) with colored indicators'
+      - 'Description textarea with placeholder'
+      - "Action buttons: 'Taak Opslaan' (primary) and 'Annuleren' (outline)"
+    form_fields:
+      - field: 'startTime'
+        component: 'HourSelector'
+        label: 'Starttijd'
+        default: '08:00'
+        selected: false
+      - field: 'endTime'
+        component: 'HourSelector'
+        label: 'Eindtijd'
+        default: '09:00|'
+        selected: true
+      - field: 'duration'
+        component: 'InfoCard'
+        display: 'Duur: 1 uur'
+        icon: 'Clock'
+      - field: 'client'
+        component: 'Input'
+        placeholder: 'Zoek of selecteer een klant'
+        icon: 'User'
+        icon_style: 'bordered'
+        clear_button: true
+      - field: 'description'
+        component: 'Input'
+        placeholder: 'Korte beschrijving van de taak...'
+        multiline: true
+        lines: 4
+        clear_button: true
+    work_types:
+      - id: 'maintenance'
+        label: 'Onderhoud'
+        color: 'blue'
+        default_active: true
+      - id: 'project'
+        label: 'Project'
+        color: 'yellow'
+        default_active: false
+      - id: 'client_visit'
+        label: 'Klantenbezoek'
+        color: 'green'
+        default_active: false
+      - id: 'free_task'
+        label: 'Vrije Taak'
+        color: 'gray'
+        default_active: false
+    sample_data:
+      selected_date: 'Donderdag, 2 November 2023'
+      start_time: '08:00'
+      end_time: '09:00|'
+      duration: 'Duur: 1 uur'
+      client_query: ''
+      description: ''
+      selected_work_type: 'maintenance'
+    time_selector_layout:
+      container: '12px border radius, gray-700 border, gray-800 background'
+      selectors: 'horizontal row with 24px blue divider line'
+      start_selector: 'default state'
+      end_selector: 'selected state with blue-60 border'
+      duration_card: 'centered with clock icon'
+
+  - name: 'LoginScreen'
+    import: '@ui/screens'
+    file: 'src/ui/screens/LoginScreen/LoginScreen.tsx'
+    description: 'Authentication screen with email/password form and logo placeholder for user login'
+    components_used:
+      - name: 'Header'
+        purpose: 'Screen title display'
+        props_used:
+          - "title: 'Login'"
+      - name: 'Input'
+        purpose: 'Email and password input fields with icons'
+        props_used:
+          - 'placeholder: Dutch placeholder text'
+          - 'leftIcon: <Email /> | <Lock />'
+          - "iconStyle: 'simple'"
+          - "keyboardType: 'email-address' (for email)"
+          - 'secureTextEntry: true (for password)'
+          - "autoCapitalize: 'none' (for email)"
+          - 'autoCorrect: false (for email)'
+          - 'value: input value'
+          - 'onChangeText: change handler'
+      - name: 'Button'
+        purpose: 'Login action and forgot password link'
+        props_used:
+          - "variant: 'primary' | 'text'"
+          - "size: 'large'"
+          - 'showIcon: false'
+          - 'onPress: handler function'
+          - "children: 'Inloggen' | 'Wachtwoord vergeten?'"
+      - name: 'Email'
+        purpose: 'Email input field icon'
+        props_used:
+          - 'width: 20'
+          - 'height: 20'
+          - 'color: theme.colors.gray[500]'
+      - name: 'Lock'
+        purpose: 'Password input field icon'
+        props_used:
+          - 'width: 20'
+          - 'height: 20'
+          - 'color: theme.colors.gray[500]'
+    screen_structure:
+      - "Header with 'Login' title"
+      - 'Logo placeholder area (dashed border rectangle)'
+      - 'Email input field with email icon and Dutch placeholder'
+      - 'Password input field with lock icon and secure text entry'
+      - "Primary 'Inloggen' (Login) button"
+      - "Text 'Wachtwoord vergeten?' (Forgot password) link"
+      - 'Footer with copyright text'
+    form_fields:
+      - field: 'email'
+        component: 'Input'
+        label: 'E-mailadres'
+        placeholder: 'voorbeeld@email.nl'
+        icon: 'Email'
+        icon_style: 'simple'
+        keyboard_type: 'email-address'
+        auto_capitalize: 'none'
+        auto_correct: false
+        secure: false
+      - field: 'password'
+        component: 'Input'
+        label: 'Wachtwoord'
+        placeholder: 'Voer je wachtwoord in'
+        icon: 'Lock'
+        icon_style: 'simple'
+        secure: true
+    logo_placeholder:
+      height: 128
+      border: '2px dashed theme.colors.gray[600]'
+      background: 'theme.colors.gray[800]'
+      text: 'Logo Placeholder'
+      text_color: 'theme.colors.gray[500]'
+    actions:
+      - action: 'login'
+        component: 'Button'
+        variant: 'primary'
+        text: 'Inloggen'
+      - action: 'forgot_password'
+        component: 'Button'
+        variant: 'text'
+        text: 'Wachtwoord vergeten?'
+    sample_data:
+      email: ''
+      password: ''
+    footer:
+      text: '© 2023 Vakker. Voor professionele service planning.'
+      color: 'theme.colors.gray[500]'
+      size: 12
+      alignment: 'center'
+
+# Common Icon Props
+icon_props:
+  - name: 'size'
+    type: 'number'
+    optional: true
+    description: 'Sets both width and height'
+  - name: 'color'
+    type: 'string'
+    optional: true
+    description: 'Fill color'
+  - name: 'width'
+    type: 'number'
+    optional: true
+    description: 'Override width'
+  - name: 'height'
+    type: 'number'
+    optional: true
+    description: 'Override height'
+
+# Export paths
+exports:
+  main: '@ui'
+  tokens: '@ui/tokens'
+  icons: '@ui/icons'
+  components: '@ui/components'
+  screens: '@ui/screens'

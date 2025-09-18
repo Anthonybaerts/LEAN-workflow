@@ -1,0 +1,177 @@
+features:
+  - id: F-001
+    title: Auth: Login
+    type: infra
+    priority: 1
+    deps: []
+    source: MASTER_PRD.md#auth-login
+    screens: [LoginScreen]
+    ac_ids: [F-001-AC1, F-001-AC2, F-001-AC3]
+    epic: E-300
+    mvp: true
+
+  - id: F-005
+    title: Navigation Setup
+    type: infra
+    priority: 1
+    deps: []
+    source: MASTER_PRD.md#navigation-setup
+    screens: []
+    ac_ids: [F-005-AC1, F-005-AC2, F-005-AC3, F-005-AC4, F-005-AC5, F-005-AC6]
+    epic: E-300
+    mvp: true
+
+  - id: F-006
+    title: Storage & Data Layer
+    type: infra
+    priority: 1
+    deps: [F-001]
+    source: MASTER_PRD.md#storage-data-layer
+    screens: []
+    ac_ids: [F-006-AC1, F-006-AC2, F-006-AC3]
+    epic: E-300
+    mvp: true
+
+  - id: F-007
+    title: Form Validation
+    type: infra
+    priority: 2
+    deps: []
+    source: MASTER_PRD.md#form-validation
+    screens: []
+    ac_ids: [F-007-AC1, F-007-AC2, F-007-AC3]
+    epic: E-300
+    mvp: true
+
+  - id: F-009
+    title: State Management
+    type: infra
+    priority: 2
+    deps: []
+    source: MASTER_PRD.md#state-management
+    screens: []
+    ac_ids: [F-009-AC1, F-009-AC2, F-009-AC3]
+    epic: E-300
+    mvp: true
+
+  - id: F-002
+    title: Clients: List & Search
+    type: feature
+    priority: 2
+    deps: [F-001, F-005, F-006]
+    source: MASTER_PRD.md#clients-list-search
+    screens: [ClientsScreen]
+    ac_ids: [F-002-AC1, F-002-AC2, F-002-AC3]
+    epic: E-100
+    mvp: true
+
+  - id: F-003
+    title: Clients: Create
+    type: feature
+    priority: 3
+    deps: [F-001, F-005, F-006, F-007]
+    source: MASTER_PRD.md#clients-create
+    screens: [NewClientScreen, ClientInfoScreen]
+    ac_ids: [F-003-AC1, F-003-AC2, F-003-AC3]
+    epic: E-100
+    mvp: true
+
+  - id: F-008
+    title: Calendar: Day View
+    type: feature
+    priority: 3
+    deps: [F-001, F-005, F-006]
+    source: MASTER_PRD.md#calendar-day-view
+    screens: [CalendarScreen]
+    ac_ids: [F-008-AC1, F-008-AC2, F-008-AC3, F-008-AC4, F-008-AC5]
+    epic: E-200
+    mvp: true
+
+  - id: F-004
+    title: Tasks: Create
+    type: feature
+    priority: 4
+    deps: [F-001, F-002, F-005, F-006, F-007, F-008]
+    source: MASTER_PRD.md#tasks-create
+    screens: [NewTaskScreen]
+    ac_ids: [F-004-AC1, F-004-AC2, F-004-AC3]
+    epic: E-200
+    mvp: true
+
+  - id: F-010
+    title: Clients: View Details
+    type: feature
+    priority: 4
+    deps: [F-002, F-005, F-006]
+    source: MASTER_PRD.md#clients-view-details
+    screens: [ClientInfoScreen]
+    ac_ids: [F-010-AC1, F-010-AC2, F-010-AC3]
+    epic: E-100
+    mvp: false
+
+  - id: F-011
+    title: Color Coding System (Klantenbezoek)
+    type: nfr
+    priority: 5
+    deps: []
+    source: MASTER_PRD.md#color-coding-system
+    screens: []
+    ac_ids: [F-011-AC1, F-011-AC2, F-011-AC3, F-011-AC4]
+    epic: E-400
+    mvp: false
+
+  - id: F-012
+    title: Theming & Tokens
+    type: nfr
+    priority: 5
+    deps: []
+    source: MASTER_PRD.md#theming-tokens
+    screens: []
+    ac_ids: [F-012-AC1, F-012-AC2, F-012-AC3]
+    epic: E-400
+    mvp: false
+
+  - id: F-013
+    title: Error & Empty States
+    type: nfr
+    priority: 6
+    deps: []
+    source: MASTER_PRD.md#error-empty-states
+    screens: []
+    ac_ids: [F-013-AC1, F-013-AC2, F-013-AC3]
+    epic: E-400
+    mvp: false
+
+  - id: F-014
+    title: Analytics (MVP-light)
+    type: enhancement
+    priority: 7
+    deps: [F-001, F-005]
+    source: MASTER_PRD.md#analytics-mvp-light
+    screens: []
+    ac_ids: [F-014-AC1, F-014-AC2, F-014-AC3]
+    epic: E-400
+    mvp: false
+
+  - id: F-015
+    title: Clients: Edit (basic)
+    type: enhancement
+    priority: 8
+    deps: [F-003, F-010, F-007]
+    source: MASTER_PRD.md#clients-edit-basic
+    screens: [EditClientScreen]
+    ac_ids: [F-015-AC1, F-015-AC2, F-015-AC3]
+    epic: E-100
+    mvp: false
+
+  - id: F-016
+    title: Tasks: Edit (basic)
+    type: enhancement
+    priority: 9
+    deps: [F-004, F-008, F-007]
+    source: MASTER_PRD.md#tasks-edit-basic
+    screens: [EditTaskScreen]
+    ac_ids: [F-016-AC1, F-016-AC2, F-016-AC3]
+    epic: E-200
+    mvp: false
+

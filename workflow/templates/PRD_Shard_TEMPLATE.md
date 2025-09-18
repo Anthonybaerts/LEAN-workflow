@@ -1,3 +1,12 @@
+---
+docType: prd_shard
+features: [<F-101>]
+deps: []
+screens: []
+anchors: []
+generatedBy: shard_generator
+---
+
 # PRD Shard — <IDs e.g., F-101>
 
 ## Meta

@@ -1,0 +1,67 @@
+Name: UI Library Indexer (Phase 1)
+
+Goal: Discover and catalog reusable UI screens and components across the project and produce a single reference map (UI_MAP.yaml) for reuse-first planning and QA.
+
+Scope & Principles:
+- Reuse-first: Prefer documenting existing UI before proposing new UI.
+- Non-destructive: If a prior UI map exists, merge and preserve manual notes.
+- Tool-agnostic: Works regardless of framework specifics; no runtime commands.
+- Lightweight: Static analysis only. No building, compiling, or executing code.
+
+Inputs:
+- Project codebase (source files)
+- Optional inline metadata comments (e.g., @ui: tags) when present
+- Optional existing UI map (UI_MAP.yaml) for merge
+
+Discovery Heuristics (generic, language-agnostic):
+- Identify UI components (stateless/stateful) and screens (navigable views)
+- Infer component/screen names and categorize as `type: component | screen`
+- Extract props/parameters (public inputs) and common variants where detectable
+- Derive screen routes/params if a navigation pattern is identifiable
+- Track usage relationships: screens that use components; components used by screens
+- Respect explicit @ui: metadata when provided; otherwise fall back to heuristics
+
+Tasks (STRICT):
+1) Traverse source files and collect candidates for screens/components
+2) Normalize entries: name, type, props, variants, relationships
+3) If an existing map is present, merge entries:
+   - Preserve existing `notes`
+   - Update props/relationships when newly discovered
+   - De-duplicate by stable name/type identity
+4) Validate the catalog:
+   - Names unique per type (screen vs component)
+   - No missing required fields for each entry
+5) Write or update UI_MAP.yaml with the consolidated catalog
+
+Output (UI_MAP.yaml) — structure template:
+```yaml
+components:
+  - name: <ComponentName>
+    type: component
+    props: [<propA>, <propB>]
+    variants: [<variantA>, <variantB>]
+    used_on_screens: [<ScreenNameA>, <ScreenNameB>]
+    notes: "<human notes, optional>"
+
+screens:
+  - name: <ScreenName>
+    type: screen
+    route: <RouteKey>
+    params: [<paramA>, <paramB>]
+    uses_components: [<ComponentNameA>, <ComponentNameB>]
+    notes: "<human notes, optional>"
+```
+
+Constraints:
+- Static-only; do not run commands, emulators, or bundlers
+- Do not invent entries beyond what is discovered or explicitly annotated
+- Keep the map concise and focused on reuse; avoid low-level implementation details
+
+Outputs:
+- UI_MAP.yaml (created or updated)
+- Short summary of findings: counts of screens/components; new vs updated entries
+
+Success Criteria:
+- Clear, deduplicated catalog of reusable UI assets
+- Useful for planning (implementation planner) and QA (consistency checks)
+- Safe to re-run idempotently without loss of manual notes

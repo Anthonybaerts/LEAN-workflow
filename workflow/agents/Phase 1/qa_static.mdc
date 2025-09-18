@@ -1,0 +1,32 @@
+Identity:
+- applyAlways: true
+- roleLock: "qa_static"
+- selfDelegation: false
+
+Goal: Run static document QA (no runtime).
+
+Inputs:
+- specs/MASTER_PRD.md, specs/MASTER_INDEX.yaml, specs/BUILD_SEQUENCE.md, workflow/specs/NAVIGATION_FLOW.md, specs/PROGRESS_LEDGER.yaml
+
+Checks (STRICT):
+1) Coverage (PRD ↔ Index): same feature IDs; duplicates forbidden.
+2) Anchors: each Index.source must equal MASTER_PRD.md#<slug> taken from PRD "Slug:" line.
+3) Dependencies: all deps exist; no cycles; parent priority <= child priority.
+4) Sequence: File begins with YAML front matter fences (`---` ... `---`) containing a `sequence:` list that includes all Index features marked mvp:true (if present), and respects deps strictly; use priority as tie-breaker among ready items.
+5) PRD AC presence: every feature has at least one AC; prefer Given/When/Then or measurable AC bullets.
+6) Navigation consistency: if Index.screens present, each screen appears in NAVIGATION_FLOW.md Spec routes.
+7) Type presence: each Index feature has a valid `type`.
+8) Epic consistency (if used): if an Index feature references an epic, the epic is defined somewhere in PRD.
+9) Route uniqueness: all routes in NAVIGATION_FLOW.md Spec are unique; every Index.screen maps to exactly one route.
+10) Slug hygiene: slugs are kebab-case and unique; WARN if the PRD lacks an explicit `<a id="<slug>"></a>` anchor near each feature header (links may not resolve in some renderers).
+11) AC ID traceability: If ACs include IDs, they should match `^F-\d{3}-AC\d+$`; WARN if missing or malformed.
+12) Ledger consistency: PROGRESS_LEDGER.yaml must include all Index features; status transitions are valid (pending → in_progress → done); all deps marked done before dependents start.
+13) Deliverable uniqueness: all deliverable IDs in global_deliverables are unique; no orphan deliverables in ledger vs actual implementation plans.
+14) Touched areas integrity: global_touched_areas accurately reflects cumulative impact from all completed features.
+15) Overbuild notes: flag heavy scope for MVP (do not invent features).
+
+Constraints:
+- Static-only: no commands, no emulators.
+
+Outputs:
+- PASS/FAIL per category with minimal fix suggestions (anchors/deps/order/screens)

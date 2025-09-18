@@ -1,0 +1,297 @@
+# Progress Ledger — tracks feature status, ACs, deliverables, and touched areas
+
+features:
+  - id: F-001
+    status: pending
+    acs:
+      - id: F-001-AC1
+        status: pending
+      - id: F-001-AC2
+        status: pending
+      - id: F-001-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-005
+    status: pending
+    acs:
+      - id: F-005-AC1
+        status: pending
+      - id: F-005-AC2
+        status: pending
+      - id: F-005-AC3
+        status: pending
+      - id: F-005-AC4
+        status: pending
+      - id: F-005-AC5
+        status: pending
+      - id: F-005-AC6
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-006
+    status: pending
+    acs:
+      - id: F-006-AC1
+        status: pending
+      - id: F-006-AC2
+        status: pending
+      - id: F-006-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-007
+    status: pending
+    acs:
+      - id: F-007-AC1
+        status: pending
+      - id: F-007-AC2
+        status: pending
+      - id: F-007-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-009
+    status: pending
+    acs:
+      - id: F-009-AC1
+        status: pending
+      - id: F-009-AC2
+        status: pending
+      - id: F-009-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-002
+    status: pending
+    acs:
+      - id: F-002-AC1
+        status: pending
+      - id: F-002-AC2
+        status: pending
+      - id: F-002-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-003
+    status: pending
+    acs:
+      - id: F-003-AC1
+        status: pending
+      - id: F-003-AC2
+        status: pending
+      - id: F-003-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-008
+    status: pending
+    acs:
+      - id: F-008-AC1
+        status: pending
+      - id: F-008-AC2
+        status: pending
+      - id: F-008-AC3
+        status: pending
+      - id: F-008-AC4
+        status: pending
+      - id: F-008-AC5
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-004
+    status: pending
+    acs:
+      - id: F-004-AC1
+        status: pending
+      - id: F-004-AC2
+        status: pending
+      - id: F-004-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-010
+    status: pending
+    acs:
+      - id: F-010-AC1
+        status: pending
+      - id: F-010-AC2
+        status: pending
+      - id: F-010-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-011
+    status: pending
+    acs:
+      - id: F-011-AC1
+        status: pending
+      - id: F-011-AC2
+        status: pending
+      - id: F-011-AC3
+        status: pending
+      - id: F-011-AC4
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-012
+    status: pending
+    acs:
+      - id: F-012-AC1
+        status: pending
+      - id: F-012-AC2
+        status: pending
+      - id: F-012-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-013
+    status: pending
+    acs:
+      - id: F-013-AC1
+        status: pending
+      - id: F-013-AC2
+        status: pending
+      - id: F-013-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-014
+    status: pending
+    acs:
+      - id: F-014-AC1
+        status: pending
+      - id: F-014-AC2
+        status: pending
+      - id: F-014-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-015
+    status: pending
+    acs:
+      - id: F-015-AC1
+        status: pending
+      - id: F-015-AC2
+        status: pending
+      - id: F-015-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+  - id: F-016
+    status: pending
+    acs:
+      - id: F-016-AC1
+        status: pending
+      - id: F-016-AC2
+        status: pending
+      - id: F-016-AC3
+        status: pending
+    deliverables: []
+    touched_areas:
+      screens: []
+      routes: []
+      entities: []
+      apis: []
+    completed_date: null
+
+# Global registries (cumulative across all features)
+global_deliverables: []
+
+global_touched_areas:
+  screens: []
+  routes: []
+  entities: []
+  apis: []
+
+

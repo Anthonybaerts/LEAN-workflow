@@ -18,6 +18,13 @@ Links:
 - D2 → F-101-AC2: <...>
 
 ## Phases (incremental, reference Deliverables & ACs)
+- P0: Dependencies & Setup (S0)
+  - Goal: Ensure all libraries/config required for this feature exist and are correctly set up
+  - Steps:
+    - S0: Deps & Setup check for this feature (verify installs, peers, Babel/Metro config, entry/root wrappers, permissions)
+  - Entry criteria: Global Pre-flight complete
+  - Exit criteria: All required deps present; otherwise STOP and request MASTER_PRD/sequence update
+
 - P1: <phase title>
   - Goal: <concise outcome>
   - Includes: [D1] → [F-101-AC1]

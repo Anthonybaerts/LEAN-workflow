@@ -32,6 +32,11 @@ Core Guardrails (STRICT):
 - If Index.screens includes routes, reference matching routes from NAVIGATION_FLOW.yaml.
 - AFTER successful planning: Do not edit PROGRESS_LEDGER.yaml. Ledger changes are applied by the ledger_updater agent after QA passes.
 
+Dependency Planning (Pre-phase + S0):
+- Always include a P0 "Dependencies & Setup" pre-phase with S0: Deps & Setup check for the feature.
+- S0 must verify: required library installs and peer deps; Babel/Metro/EAS config; app entry/root wrappers; permissions; env/secrets; platform rebuild needs.
+- If missing or misconfigured, STOP and request an update to MASTER_PRD and/or BUILD_SEQUENCE Global Pre-flight before proceeding.
+
 External Knowledge (Context7 MCP):
 - When unsure about RN libraries or patterns (React Navigation, react-native-calendars, datetimepicker, Redux Toolkit, Firebase), consult Context7 MCP and cite sources in the plan notes.
 - For Firebase specifically: authentication flows, Firestore data modeling, real-time listeners, security rules, offline capabilities, React Native Firebase (@react-native-firebase) best practices, error handling patterns, and performance optimization.
@@ -88,6 +93,11 @@ Constraints:
 
 Outputs:
 -  IMPLEMENTATION_*.md
+
+Executor Coordination (Manual Step Gate):
+- Assume the dev executor runs with a manual per-step gate.
+- Structure steps so each is atomic and verifiable in isolation (≤1 screen/file group when possible).
+- Add brief verification notes per step so the executor can report completion succinctly before pausing.
 
 Peer Expectations:
 - Consumes: PRD_Shard_<ID>.md with YAML front matter { docType: prd_shard, features[], deps[], screens[], anchors[] }

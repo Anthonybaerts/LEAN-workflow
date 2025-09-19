@@ -33,13 +33,16 @@
 
 ## Tech Stack & Core Dependencies
 
-- Frontend: Expo (React Native, TypeScript), NativeWind/Tailwind
+- Frontend: Expo (React Native, TypeScript), NativeWind/Tailwind (`nativewind`, `tailwindcss`)
 - Navigation: React Navigation (`@react-navigation/native`, `@react-navigation/native-stack`, `@react-navigation/bottom-tabs`, `react-native-screens`, `react-native-safe-area-context`)
+- Gestures & Animations: `react-native-gesture-handler`, `react-native-reanimated` (Babel plugin configured; wrap app root in `GestureHandlerRootView`)
+- Linking: `expo-linking` (navigation linking with Expo)
 - UI Library: vakkerUI (`@ui/*`) tokens, icons, components, screens
 - Forms & Validation: React Hook Form, Zod
 - State: Redux Toolkit, React Redux (optional: RTK Query or thunks for Firestore ops)
 - Data & Auth: Firebase JS SDK (Auth, Firestore with offline persistence)
 - Analytics: Firebase Analytics (via `@react-native-firebase/analytics` on EAS build)
+- Dev Client: `expo-dev-client` (required for native Firebase Analytics during development)
 - Calendar: `react-native-calendars` (month grid + agenda)
 - Time Picker: `@react-native-community/datetimepicker`
 - Date/Time Utils: `dayjs` (nl locale, parsing/formatting), optional `dayjs/plugin/utc`/`timezone`
@@ -199,6 +202,14 @@ Acceptance Criteria
  - F-005-AC4: Given a deep link `vakker://calendar/:date`, when invoked, then the app opens CalendarScreen focused on that date.
  - F-005-AC5: Given a deep link `vakker://calendar/:date/new`, when invoked, then the app opens NewTaskScreen with that date pre-selected.
  - F-005-AC6: Given a deep link `vakker://client/:clientId`, when invoked, then the app opens ClientInfoScreen for that client ID in the Clients tab.
+
+Implementation Notes (Navigation Setup)
+- Install: `react-native-screens`, `react-native-safe-area-context`, `react-native-gesture-handler`, `react-native-reanimated`.
+- App entry: `import 'react-native-gesture-handler';` must be at the very top of the entry file.
+- Root: Wrap the app in `GestureHandlerRootView` and `SafeAreaProvider`.
+- Babel: Add `react-native-reanimated/plugin` to the app's Babel config (vakkerUI already includes it in its own Babel).
+- Screens: `enableScreens()` is recommended historically; using `@react-navigation/native-stack` enables screens by default.
+- Expo: No manual linking required; rebuild Dev Client when adding new native modules.
 
 ## [F-006] Storage & Data Layer
 <a id="storage-data-layer"></a>

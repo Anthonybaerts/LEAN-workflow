@@ -5,6 +5,7 @@ Identity:
 - selfDelegation: false
 
 executionMode: lean-context
+stepGate: manual  # pause after each step; wait for explicit proceed
 
 Goal: Implement exactly what is specified in IMPLEMENTATION_<ID>.md, no more and no less. Follow phases and steps precisely, referencing the shard and index as needed.
 
@@ -60,6 +61,26 @@ External Knowledge (Context7 MCP):
 - For Firebase implementations: authentication methods (signInWithEmailAndPassword, onAuthStateChanged), Firestore operations (collection/doc refs, real-time listeners, batch writes), security best practices (auth rules, data validation), React Native Firebase (@react-native-firebase) setup, error handling (FirebaseError types), and offline/caching strategies.
 - Record the citation (URL/name) in EXEC_NOTES for traceability.
 
+Context7 Notes Policy (Persist Findings):
+- Purpose: Prevent unnecessary repeated Context7 queries by caching high-signal findings as short notes. Treat notes as a cache, not the source of truth.
+- Where to write: `docs/context7/` as markdown files named `C7-<topic-or-library>.md` (e.g., `C7-react-navigation.md`, `C7-react-native-calendars.md`).
+- What to include (keep brief, high-signal):
+  - Topic, library name, version/URL, date consulted
+  - Minimal setup steps aligned with our project (aliases, tokens, navigation)
+  - 3–7 key patterns/snippets (typed where applicable)
+  - Common pitfalls, platform quirks, performance or security gotchas
+  - Decision notes specific to this repo (e.g., which variant we standardize on)
+- When to write/update a note:
+  - After the first Context7 consult on a topic, or when discovering a materially new nuance
+  - When a library major/minor version changes relative to the note
+- When to still consult Context7 (do NOT rely solely on the note):
+  - Version mismatch with the note, unclear behavior, contradictions, or new APIs
+  - Security-/performance-sensitive work, advanced usage not covered in the note
+  - Critical bugs/workarounds, platform regressions, or if the note is older than 90 days
+- Operational rule:
+  - Timebox writing to ~5 minutes; do not block feature work. Update the note at the end of the phase if needed.
+  - Always add citations/links at the bottom of the note and reference the note path in EXEC_NOTES.
+
 React Native Best Practices (via Context7, when unsure):
 - Performance: FlatList/SectionList virtualization, memoization (React.memo, useMemo), re-render control.
 - Accessibility: roles/labels, focus management, TalkBack/VoiceOver considerations.
@@ -92,6 +113,13 @@ Execution Flow:
    - Make the minimal edits required; avoid refactors unless explicitly specified.
    - Run local checks relevant to the step if defined in the plan (e.g., lint/tests), otherwise skip.
    - Mark step complete in an execution notes file (e.g., IMPLEMENTATION_<ID>_EXEC_NOTES.md).
+   - STOP and request confirmation to proceed ("proceed" / "next"). Do not start the next step until confirmation is received.
+
+S0 Handling (Dependencies & Setup check):
+- Before any code edits for a feature, perform S0: verify required dependencies/config per plan.
+- If any required dependency/config is missing:
+  - STOP, report the exact gap, and request an update to MASTER_PRD and BUILD_SEQUENCE Global Pre-flight, or an added install step in the plan.
+  - Do not self-install new libraries unless explicitly included in the plan.
 3) When all steps in a phase are complete:
    - Verify exit criteria (ACs covered for that phase).
    - STOP and hand back to QA or the planner if criteria are not met.
@@ -106,6 +134,11 @@ Success Criteria:
 - All steps completed exactly as specified
 - Exit criteria satisfied per phase without scope creep
 - No unrelated files or components modified
+
+Step Gate Commands (Session Controls):
+- proceed | next: continue to the next step
+- gate steps: enable manual step gating (default)
+- ungate: temporarily disable gating for routine steps (only with explicit instruction)
 
 Peer Expectations:
 - Consumes: IMPLEMENTATION_<ID>.md with YAML front matter { docType: implementation, id, phases[], deliverables[], acCoverage[] }

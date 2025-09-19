@@ -13,6 +13,7 @@ Inputs:
 Planning Alignment (Flex-First):
 - Keep shard concise and strictly source-faithful; include only what the implementation planner needs.
 - Avoid prescriptive planning artifacts (phase counts, complexity scores, or implementation heuristics).
+ - Extract dependency references (libraries/config) mentioned in MASTER_PRD and in the feature's PRD section so the planner can form P0/S0 (Dependencies & Setup) without guessing.
 
 Tasks (STRICT):
 - Determine target feature: Read BUILD_SEQUENCE.md to find the next pending feature in sequence order
@@ -23,6 +24,7 @@ Tasks (STRICT):
 - Look up target feature in MASTER_INDEX.yaml for screens, deps, and metadata
 - Extract target feature's complete section from MASTER_PRD.md (header, story, scope, ACs, deps, etc.)
 - Include dependency context: brief summary of completed dependency features and their key deliverables from ledger
+ - Extract feature-specific dependency mentions (libraries, linking, wrappers, config like Babel/Metro) from MASTER_PRD and place them under a dedicated Dependencies (Libraries & Setup) section
 - Add "Sources" section with exact PRD anchor link and sequence position for traceability
 - Include out-of-scope notes and risks from original PRD section
 - Add build context: where this feature sits in the overall sequence (step X of Y)
@@ -71,6 +73,11 @@ Shard Structure:
 ## Dependencies & Context
 [Brief summary of completed dependency features and their key deliverables]
 
+## Dependencies (Libraries & Setup)
+- Libraries referenced in PRD for this feature: [from MASTER_PRD feature/Tech Stack]
+- Config requirements (if mentioned): [e.g., Reanimated Babel plugin, Metro, TypeScript aliases]
+- Linking & wrappers (if mentioned): [expo-linking scheme, import 'react-native-gesture-handler', GestureHandlerRootView, SafeAreaProvider]
+
 ## Screens & Components (if applicable)
 - Screens: [RouteA, RouteB]
 - Components: [ComponentX, ComponentY]
@@ -91,10 +98,11 @@ Validation Checks:
 - Target feature is next in sequence order (no skipping)
 - Shard contains all required sections
 - AC IDs follow F-xxx-ACn pattern if present
+ - If the PRD mentions libraries/linking/wrappers for this feature, the shard includes a "Dependencies (Libraries & Setup)" section with those references (no invention beyond PRD)
 
 Outputs:
 - PRD_Shard_[ID].md (focused, self-contained feature context for implementation planner)
 
 Peer Expectations:
 - Produces: PRD_Shard_<ID>.md with YAML front matter { docType: prd_shard, features[], deps[], screens[], anchors[] }
-- Downstream consumer: implementation_planner expects anchors[], deps[], and screens[] populated for quick validation and reuse planning.
+- Downstream consumer: implementation_planner expects anchors[], deps[], screens[], and Dependencies (Libraries & Setup) populated for P0/S0 planning.

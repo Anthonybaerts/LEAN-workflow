@@ -31,12 +31,25 @@ Validation Checks:
    - Every AC from shard is addressed by at least one deliverable
    - No orphan deliverables (not mapped to any AC)
    - Phase structure follows guardrails (2-6 steps typical; allow more for complex wiring)
+   - Pre-phase present: P0 "Dependencies & Setup" with S0 deps check
    - UI reuse-first:
      - Referenced screens/components exist (by name; paths when provided)
      - Props and data sources are identified for reused components
      - Soft-warn if new UI is proposed where a reusable likely exists
    - All deliverable IDs are unique against global_deliverables registry
    - All touched areas are either new or explicitly justified as reused
+   - S0 deps check is explicit for this feature (list or reference):
+     - Navigation baseline: `@react-navigation/native`, `@react-navigation/native-stack`, `@react-navigation/bottom-tabs`, `react-native-screens`, `react-native-safe-area-context`, `react-native-gesture-handler`, `react-native-reanimated` (with Babel plugin)
+     - Linking: `expo-linking` (and deep link scheme present when linking is used)
+     - UI/theming: NativeWind/Tailwind packages present if Tailwind classes are used
+     - SVG: `react-native-svg` present (icons/components dependency)
+     - Calendar/time: `react-native-calendars`, `@react-native-community/datetimepicker`, `dayjs`
+     - Data/auth: `firebase` (and any required Firebase modules)
+     - Optional analytics: `@react-native-firebase/app`, `@react-native-firebase/analytics` gated behind EAS Dev Client plan
+     - Localization/storage: `expo-localization`, `@react-native-async-storage/async-storage` when referenced
+     - Forms/state: `react-hook-form`, `zod`, `@hookform/resolvers`, `@reduxjs/toolkit`, `react-redux`
+   - Plan references app entry/root wrappers when relevant: `import 'react-native-gesture-handler'`, `GestureHandlerRootView`, `SafeAreaProvider`
+   - If external docs consulted, Context7 citations are included; if a relevant note exists under `docs/context7/`, it is referenced
 
 3) Ledger Integrity:
    - Cross-check: deps are marked done in ledger; target feature is pending prior to planning
@@ -52,9 +65,12 @@ Validation Checks:
 
 5) Execution Readiness:
    - Implementation plan has clear entry/exit criteria per phase
+   - Global Pre-flight Setup is present in BUILD_SEQUENCE and referenced as entry criteria for P0
    - All required context is available (navigation routes, data models)
    - No blocking unknowns or TODOs in critical paths
    - Phase dependencies are clearly defined
+   - MASTER_PRD Tech Stack includes: NativeWind/Tailwind packages, `expo-linking`, `expo-dev-client`, and the full navigation/gesture/animation baseline; fail with guidance if missing
+   - Deep linking scheme configured in app config if plan uses linking
    - Optional subjective checks: phase size reasonable; risky items called out; reuse vs new creation justified
 
 Constraints:

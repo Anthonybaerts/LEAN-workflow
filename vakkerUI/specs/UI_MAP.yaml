@@ -542,6 +542,35 @@ components:
         optional: true
         description: 'Add note handler'
 
+  - name: 'EventBlock'
+    import: '@ui/components'
+    file: 'src/ui/components/EventBlock/EventBlock.tsx'
+    description: 'Timeline event badge with color variants for calendar slots'
+    variants:
+      - 'blue'
+      - 'yellow'
+      - 'green'
+      - 'gray'
+    sizes:
+      - 'md'
+    states:
+      - 'default'
+      - 'pressed'
+    props:
+      - name: 'title'
+        type: 'string'
+        required: true
+        description: 'Event title (single line)'
+      - name: 'color'
+        type: "'blue' | 'yellow' | 'green' | 'gray'"
+        optional: true
+        default: 'blue'
+        description: 'Color variant matching task type'
+      - name: 'onPress'
+        type: '() => void'
+        optional: true
+        description: 'Tap handler'
+
 # Screens
 screens:
   - name: 'ClientsScreen'
@@ -801,6 +830,11 @@ screens:
         props_used:
           - "time: string (e.g. '07:00')"
           - 'events: EventItem[] with id, title, color'
+      - name: 'EventBlock'
+        purpose: 'Render each event in a slot with proper color coding'
+        props_used:
+          - 'title: event.title'
+          - "color: 'blue' | 'yellow' | 'green' | 'gray'"
       - name: 'Calendar'
         purpose: 'Calendar placeholder icon in dashed area'
         props_used:

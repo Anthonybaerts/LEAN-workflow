@@ -65,7 +65,7 @@ Notes
 **Must-Reuse Core Components:**
 - All existing screen templates: LoginScreen, ClientsScreen, ClientInfoScreen, NewClientScreen, CalendarScreen, NewTaskScreen
 - Core components: Header, Button, Input, TabButton, CustomerCard, ContactDetailsCard, RecentTasksCard, NotesCard
-- Additional components to reuse explicitly: RoundButton, TabSelection, TimeSlot, HourSelector, InfoCard, ClientBanner, Tag
+- Additional components to reuse explicitly: RoundButton, TabSelection, TimeSlot, HourSelector, InfoCard, ClientBanner, Tag, EventBlock
 - Form patterns: bordered Input style for forms, consistent action button placement
 - Design tokens: colors, spacing, radius, typography from vakkerUI theme
 
@@ -257,7 +257,7 @@ Acceptance Criteria
 - F-008-AC3: Given user changes date, when date selection changes, then timeline updates to show tasks for the new date.
  - F-008-AC4: Given the agenda view is displayed, when time grid renders, then working hours are limited to 07:00–19:00 (MVP default).
  - F-008-AC5: Given two or more tasks overlap in time, when rendered, then they are shown side-by-side within the slot; if more tasks overflow, a "+N" indicator is displayed.
-UI Reuse: CalendarScreen, Header, TimeSlot, TabButton
+UI Reuse: CalendarScreen, Header, TimeSlot, EventBlock, TabButton
 Note: Integrate `react-native-calendars` and align theming with vakkerUI tokens.
 
 Implementation Notes (Libraries)
@@ -314,6 +314,7 @@ Acceptance Criteria
 - F-011-AC2: Given task type is Project, when displayed, then uses yellow color coding.
 - F-011-AC3: Given task type is Klantenbezoek, when displayed, then uses green color coding.
 - F-011-AC4: Given task type is Vrije Taak, when displayed, then uses gray color coding.
+UI Reuse: Tag
 Token Mapping
 - Onderhoud → `theme.colors.primary.main`
 - Project → `theme.colors.warning.main`

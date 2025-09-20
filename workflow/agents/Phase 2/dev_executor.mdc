@@ -120,6 +120,15 @@ S0 Handling (Dependencies & Setup check):
 - If any required dependency/config is missing:
   - STOP, report the exact gap, and request an update to MASTER_PRD and BUILD_SEQUENCE Global Pre-flight, or an added install step in the plan.
   - Do not self-install new libraries unless explicitly included in the plan.
+
+Terminal Commands (Install/Setup Policy):
+- Allowed: Run terminal commands for dependency installation and setup only when the plan includes explicit install/config steps (typically S0).
+- Preference: Use `expo install <pkg>` for Expo-managed RN modules to ensure version compatibility (e.g., `react-native-gesture-handler`, `react-native-reanimated`, `react-native-screens`, `react-native-safe-area-context`, `react-native-svg`, `react-native-calendars`, `@react-native-community/datetimepicker`, `expo-linking`, `expo-localization`, `@react-native-async-storage/async-storage`).
+- Package manager: Respect the repository's `packageManager` field; otherwise default to `pnpm` if lockfile is pnpm, else `npm`. `expo install` will use the detected manager.
+- Non-interactive: Pass non-interactive flags where applicable (e.g., `--yes`) and avoid pagers.
+- Idempotence: Commands must be safe to re-run; record installed packages and versions in EXEC_NOTES.
+- Long-running tasks: Do not start builds (Dev Client/EAS) without explicit instruction. If required, STOP after proposing the exact command and wait for "proceed".
+- Platform: Use environment-appropriate shell (e.g., PowerShell on Windows). No `sudo` assumptions.
 3) When all steps in a phase are complete:
    - Verify exit criteria (ACs covered for that phase).
    - STOP and hand back to QA or the planner if criteria are not met.

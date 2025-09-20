@@ -35,12 +35,12 @@ require('dotenv').config({
 
 // TODO: Replace these values with your own
 
-const BUNDLE_ID = 'com.obytes'; // ios bundle id
-const PACKAGE = 'com.obytes'; // android package name
-const NAME = 'ObytesApp'; // app name
+const BUNDLE_ID = 'be.vakker.app'; // ios bundle id
+const PACKAGE = 'be.vakker.app'; // android package name
+const NAME = 'Vakker'; // app name
 const EXPO_ACCOUNT_OWNER = 'obytes'; // expo account owner
 const EAS_PROJECT_ID = 'c3e1075b-6fe7-4686-aa49-35b46a229044'; // eas project id
-const SCHEME = 'obytesApp'; // app scheme
+const SCHEME = 'vakker'; // app scheme
 
 /**
  * We declare a function withEnvSuffix that will add a suffix to the variable name based on the APP_ENV
@@ -83,6 +83,15 @@ const client = z.object({
   API_URL: z.string(),
   VAR_NUMBER: z.number(),
   VAR_BOOL: z.boolean(),
+
+  // Firebase Web config (client-side)
+  FIREBASE_API_KEY: z.string(),
+  FIREBASE_AUTH_DOMAIN: z.string(),
+  FIREBASE_PROJECT_ID: z.string(),
+  FIREBASE_STORAGE_BUCKET: z.string(),
+  FIREBASE_MESSAGING_SENDER_ID: z.string(),
+  FIREBASE_APP_ID: z.string(),
+  FIREBASE_MEASUREMENT_ID: z.string().optional(),
 });
 
 const buildTime = z.object({
@@ -107,6 +116,15 @@ const _clientEnv = {
   API_URL: process.env.API_URL,
   VAR_NUMBER: Number(process.env.VAR_NUMBER),
   VAR_BOOL: process.env.VAR_BOOL === 'true',
+
+  // Firebase Web config
+  FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+  FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
+  FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
+  FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
+  FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
+  FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
 /**

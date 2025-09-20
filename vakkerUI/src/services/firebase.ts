@@ -1,11 +1,9 @@
-import { Platform } from 'react-native';
-import Constants from 'expo-constants';
-import analytics from '@react-native-firebase/analytics';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+// Use project env bridge (`@env`) to read Firebase web config injected via app.config.ts
+// This avoids depending on expo-constants within the library code.
+import Env from '@env';
 import { getApps, initializeApp, getApp } from 'firebase/app';
-import { getAuth as getWebAuth } from 'firebase/auth';
-import { getFirestore as getWebFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 type FirebaseExtra = {
   apiKey: string;
@@ -17,7 +15,17 @@ type FirebaseExtra = {
   measurementId?: string;
 };
 
-const extra = (Constants.expoConfig?.extra ?? {}) as { firebase?: FirebaseExtra };
+const extra: { firebase?: FirebaseExtra } = {
+  firebase: {
+    apiKey: (Env as any).FIREBASE_API_KEY,
+    authDomain: (Env as any).FIREBASE_AUTH_DOMAIN,
+    projectId: (Env as any).FIREBASE_PROJECT_ID,
+    storageBucket: (Env as any).FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: (Env as any).FIREBASE_MESSAGING_SENDER_ID,
+    appId: (Env as any).FIREBASE_APP_ID,
+    measurementId: (Env as any).FIREBASE_MEASUREMENT_ID,
+  },
+};
 
 function ensureWebApp() {
   if (getApps().length === 0 && extra.firebase) {
@@ -27,7 +35,6 @@ function ensureWebApp() {
 }
 
 export const Firebase = {
-  analytics: () => analytics(),
-  auth: () => (Platform.OS === 'web' ? getWebAuth(ensureWebApp()) : auth()),
-  firestore: () => (Platform.OS === 'web' ? getWebFirestore(ensureWebApp()) : firestore()),
+  auth: () => getAuth(ensureWebApp()),
+  firestore: () => getFirestore(ensureWebApp()),
 };

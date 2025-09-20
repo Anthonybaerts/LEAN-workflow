@@ -18,12 +18,30 @@
     "react-native-svg": "^15.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/jest": "^30.0.0",
     "@types/react": "^18.0.0",
     "@types/react-native": "^0.70.0",
+    "eslint": "^8.0.0",
     "jest": "^29.0.0",
+    "jest-expo": "^54.0.12",
+    "jest-junit": "^16.0.0",
     "ts-jest": "^29.0.0",
-    "eslint": "^8.0.0"
+    "typescript": "^5.0.0"
   },
-  "packageManager": "pnpm@10.16.0+sha512.8066e7b034217b700a9a4dbb3a005061d641ba130a89915213a10b3ca4919c19c037bec8066afdc559b89635fdb806b16ea673f2468fbb28aabfa13c53e3f769"
+  "packageManager": "pnpm@10.16.0+sha512.8066e7b034217b700a9a4dbb3a005061d641ba130a89915213a10b3ca4919c19c037bec8066afdc559b89635fdb806b16ea673f2468fbb28aabfa13c53e3f769",
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-community/datetimepicker": "^8.4.5",
+    "@reduxjs/toolkit": "^2.9.0",
+    "dayjs": "^1.11.18",
+    "dotenv": "^17.2.2",
+    "expo-dev-client": "~6.0.12",
+    "expo-localization": "^17.0.7",
+    "firebase": "^12.3.0",
+    "react-native-calendars": "^1.1313.0",
+    "react-redux": "^9.2.0",
+    "zod": "^4.1.9"
+  }
 }

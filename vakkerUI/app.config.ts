@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import type { ConfigContext, ExpoConfig } from '@expo/config';
 const { Env, ClientEnv } = require('./env');
 
-export default ({ config }: ConfigContext): ExpoConfig => {
-  const androidGoogleServices = './google-services.json';
-  const iosGoogleServices = './GoogleService-Info.plist';
+export default ({ config }: any): any => {
+  // RN Firebase native config is not used in Expo Go (JS SDK only). Files removed.
 
   return {
     ...config,
@@ -14,13 +12,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ios: {
       ...config?.ios,
       bundleIdentifier: Env.BUNDLE_ID,
-      googleServicesFile: iosGoogleServices,
       supportsTablet: true,
     },
     android: {
       ...config?.android,
       package: Env.PACKAGE,
-      googleServicesFile: androidGoogleServices,
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#FFFFFF',
@@ -39,9 +35,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         measurementId: ClientEnv.FIREBASE_MEASUREMENT_ID,
       },
     },
-    plugins: [
-      '@react-native-firebase/app',
-      '@react-native-firebase/analytics',
-    ],
+    plugins: [],
   };
 };

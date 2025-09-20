@@ -5,8 +5,9 @@ Pipeline:
 2) Index builder → MASTER_INDEX.yaml
 3) Sequence planner → BUILD_SEQUENCE.md (YAML `sequence:` header)
 4) QA (agent) → static checks only (no runtime)
-5) Implementation planner → PRD_Shard_*.md + IMPLEMENTATION_*.md
-6) Repeat per next sequence ID
+5) prd shard generator
+6) Implementation planner → PRD_Shard_*.md + IMPLEMENTATION_*.md ---> dev agent
+7) Repeat per next sequence ID
 
 Single source of truth for navigation: specs/NAVIGATION_FLOW.yaml (+ schema)
 

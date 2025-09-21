@@ -12,12 +12,13 @@ export default function RootLayout() {
   React.useEffect(() => {
     const unsub = onAuthStateChanged(Firebase.auth(), (user) => {
       const inAuthFlow = segments[0] === 'auth_flow';
+      const inTabs = segments[0] === '(tabs)';
       if (user) {
-        // If authenticated, go to calendar tab root
-        router.replace('/(tabs)/calendar');
-      } else if (!inAuthFlow) {
-        // If not authenticated, send to login
-        router.replace('/auth_flow/Login');
+        // Only redirect into tabs if currently in auth flow
+        if (inAuthFlow) router.replace('/(tabs)/calendar');
+      } else {
+        // Only redirect to login if not already in auth flow
+        if (!inAuthFlow) router.replace('/auth_flow/Login');
       }
     });
     return () => unsub();

@@ -24,7 +24,7 @@ export default function LoginRoute() {
         email.trim(),
         password
       );
-      router.replace('/CalendarScreen');
+      router.replace('/(tabs)/calendar');
     } catch (err: any) {
       if (err?.code === 'auth/invalid-credential') {
         setErrorMessage('Ongeldige inloggegevens');

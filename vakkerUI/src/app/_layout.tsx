@@ -13,8 +13,8 @@ export default function RootLayout() {
     const unsub = onAuthStateChanged(Firebase.auth(), (user) => {
       const inAuthFlow = segments[0] === 'auth_flow';
       if (user) {
-        // If authenticated, go to calendar
-        router.replace('/CalendarScreen');
+        // If authenticated, go to calendar tab root
+        router.replace('/(tabs)/calendar');
       } else if (!inAuthFlow) {
         // If not authenticated, send to login
         router.replace('/auth_flow/Login');

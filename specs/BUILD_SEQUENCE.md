@@ -7,7 +7,7 @@ sequence: [F-001, F-005, F-014, F-006, F-002, F-007, F-009, F-008, F-010, F-003,
 Why now: Prevent mid-stream rebuilds and config churn; establish stable baseline.
 Deliverables:
 - Base dependency install per MASTER_PRD (React Navigation core + `react-native-screens`, `react-native-safe-area-context`, `react-native-gesture-handler`, `react-native-reanimated`; calendar: `react-native-calendars`; time: `@react-native-community/datetimepicker`; Firebase SDKs as needed; `expo-linking`; `expo-dev-client`; NativeWind/Tailwind packages; SVG: `react-native-svg`; Forms: `react-hook-form`, `zod`, `@hookform/resolvers`; State: `@reduxjs/toolkit`, `react-redux`; Date/Time utils: `dayjs`; Localization: `expo-localization`; Storage: `@react-native-async-storage/async-storage` (optional))
-- Config: add Reanimated Babel plugin; confirm Metro; set TS `paths` alias `@ui/*`; deep link scheme in app config (if used)
+- Config: add Reanimated Babel plugin (`react-native-worklets/plugin` for Expo SDK 54+/Reanimated v3+); confirm Metro; set TS `paths` alias `@ui/*`; deep link scheme in app config (if used)
 - App entry/wrappers: `import 'react-native-gesture-handler'`; wrap root with `GestureHandlerRootView` and `SafeAreaProvider`
 - Native readiness: iOS pods (if bare)/Expo Dev Client/EAS rebuild plan when native deps change
 - Permissions/secrets scaffolding: Firebase keys/env, platform permissions (if applicable)
@@ -24,7 +24,7 @@ Deliverables:
 - Navigation container and root stacks/tabs configured
 - Initial route and deep link patterns established
 - Gesture/animation deps configured (`react-native-gesture-handler`, `react-native-reanimated`)
-- Entry and root wrappers updated (`import 'react-native-gesture-handler'`, `GestureHandlerRootView`, `SafeAreaProvider`); Reanimated Babel plugin added
+- Entry and root wrappers updated (`import 'react-native-gesture-handler'`, `GestureHandlerRootView`, `SafeAreaProvider`); Reanimated Babel plugin added (`react-native-worklets/plugin`)
 
 ## F-014 Analytics (MVP-light)
 Why now: Measure adoption; only needs auth/nav (p7).

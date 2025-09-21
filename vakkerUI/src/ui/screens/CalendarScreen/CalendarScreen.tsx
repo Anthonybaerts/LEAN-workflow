@@ -26,6 +26,7 @@ type Props = {
   onDateEdit?: () => void;
   onPrevMonth?: () => void;
   onNextMonth?: () => void;
+  hideEmbeddedNav?: boolean;
 };
 
 export function CalendarScreen({
@@ -34,6 +35,7 @@ export function CalendarScreen({
   onDateEdit,
   onPrevMonth,
   onNextMonth,
+  hideEmbeddedNav = false,
 }: Props) {
   // Placeholder data for time slots with events
   const timeSlots = [
@@ -138,17 +140,19 @@ export function CalendarScreen({
         </View>
       </View>
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <View style={styles.activeNavItem}>
-          <Calendar width={28} height={28} color={theme.colors.primary.main} />
-          <Text style={styles.activeNavText}>Kalender</Text>
+      {/* Bottom Navigation (embedded mock) */}
+      {hideEmbeddedNav ? null : (
+        <View style={styles.bottomNav}>
+          <View style={styles.activeNavItem}>
+            <Calendar width={28} height={28} color={theme.colors.primary.main} />
+            <Text style={styles.activeNavText}>Kalender</Text>
+          </View>
+          <View style={styles.navItem}>
+            <Group width={28} height={28} color={theme.colors.gray[500]} />
+            <Text style={styles.navText}>Klanten</Text>
+          </View>
         </View>
-        <View style={styles.navItem}>
-          <Group width={28} height={28} color={theme.colors.gray[500]} />
-          <Text style={styles.navText}>Klanten</Text>
-        </View>
-      </View>
+      )}
     </View>
   );
 }

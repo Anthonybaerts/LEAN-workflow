@@ -1,5 +1,3 @@
-const colors = require('./src/components/ui/colors');
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   // NOTE: Update this to include the paths to all of your component files.
@@ -11,7 +9,6 @@ module.exports = {
       fontFamily: {
         inter: ['Inter'],
       },
-      colors,
     },
   },
   plugins: [],

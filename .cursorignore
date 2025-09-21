@@ -1,17 +1,10 @@
-# Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
-!.env
-!.env.local
-!.env.development
-!.env.staging
-!.env.production
-vakkerUI/.env
-vakkerUI/.env.local
-vakkerUI/.env.development
-vakkerUI/.env.staging
-vakkerUI/.env.production
-vakkerUI/.env.example
-vakkerUI/.env.example.local
-vakkerUI/.env.example.development
-vakkerUI/.env.example.staging
-vakkerUI/.env.example.production
-
+!vakkerUI/.env
+!vakkerUI/.env.local
+!vakkerUI/.env.development
+!vakkerUI/.env.staging
+!vakkerUI/.env.production
+!vakkerUI/.env.example
+!vakkerUI/.env.example.local
+!vakkerUI/.env.example.development
+!vakkerUI/.env.example.staging
+!vakkerUI/.env.example.production

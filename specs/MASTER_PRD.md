@@ -207,7 +207,7 @@ Implementation Notes (Navigation Setup)
 - Install: `react-native-screens`, `react-native-safe-area-context`, `react-native-gesture-handler`, `react-native-reanimated`.
 - App entry: `import 'react-native-gesture-handler';` must be at the very top of the entry file.
 - Root: Wrap the app in `GestureHandlerRootView` and `SafeAreaProvider`.
-- Babel: Add `react-native-reanimated/plugin` to the app's Babel config (vakkerUI already includes it in its own Babel).
+- Babel: Add `react-native-worklets/plugin` to the app's Babel config (Expo SDK 54+/Reanimated v3+; vakkerUI already includes it in its own Babel).
 - Screens: `enableScreens()` is recommended historically; using `@react-navigation/native-stack` enables screens by default.
 - Expo: No manual linking required; rebuild Dev Client when adding new native modules.
 

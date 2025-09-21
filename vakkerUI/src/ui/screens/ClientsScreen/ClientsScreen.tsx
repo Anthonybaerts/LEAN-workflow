@@ -22,7 +22,7 @@ import { theme } from '../../tokens';
 
 // Context: Displays the main clients list screen with search functionality,
 // client cards showing contact details, and navigation to add new clients
-export function ClientsScreen() {
+export function ClientsScreen({ hideEmbeddedNav = false }: { hideEmbeddedNav?: boolean }) {
   const [searchQuery, setSearchQuery] = React.useState('');
 
   // Sample client data - in real app this would come from props/state management
@@ -122,20 +122,22 @@ export function ClientsScreen() {
         </View>
       </ScrollView>
 
-      {/* Context: Bottom navigation with Calendar and Clients tabs */}
-      <View style={styles.bottomNav}>
-        <TabButton
-          icon={<Calendar width={28} height={28} />}
-          label="Kalender"
-          onPress={() => handleTabPress('calendar')}
-        />
-        <TabButton
-          icon={<Group width={28} height={28} />}
-          label="Klanten"
-          active
-          onPress={() => handleTabPress('clients')}
-        />
-      </View>
+      {/* Context: Bottom navigation with Calendar and Clients tabs (embedded mock) */}
+      {hideEmbeddedNav ? null : (
+        <View style={styles.bottomNav}>
+          <TabButton
+            icon={<Calendar width={28} height={28} />}
+            label="Kalender"
+            onPress={() => handleTabPress('calendar')}
+          />
+          <TabButton
+            icon={<Group width={28} height={28} />}
+            label="Klanten"
+            active
+            onPress={() => handleTabPress('clients')}
+          />
+        </View>
+      )}
 
       {/* Context: Floating action button to add new clients */}
       <View style={styles.fab}>

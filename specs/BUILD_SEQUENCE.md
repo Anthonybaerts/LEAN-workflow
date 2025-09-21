@@ -26,11 +26,6 @@ Deliverables:
 - Gesture/animation deps configured (`react-native-gesture-handler`, `react-native-reanimated`)
 - Entry and root wrappers updated (`import 'react-native-gesture-handler'`, `GestureHandlerRootView`, `SafeAreaProvider`); Reanimated Babel plugin added (`react-native-worklets/plugin`)
 
-## F-014 Analytics (MVP-light)
-Why now: Measure adoption; only needs auth/nav (p7).
-Deliverables:
-- Event schema and minimal instrumentation
-- Basic screen/view events and key actions
 
 ## F-006 Storage & Data Layer
 Why now: Required by clients, calendar, and tasks features (p1; depends on auth).
@@ -110,4 +105,13 @@ Deliverables:
 - `EditTaskScreen` with validation and submit
 - Persistence updates and navigation back to context
 
+
+
+Deferred for now. -- we need to build seperate dev client 
+
+## F-014 Analytics (MVP-light)
+Why now: Measure adoption; only needs auth/nav (p7).
+Deliverables:
+- Event schema and minimal instrumentation
+- Basic screen/view events and key actions
 

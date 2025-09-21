@@ -21,6 +21,8 @@ type Props = {
   onPasswordChange?: (password: string) => void;
   onLogin?: () => void;
   onForgotPassword?: () => void;
+  isSubmitting?: boolean;
+  errorMessage?: string;
 };
 
 export function LoginScreen({
@@ -30,6 +32,8 @@ export function LoginScreen({
   onPasswordChange,
   onLogin,
   onForgotPassword,
+  isSubmitting = false,
+  errorMessage,
 }: Props) {
   return (
     <View style={styles.container}>
@@ -90,10 +94,14 @@ export function LoginScreen({
 
           {/* Action Buttons */}
           <View style={styles.actionSection}>
+            {errorMessage ? (
+              <Text style={styles.errorText}>{errorMessage}</Text>
+            ) : null}
             <Button
               variant="primary"
               size="large"
               showIcon={false}
+              disabled={isSubmitting}
               onPress={onLogin}
             >
               Inloggen
@@ -172,6 +180,12 @@ const styles = StyleSheet.create({
   },
   actionSection: {
     gap: theme.spacing[3], // 12px gap between buttons
+  },
+  errorText: {
+    color: theme.colors.warning.main,
+    fontSize: 14,
+    fontWeight: '500',
+    textAlign: 'center',
   },
   footer: {
     paddingHorizontal: theme.spacing[5],

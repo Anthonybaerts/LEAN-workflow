@@ -34,6 +34,13 @@ None.
 - Config requirements (if mentioned): (none specified in feature section)
 - Linking & wrappers (if mentioned): (none specified)
 
+## Implementation Notes
+- Auth stack: Firebase JS SDK v9 (modular). Use `signInWithEmailAndPassword(auth, email, password)` and `onAuthStateChanged(auth, cb)` to manage session and navigation on login.
+- Env/config: Web config is injected via `app.config.ts → extra.firebase` and read on the client via `@env`; initialize the app once and reuse the instance.
+- UI/Validation: Implement the LoginScreen form with React Hook Form + Zod; disable the submit button while submitting; on invalid credentials, show the PRD copy: "Ongeldige inloggegevens".
+- Navigation: On successful sign-in, navigate to `CalendarScreen`.
+- Expo Go: Do not use `@react-native-firebase/*` modules for Auth in this MVP; JS SDK works in Expo Go without native files.
+
 ## Screens & Components (if applicable)
 - Screens: [LoginScreen]
 - Components: [Header, Input, Button, Email, Lock]

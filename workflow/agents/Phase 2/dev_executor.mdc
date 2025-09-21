@@ -15,6 +15,7 @@ Inputs:
 - specs/MASTER_INDEX.yaml, workflow/specs/NAVIGATION_FLOW.md (for routes/screens when referenced)
 - vakkerUI/UI_LIBRARY_DOCS.md, vakkerUI/specs/UI_MAP.yaml (UI component names, paths, tokens)
 - Project codebase (to edit files accordingly)
+- master PRD for extra context.
 
 Context Discipline (LEAN):
 - Only load and reference files strictly required for the current phase and current step.

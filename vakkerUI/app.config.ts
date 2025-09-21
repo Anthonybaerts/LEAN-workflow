@@ -9,6 +9,7 @@ export default ({ config }: any): any => {
     name: Env.NAME,
     slug: Env.NAME.toLowerCase(),
     scheme: Env.SCHEME,
+    userInterfaceStyle: 'automatic',
     ios: {
       ...config?.ios,
       bundleIdentifier: Env.BUNDLE_ID,
@@ -17,10 +18,6 @@ export default ({ config }: any): any => {
     android: {
       ...config?.android,
       package: Env.PACKAGE,
-      adaptiveIcon: {
-        foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#FFFFFF',
-      },
     },
     extra: {
       appEnv: ClientEnv.APP_ENV,

@@ -25,7 +25,7 @@ Links:
     - S0: Deps & Setup check for this feature (verify installs, peers, Babel/Metro config, entry/root wrappers, permissions, env)
       - Verify JS SDKs: `firebase` v9 modular; no `@react-native-firebase/*` (MVP)
       - Verify app entry has `GestureHandlerRootView` and `SafeAreaProvider` wrappers (exists in `src/app/_layout.tsx`)
-      - Verify Babel includes `react-native-reanimated/plugin` (present via project config)
+      - Verify Babel includes `react-native-worklets/plugin` (present via project config)
       - Verify `app.config.ts` exposes `extra.firebase` values via `Env/ClientEnv`; `.env` or config values set
       - Verify `src/services/firebase.ts` initializes app via `getApps()` and exposes `auth()`
   - Entry criteria: Global Pre-flight complete

@@ -68,20 +68,26 @@ features:
     completed_date: '2025-09-21'
 
   - id: F-006
-    status: pending
+    status: in_progress
     acs:
       - id: F-006-AC1
-        status: pending
+        status: in_progress
       - id: F-006-AC2
-        status: pending
+        status: in_progress
       - id: F-006-AC3
-        status: pending
-    deliverables: []
+        status: in_progress
+    deliverables:
+      - F-006-D1
+      - F-006-D2
+      - F-006-D3
     touched_areas:
       screens: []
       routes: []
-      entities: []
-      apis: []
+      entities:
+        - Client
+        - Task
+      apis:
+        - FirebaseFirestore
     completed_date: null
 
   - id: F-007
@@ -316,6 +322,9 @@ global_deliverables:
   - F-001-D1
   - F-001-D2
   - F-001-D3
+  - F-006-D1
+  - F-006-D2
+  - F-006-D3
   - F-005-D1
   - F-005-D2
   - F-005-D3
@@ -341,7 +350,10 @@ global_touched_areas:
     - EditClientScreen
   entities:
     - AuthUser
+    - Client
+    - Task
   apis:
     - FirebaseAuth
+    - FirebaseFirestore
 
 

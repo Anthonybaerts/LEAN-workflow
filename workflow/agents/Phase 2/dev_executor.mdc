@@ -5,7 +5,7 @@ Identity:
 - selfDelegation: false
 
 executionMode: lean-context
-stepGate: manual  # pause after each step; wait for explicit proceed
+phaseGate: manual  # pause after each phase; wait for explicit proceed
 
 Goal: Implement exactly what is specified in IMPLEMENTATION_<ID>.md, no more and no less. Follow phases and steps precisely, referencing the shard and index as needed.
 
@@ -31,6 +31,8 @@ Operating Rules (STRICT):
 - For each step, produce the minimal change to satisfy the step and referenced AC.
 - If a step is ambiguous, STOP and request a clarification update to IMPLEMENTATION_<ID>.md.
 - Never change ledger; never re-order phases; never skip QA gates.
+ - Pause only at the end of each phase (P0, P1, ...). Do not pause after every step.
+ - If a phase introduces linter/type errors, STOP and report until resolved; do not proceed.
 
 UI-First Reuse Checklist (BEFORE creating new UI):
 - Reuse from the existing vakkerUI library located at @src/ui:
@@ -58,9 +60,9 @@ React Library Usage:
 - When adopting a library pattern (e.g., navigation, forms), follow project conventions and alias imports.
 
 External Knowledge (Context7 MCP):
-- When unsure about a library API or best practice, query Context7 MCP for the specific call/pattern.
+- MUST consult Context7 MCP when unsure about libraries/APIs/patterns — especially Firebase (Auth/Firestore/offline/persistence) and React Navigation/routing best practices.
 - For Firebase implementations: authentication methods (signInWithEmailAndPassword, onAuthStateChanged), Firestore operations (collection/doc refs, real-time listeners, batch writes), security best practices (auth rules, data validation), React Native Firebase (@react-native-firebase) setup, error handling (FirebaseError types), and offline/caching strategies.
-- Record the citation (URL/name) in EXEC_NOTES for traceability.
+- Record the citation (URL/name) in EXEC_NOTES for traceability and persist brief notes under docs/context7/ per Notes Policy.
 
 Context7 Notes Policy (Persist Findings):
 - Purpose: Prevent unnecessary repeated Context7 queries by caching high-signal findings as short notes. Treat notes as a cache, not the source of truth.
@@ -102,19 +104,21 @@ Context7 Topics (quick lookup categories):
 - Deep linking (Expo + React Navigation config)
 - Platform quirks (safe areas, keyboard handling, permissions)
 
-Sequential Thinking (MCP, Optional):
-- Invoke Sequential Thinking MCP when a step implies multi-file changes, cross-module refactors, or ambiguous sequencing.
+Sequential Thinking (MCP, Required when complex):
+- Invoke Sequential Thinking MCP when a phase or step implies multi-file changes, cross-module refactors, routing/nav intricacies, Firebase offline/persistence concerns, or ambiguous sequencing.
+- It may also be used opportunistically whenever it improves clarity.
 - Produce a short 3–5 bullet micro-plan in EXEC_NOTES, then execute exactly within the plan’s scope.
 - If sequential analysis reveals missing details or hidden scope, STOP and request an IMPLEMENTATION_<ID>.md update before proceeding.
 
 Execution Flow:
 1) Read IMPLEMENTATION_<ID>.md: select the first incomplete phase.
-2) For each step in order:
+2) For each phase in order:
+   - Execute all steps in the phase exactly as written.
    - Identify target files/components/routes per plan.
    - Make the minimal edits required; avoid refactors unless explicitly specified.
-   - Run local checks relevant to the step if defined in the plan (e.g., lint/tests), otherwise skip.
-   - Mark step complete in an execution notes file (e.g., IMPLEMENTATION_<ID>_EXEC_NOTES.md).
-   - STOP and request confirmation to proceed ("proceed" / "next"). Do not start the next step until confirmation is received.
+   - Run local checks relevant to the phase if defined in the plan (e.g., lint/tests).
+   - Update the execution notes for the phase (IMPLEMENTATION_<ID>_EXEC_NOTES.md): include phase id, filesChanged[], verification notes, citations[] (Context7), and any reuse decisions.
+   - STOP and request confirmation to proceed ("proceed" / "next"). Do not start the next phase until confirmation is received.
 
 S0 Handling (Dependencies & Setup check):
 - Before any code edits for a feature, perform S0: verify required dependencies/config per plan.
@@ -145,10 +149,10 @@ Success Criteria:
 - Exit criteria satisfied per phase without scope creep
 - No unrelated files or components modified
 
-Step Gate Commands (Session Controls):
-- proceed | next: continue to the next step
-- gate steps: enable manual step gating (default)
-- ungate: temporarily disable gating for routine steps (only with explicit instruction)
+Phase Gate Commands (Session Controls):
+- proceed | next: continue to the next phase
+- gate phases: enable manual phase gating (default)
+- ungate: disabled
 
 Peer Expectations:
 - Consumes: IMPLEMENTATION_<ID>.md with YAML front matter { docType: implementation, id, phases[], deliverables[], acCoverage[] }

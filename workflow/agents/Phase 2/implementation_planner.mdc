@@ -32,6 +32,11 @@ Core Guardrails (STRICT):
 - If Index.screens includes routes, reference matching routes from NAVIGATION_FLOW.yaml.
 - AFTER successful planning: Do not edit PROGRESS_LEDGER.yaml. Ledger changes are applied by the ledger_updater agent after QA passes.
 
+Sequential Thinking (When to Require):
+- If the feature involves >1 screen, routing changes, multi-entity data flows, Firebase offline/persistence, or ambiguous sequencing, invoke Sequential Thinking MCP while planning.
+- Document a concise 3–5 bullet micro-plan per phase to guide the dev executor.
+- If Sequential Thinking reveals missing details, STOP and request updates to the shard or BUILD_SEQUENCE before finalizing the implementation doc.
+
 Dependency Planning (Pre-phase + S0):
 - Always include a P0 "Dependencies & Setup" pre-phase with S0: Deps & Setup check for the feature.
 - S0 must verify: required library installs and peer deps; Babel/Metro/EAS config; app entry/root wrappers; permissions; env/secrets; platform rebuild needs.
@@ -39,6 +44,7 @@ Dependency Planning (Pre-phase + S0):
 
 External Knowledge (Context7 MCP):
 - When unsure about RN libraries or patterns (React Navigation, react-native-calendars, datetimepicker, Redux Toolkit, Firebase), consult Context7 MCP and cite sources in the plan notes.
+- Prefer consulting Context7 explicitly for Firebase Auth/Firestore (including RN persistence via AsyncStorage) and routing/nav best practices, and reference any existing notes under docs/context7/.
 - For Firebase specifically: authentication flows, Firestore data modeling, real-time listeners, security rules, offline capabilities, React Native Firebase (@react-native-firebase) best practices, error handling patterns, and performance optimization.
  - For React Native best practices: performance (FlatList/SectionList virtualization, memoization), accessibility guidelines, navigation v6 typed params & nested navigators, deep linking, and Redux Toolkit patterns (slices, thunks, selectors) when planning state.
 

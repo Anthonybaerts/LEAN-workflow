@@ -28,27 +28,44 @@ features:
     completed_date: '2025-09-21'
 
   - id: F-005
-    status: pending
+    status: done
     acs:
       - id: F-005-AC1
-        status: pending
+        status: done
       - id: F-005-AC2
-        status: pending
+        status: done
       - id: F-005-AC3
-        status: pending
+        status: done
       - id: F-005-AC4
-        status: pending
+        status: done
       - id: F-005-AC5
-        status: pending
+        status: done
       - id: F-005-AC6
-        status: pending
-    deliverables: []
+        status: done
+    deliverables:
+      - F-005-D1
+      - F-005-D2
+      - F-005-D3
     touched_areas:
-      screens: []
-      routes: []
+      screens:
+        - CalendarScreen
+        - ClientsScreen
+        - NewTaskScreen
+        - EditTaskScreen
+        - ClientInfoScreen
+        - NewClientScreen
+        - EditClientScreen
+      routes:
+        - CalendarScreen
+        - ClientsScreen
+        - NewTaskScreen
+        - EditTaskScreen
+        - ClientInfoScreen
+        - NewClientScreen
+        - EditClientScreen
       entities: []
       apis: []
-    completed_date: null
+    completed_date: '2025-09-21'
 
   - id: F-006
     status: pending
@@ -299,14 +316,29 @@ global_deliverables:
   - F-001-D1
   - F-001-D2
   - F-001-D3
+  - F-005-D1
+  - F-005-D2
+  - F-005-D3
 
 global_touched_areas:
   screens:
     - LoginScreen
     - CalendarScreen
+    - ClientsScreen
+    - NewTaskScreen
+    - EditTaskScreen
+    - ClientInfoScreen
+    - NewClientScreen
+    - EditClientScreen
   routes:
     - auth_flow/Login
     - CalendarScreen
+    - ClientsScreen
+    - NewTaskScreen
+    - EditTaskScreen
+    - ClientInfoScreen
+    - NewClientScreen
+    - EditClientScreen
   entities:
     - AuthUser
   apis:

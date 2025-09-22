@@ -3,7 +3,7 @@
 import Env from '@env';
 import { getApps, initializeApp, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, initializeFirestore, persistentLocalCache, Firestore } from 'firebase/firestore';
 
 type FirebaseExtra = {
   apiKey: string;
@@ -36,5 +36,19 @@ function ensureWebApp() {
 
 export const Firebase = {
   auth: () => getAuth(ensureWebApp()),
-  firestore: () => getFirestore(ensureWebApp()),
+  firestore: (() => {
+    let cached: Firestore | undefined;
+    return () => {
+      if (cached) return cached;
+      const app = ensureWebApp();
+      try {
+        // Initialize Firestore once with persistent local cache for offline support
+        cached = initializeFirestore(app, { localCache: persistentLocalCache() });
+      } catch (_err) {
+        // Fallback to default instance (no persistent cache)
+        cached = getFirestore(app);
+      }
+      return cached;
+    };
+  })(),
 };

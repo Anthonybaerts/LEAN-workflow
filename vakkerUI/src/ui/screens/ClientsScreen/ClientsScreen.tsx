@@ -22,11 +22,38 @@ import { theme } from '../../tokens';
 
 // Context: Displays the main clients list screen with search functionality,
 // client cards showing contact details, and navigation to add new clients
-export function ClientsScreen({ hideEmbeddedNav = false }: { hideEmbeddedNav?: boolean }) {
-  const [searchQuery, setSearchQuery] = React.useState('');
+type ClientItem = {
+  id: string;
+  name: string;
+  type?: string;
+  contactPerson?: string;
+  phone?: string;
+  address?: string;
+};
+
+type ClientsScreenProps = {
+  hideEmbeddedNav?: boolean;
+  items?: ClientItem[];
+  searchQuery?: string;
+  onSearchQueryChange?: (value: string) => void;
+  onAddClientPress?: () => void;
+  onClientPress?: (clientId: string) => void;
+};
+
+export function ClientsScreen({
+  hideEmbeddedNav = false,
+  items,
+  searchQuery: controlledSearch,
+  onSearchQueryChange,
+  onAddClientPress,
+  onClientPress,
+}: ClientsScreenProps) {
+  const [uncontrolledSearch, setUncontrolledSearch] = React.useState('');
+  const searchQuery = controlledSearch ?? uncontrolledSearch;
+  const setSearchQuery = onSearchQueryChange ?? setUncontrolledSearch;
 
   // Sample client data - in real app this would come from props/state management
-  const clients = [
+  const sampleClients: ClientItem[] = [
     {
       id: '1',
       name: 'Bakker Appartementen',
@@ -53,13 +80,17 @@ export function ClientsScreen({ hideEmbeddedNav = false }: { hideEmbeddedNav?: b
     },
   ];
 
+  const clients = items ?? sampleClients;
+
   const handleAddClient = () => {
-    // Context: Navigate to add new client screen
+    if (onAddClientPress) return onAddClientPress();
+    // Context fallback
     console.log('Navigate to add client');
   };
 
   const handleClientPress = (clientId: string) => {
-    // Context: Navigate to client details screen
+    if (onClientPress) return onClientPress(clientId);
+    // Context fallback
     console.log('Navigate to client details:', clientId);
   };
 
@@ -77,7 +108,7 @@ export function ClientsScreen({ hideEmbeddedNav = false }: { hideEmbeddedNav?: b
         <View style={styles.searchSection}>
           {/* Context: Search input for filtering clients */}
           <Input
-            icon={<Search width={20} height={20} />}
+            leftIcon={<Search width={20} height={20} />}
             placeholder="Zoek klanten..."
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -98,27 +129,37 @@ export function ClientsScreen({ hideEmbeddedNav = false }: { hideEmbeddedNav?: b
 
         {/* Context: List of client cards displaying contact information */}
         <View style={styles.clientsList}>
-          {clients.map((client) => (
-            <CustomerCard
-              key={client.id}
-              title={client.name}
-              subtitle={client.type}
-              subtitleIcon={<Briefcase width={20} height={20} />}
-              chevronIcon={<ChevronRight width={20} height={20} />}
-              onPress={() => handleClientPress(client.id)}
-              items={[
-                {
-                  icon: <User width={16} height={16} />,
-                  text: client.contactPerson,
-                },
-                { icon: <Call width={16} height={16} />, text: client.phone },
-                {
-                  icon: <Location width={16} height={16} />,
-                  text: client.address,
-                },
-              ]}
-            />
-          ))}
+          {clients.length === 0 ? (
+            <Text style={styles.emptyText}>Geen klanten gevonden</Text>
+          ) : (
+            clients.map((client) => (
+              <CustomerCard
+                key={client.id}
+                title={client.name}
+                subtitle={client.type}
+                subtitleIcon={<Briefcase width={20} height={20} />}
+                chevronIcon={<ChevronRight width={20} height={20} />}
+                onPress={() => handleClientPress(client.id)}
+                items={[
+                  {
+                    icon: <User width={16} height={16} />,
+                    text: client.contactPerson ?? '',
+                    isEmpty: !client.contactPerson,
+                  },
+                  {
+                    icon: <Call width={16} height={16} />,
+                    text: client.phone ?? '',
+                    isEmpty: !client.phone,
+                  },
+                  {
+                    icon: <Location width={16} height={16} />,
+                    text: client.address ?? '',
+                    isEmpty: !client.address,
+                  },
+                ]}
+              />
+            ))
+          )}
         </View>
       </ScrollView>
 
@@ -198,6 +239,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing[5],
     gap: theme.spacing[3],
     paddingBottom: theme.spacing[5],
+  },
+  emptyText: {
+    color: theme.colors.gray[400],
+    fontSize: 14,
   },
   bottomNav: {
     flexDirection: 'row',

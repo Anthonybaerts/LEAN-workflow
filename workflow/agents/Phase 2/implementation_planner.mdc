@@ -32,6 +32,14 @@ Core Guardrails (STRICT):
 - If Index.screens includes routes, reference matching routes from NAVIGATION_FLOW.yaml.
 - AFTER successful planning: Do not edit PROGRESS_LEDGER.yaml. Ledger changes are applied by the ledger_updater agent after QA passes.
 
+UI & Animations — Hybrid Guidance:
+- Reuse-first baseline: Reference target screens/components from `@ui/screens` and `@ui/components` and their expected props/data.
+- Light UI intent notes (non-prescriptive): Indicate desired density (comfortable/compact), key spacing touchpoints (e.g., list item vertical padding uses `spacing.md`), and typography tier (e.g., title uses `typography.h4`). Avoid exact pixel specs.
+- Token alignment: Call out which token families should be used (spacing/typography/radius/colors), not specific values, unless critical to an AC.
+- Defer specific tweaks: The dev executor applies exact spacing/typography via the UI Flex Policy; planner avoids micro-specs.
+- New UI: If reuse clearly doesn’t fit, note a “consider new component” flag with brief scope and location; executor decides to create vs adapt.
+- Animations: Prefer existing navigation transitions and Reanimated for micro-animations. The planner may flag “benefit from motion” on key interactions, but leaves mechanics to the executor. If a library could materially help, suggest it as optional with P0 install steps if adopted.
+
 Sequential Thinking (When to Require):
 - If the feature involves >1 screen, routing changes, multi-entity data flows, Firebase offline/persistence, or ambiguous sequencing, invoke Sequential Thinking MCP while planning.
 - Document a concise 3–5 bullet micro-plan per phase to guide the dev executor.

@@ -33,6 +33,7 @@ Operating Rules (STRICT):
 - Never change ledger; never re-order phases; never skip QA gates.
  - Pause only at the end of each phase (P0, P1, ...). Do not pause after every step.
  - If a phase introduces linter/type errors, STOP and report until resolved; do not proceed.
+ - UI Flex (controlled): Minor token-based spacing/typography tweaks are allowed per UI Flex Policy below; log them in EXEC_NOTES.
 
 UI-First Reuse Checklist (BEFORE creating new UI):
 - Reuse from the existing vakkerUI library located at @src/ui:
@@ -44,6 +45,22 @@ UI-First Reuse Checklist (BEFORE creating new UI):
 - If none exists, create new files in the correct folder with PascalCase names.
 - If a route is referenced, ensure it exists in NAVIGATION_FLOW.md Spec; if missing, STOP and request an upstream nav update.
  - When mapping designs to components, consult `vakkerUI/specs/UI_MAP.yaml` for the canonical names/paths and `vakkerUI/UI_LIBRARY_DOCS.md` for examples/props.
+
+UI Flex Policy (Tokens-first, controlled overrides):
+- Goals: Keep screens functional and clean while staying reuse-first and consistent.
+- Tokens-first tweaks (preferred):µ
+  - You may adjust spacing/typography/radius/colors INSIDE shared components using existing tokens from `@ui/tokens` without a plan change when it clearly improves fidelity.
+  - Record each tweak briefly in EXEC_NOTES (component name, token change, rationale).
+- Component-first before screen overrides:
+  - Prefer updating the shared component to benefit all screens when the change is broadly correct.
+  - If a shared change risks side effects, apply a small screen-level override (wrapper padding/margin using tokens) and add a follow-up note to upstream later if it proves broadly useful.
+- Screen-level overrides (fallback):
+  - Only token-based paddings/margins/alignments; avoid bespoke one-off styles that contradict tokens.
+  - Keep overrides minimal and local to the screen/container. No redesigns.
+ - Animations:
+  - You may add micro-animations and transitions when they clearly improve clarity or perceived performance.
+  - Prefer existing tools first (React Navigation transitions, installed Reanimated). Keep durations/curves consistent.
+  - Introducing a new animation library (e.g., Moti) is allowed if it materially improves speed/consistency: propose it in the plan or note rationale and usage in EXEC_NOTES for visibility.
 
 Codebase Consistency Rules:
 - Folder layout: screens in src/screens/<ScreenName>/<ScreenName>.tsx; components in src/components/<ComponentName>/<ComponentName>.tsx
@@ -118,7 +135,16 @@ Execution Flow:
    - Make the minimal edits required; avoid refactors unless explicitly specified.
    - Run local checks relevant to the phase if defined in the plan (e.g., lint/tests).
    - Update the execution notes for the phase (IMPLEMENTATION_<ID>_EXEC_NOTES.md): include phase id, filesChanged[], verification notes, citations[] (Context7), and any reuse decisions.
+   - If UI Flex tweaks were applied, add a short list of the token/component/screen adjustments and whether a follow-up is needed to upstream into tokens/components.
    - STOP and request confirmation to proceed ("proceed" / "next"). Do not start the next phase until confirmation is received.
+
+Visual QA Checklist (run at end of each phase):
+- Safe areas respected; no content under system bars.
+- Spacing scale consistent with tokens; no cramped or excessive gaps.
+- Typography size/line-height/contrast readable; no unintended opacity.
+- Headers/tab bars sized/aligned; no overlapping embedded navs.
+- List item density and card paddings feel balanced.
+- Press states/feedback present on tappables where appropriate.
 
 S0 Handling (Dependencies & Setup check):
 - Before any code edits for a feature, perform S0: verify required dependencies/config per plan.

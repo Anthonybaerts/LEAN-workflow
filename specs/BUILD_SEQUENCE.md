@@ -12,6 +12,9 @@ Deliverables:
 - Native readiness: iOS pods (if bare)/Expo Dev Client/EAS rebuild plan when native deps change
 - Permissions/secrets scaffolding: Firebase keys/env, platform permissions (if applicable)
 
+Visual QA (applies to every feature):
+- At the end of each phase, run a brief visual QA check (safe areas, spacing scale, typography/readability, header/tab sizing, list/card density, press feedback). Use token-based adjustments and minimal screen-level overrides per the executor’s UI Flex Policy.
+
 ## F-001 Auth: Login
 Why now: Unblocks auth-dependent infra and all user flows (p1; no deps).
 Deliverables:

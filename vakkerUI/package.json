@@ -33,6 +33,7 @@
   },
   "packageManager": "pnpm@10.16.0+sha512.8066e7b034217b700a9a4dbb3a005061d641ba130a89915213a10b3ca4919c19c037bec8066afdc559b89635fdb806b16ea673f2468fbb28aabfa13c53e3f769",
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-community/datetimepicker": "^8.4.5",
     "@reduxjs/toolkit": "^2.9.0",
@@ -44,6 +45,7 @@
     "expo-router": "^6.0.7",
     "firebase": "^12.3.0",
     "nativewind": "^4.2.1",
+    "react-hook-form": "^7.63.0",
     "react-native-calendars": "^1.1313.0",
     "react-native-css-interop": "^0.2.1",
     "react-native-gesture-handler": "~2.28.0",

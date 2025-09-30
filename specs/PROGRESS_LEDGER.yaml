@@ -91,21 +91,24 @@ features:
     completed_date: null
 
   - id: F-007
-    status: pending
+    status: done
     acs:
       - id: F-007-AC1
-        status: pending
+        status: done
       - id: F-007-AC2
-        status: pending
+        status: done
       - id: F-007-AC3
-        status: pending
-    deliverables: []
+        status: done
+    deliverables:
+      - F-007-D1
+      - F-007-D2
+      - F-007-D3
     touched_areas:
       screens: []
       routes: []
       entities: []
       apis: []
-    completed_date: null
+    completed_date: '2025-09-30'
 
   - id: F-009
     status: pending
@@ -335,6 +338,12 @@ global_deliverables:
   - F-005-D1
   - F-005-D2
   - F-005-D3
+  - F-002-D1
+  - F-002-D2
+  - F-002-D3
+  - F-007-D1
+  - F-007-D2
+  - F-007-D3
   - F-002-D1
   - F-002-D2
   - F-002-D3

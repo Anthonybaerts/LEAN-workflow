@@ -111,21 +111,24 @@ features:
     completed_date: '2025-09-30'
 
   - id: F-009
-    status: pending
+    status: done
     acs:
       - id: F-009-AC1
-        status: pending
+        status: done
       - id: F-009-AC2
-        status: pending
+        status: done
       - id: F-009-AC3
-        status: pending
-    deliverables: []
+        status: done
+    deliverables:
+      - F-009-D1
+      - F-009-D2
+      - F-009-D3
     touched_areas:
       screens: []
       routes: []
       entities: []
       apis: []
-    completed_date: null
+    completed_date: '2025-09-30'
 
   - id: F-002
     status: done
@@ -344,9 +347,9 @@ global_deliverables:
   - F-007-D1
   - F-007-D2
   - F-007-D3
-  - F-002-D1
-  - F-002-D2
-  - F-002-D3
+  - F-009-D1
+  - F-009-D2
+  - F-009-D3
 
 global_touched_areas:
   screens:
@@ -361,7 +364,6 @@ global_touched_areas:
   routes:
     - auth_flow/Login
     - CalendarScreen
-    - ClientsScreen
     - ClientsScreen
     - NewTaskScreen
     - EditTaskScreen

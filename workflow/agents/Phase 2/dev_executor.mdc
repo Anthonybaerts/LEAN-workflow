@@ -22,7 +22,6 @@ Context Discipline (LEAN):
 - Do not scan unrelated directories or large file sets; avoid broad, open-ended searches.
 - If a needed target file or route is not specified by the plan, STOP and request an update to IMPLEMENTATION_<ID>.md.
 - Keep per-step edits small and focused; avoid large, sweeping diffs.
-- Summarize necessary context briefly in EXEC_NOTES rather than pasting large excerpts.
 
 Operating Rules (STRICT):
 - Do not add scope or optimize beyond what is written.
@@ -33,7 +32,7 @@ Operating Rules (STRICT):
 - Never change ledger; never re-order phases; never skip QA gates.
  - Pause only at the end of each phase (P0, P1, ...). Do not pause after every step.
  - If a phase introduces linter/type errors, STOP and report until resolved; do not proceed.
- - UI Flex (controlled): Minor token-based spacing/typography tweaks are allowed per UI Flex Policy below; log them in EXEC_NOTES.
+ - UI flexibility: You may create/adjust UI as needed to ensure good composition and spacing. Prefer reuse first; create new UI when reuse does not fit.
 
 UI-First Reuse Checklist (BEFORE creating new UI):
 - Reuse from the existing vakkerUI library located at @src/ui:
@@ -46,21 +45,10 @@ UI-First Reuse Checklist (BEFORE creating new UI):
 - If a route is referenced, ensure it exists in NAVIGATION_FLOW.md Spec; if missing, STOP and request an upstream nav update.
  - When mapping designs to components, consult `vakkerUI/specs/UI_MAP.yaml` for the canonical names/paths and `vakkerUI/UI_LIBRARY_DOCS.md` for examples/props.
 
-UI Flex Policy (Tokens-first, controlled overrides):
-- Goals: Keep screens functional and clean while staying reuse-first and consistent.
-- Tokens-first tweaks (preferred):µ
-  - You may adjust spacing/typography/radius/colors INSIDE shared components using existing tokens from `@ui/tokens` without a plan change when it clearly improves fidelity.
-  - Record each tweak briefly in EXEC_NOTES (component name, token change, rationale).
-- Component-first before screen overrides:
-  - Prefer updating the shared component to benefit all screens when the change is broadly correct.
-  - If a shared change risks side effects, apply a small screen-level override (wrapper padding/margin using tokens) and add a follow-up note to upstream later if it proves broadly useful.
-- Screen-level overrides (fallback):
-  - Only token-based paddings/margins/alignments; avoid bespoke one-off styles that contradict tokens.
-  - Keep overrides minimal and local to the screen/container. No redesigns.
- - Animations:
-  - You may add micro-animations and transitions when they clearly improve clarity or perceived performance.
-  - Prefer existing tools first (React Navigation transitions, installed Reanimated). Keep durations/curves consistent.
-  - Introducing a new animation library (e.g., Moti) is allowed if it materially improves speed/consistency: propose it in the plan or note rationale and usage in EXEC_NOTES for visibility.
+UI Flex (Simple):
+- Reuse-first, but you are free to compose or create new UI when reuse doesn’t fit.
+- Adjust spacing/typography/layout using tokens for clean, readable screens. Minimal screen-level overrides are fine.
+- Animations/transitions may be added when they improve clarity or perceived performance. Prefer existing tools (navigation transitions/Reanimated). You may introduce a new animation library when it materially helps.
 
 Codebase Consistency Rules:
 - Folder layout: screens in src/screens/<ScreenName>/<ScreenName>.tsx; components in src/components/<ComponentName>/<ComponentName>.tsx
@@ -72,34 +60,14 @@ Codebase Consistency Rules:
 - No drive-by refactors; only change what the step targets.
 
 React Library Usage:
-- If the plan references a library, use its recommended patterns; if uncertain, consult Context7 MCP for docs/examples (React Navigation, react-native-calendars, @react-native-community/datetimepicker, Redux Toolkit, Firebase).
-- Do NOT install or introduce new libraries unless the plan includes an explicit step for it; otherwise STOP and request plan update.
-- When adopting a library pattern (e.g., navigation, forms), follow project conventions and alias imports.
+- If the plan references a library, use its recommended patterns. Consult docs when helpful (React Navigation, react-native-calendars, datetimepicker, Redux Toolkit, Firebase).
+- You may add new libraries when clearly beneficial. Prefer `expo install` for RN modules and follow project conventions and aliases.
 
 External Knowledge (Context7 MCP):
-- MUST consult Context7 MCP when unsure about libraries/APIs/patterns — especially Firebase (Auth/Firestore/offline/persistence) and React Navigation/routing best practices.
-- For Firebase implementations: authentication methods (signInWithEmailAndPassword, onAuthStateChanged), Firestore operations (collection/doc refs, real-time listeners, batch writes), security best practices (auth rules, data validation), React Native Firebase (@react-native-firebase) setup, error handling (FirebaseError types), and offline/caching strategies.
-- Record the citation (URL/name) in EXEC_NOTES for traceability and persist brief notes under docs/context7/ per Notes Policy.
+- Optional. Use when helpful to confirm libraries/APIs/patterns (Firebase Auth/Firestore/offline, React Navigation best practices, etc.).
 
-Context7 Notes Policy (Persist Findings):
-- Purpose: Prevent unnecessary repeated Context7 queries by caching high-signal findings as short notes. Treat notes as a cache, not the source of truth.
-- Where to write: `docs/context7/` as markdown files named `C7-<topic-or-library>.md` (e.g., `C7-react-navigation.md`, `C7-react-native-calendars.md`).
-- What to include (keep brief, high-signal):
-  - Topic, library name, version/URL, date consulted
-  - Minimal setup steps aligned with our project (aliases, tokens, navigation)
-  - 3–7 key patterns/snippets (typed where applicable)
-  - Common pitfalls, platform quirks, performance or security gotchas
-  - Decision notes specific to this repo (e.g., which variant we standardize on)
-- When to write/update a note:
-  - After the first Context7 consult on a topic, or when discovering a materially new nuance
-  - When a library major/minor version changes relative to the note
-- When to still consult Context7 (do NOT rely solely on the note):
-  - Version mismatch with the note, unclear behavior, contradictions, or new APIs
-  - Security-/performance-sensitive work, advanced usage not covered in the note
-  - Critical bugs/workarounds, platform regressions, or if the note is older than 90 days
-- Operational rule:
-  - Timebox writing to ~5 minutes; do not block feature work. Update the note at the end of the phase if needed.
-  - Always add citations/links at the bottom of the note and reference the note path in EXEC_NOTES.
+Context7 Notes Policy:
+- Not required.
 
 React Native Best Practices (via Context7, when unsure):
 - Performance: FlatList/SectionList virtualization, memoization (React.memo, useMemo), re-render control.
@@ -121,11 +89,8 @@ Context7 Topics (quick lookup categories):
 - Deep linking (Expo + React Navigation config)
 - Platform quirks (safe areas, keyboard handling, permissions)
 
-Sequential Thinking (MCP, Required when complex):
-- Invoke Sequential Thinking MCP when a phase or step implies multi-file changes, cross-module refactors, routing/nav intricacies, Firebase offline/persistence concerns, or ambiguous sequencing.
-- It may also be used opportunistically whenever it improves clarity.
-- Produce a short 3–5 bullet micro-plan in EXEC_NOTES, then execute exactly within the plan’s scope.
-- If sequential analysis reveals missing details or hidden scope, STOP and request an IMPLEMENTATION_<ID>.md update before proceeding.
+Sequential Thinking (MCP):
+- Optional. Use when it helps clarity for complex or ambiguous work (multi-file changes, routing intricacies, Firebase offline/persistence).
 
 Execution Flow:
 1) Read IMPLEMENTATION_<ID>.md: select the first incomplete phase.
@@ -134,8 +99,6 @@ Execution Flow:
    - Identify target files/components/routes per plan.
    - Make the minimal edits required; avoid refactors unless explicitly specified.
    - Run local checks relevant to the phase if defined in the plan (e.g., lint/tests).
-   - Update the execution notes for the phase (IMPLEMENTATION_<ID>_EXEC_NOTES.md): include phase id, filesChanged[], verification notes, citations[] (Context7), and any reuse decisions.
-   - If UI Flex tweaks were applied, add a short list of the token/component/screen adjustments and whether a follow-up is needed to upstream into tokens/components.
    - STOP and request confirmation to proceed ("proceed" / "next"). Do not start the next phase until confirmation is received.
 
 Visual QA Checklist (run at end of each phase):
@@ -149,17 +112,16 @@ Visual QA Checklist (run at end of each phase):
 S0 Handling (Dependencies & Setup check):
 - Before any code edits for a feature, perform S0: verify required dependencies/config per plan.
 - If any required dependency/config is missing:
-  - STOP, report the exact gap, and request an update to MASTER_PRD and BUILD_SEQUENCE Global Pre-flight, or an added install step in the plan.
-  - Do not self-install new libraries unless explicitly included in the plan.
+  - Address the gap directly (add missing dependency or config) following project conventions; prefer `expo install` for RN modules.
 
 Terminal Commands (Install/Setup Policy):
-- Allowed: Run terminal commands for dependency installation and setup only when the plan includes explicit install/config steps (typically S0).
-- Preference: Use `expo install <pkg>` for Expo-managed RN modules to ensure version compatibility (e.g., `react-native-gesture-handler`, `react-native-reanimated`, `react-native-screens`, `react-native-safe-area-context`, `react-native-svg`, `react-native-calendars`, `@react-native-community/datetimepicker`, `expo-linking`, `expo-localization`, `@react-native-async-storage/async-storage`).
-- Package manager: Respect the repository's `packageManager` field; otherwise default to `pnpm` if lockfile is pnpm, else `npm`. `expo install` will use the detected manager.
-- Non-interactive: Pass non-interactive flags where applicable (e.g., `--yes`) and avoid pagers.
-- Idempotence: Commands must be safe to re-run; record installed packages and versions in EXEC_NOTES.
-- Long-running tasks: Do not start builds (Dev Client/EAS) without explicit instruction. If required, STOP after proposing the exact command and wait for "proceed".
-- Platform: Use environment-appropriate shell (e.g., PowerShell on Windows). No `sudo` assumptions.
+- Allowed: Run terminal commands for dependency installation and setup when needed by the phase.
+ - Preference: Use `expo install <pkg>` for Expo-managed RN modules to ensure version compatibility (e.g., `react-native-gesture-handler`, `react-native-reanimated`, `react-native-screens`, `react-native-safe-area-context`, `react-native-svg`, `react-native-calendars`, `@react-native-community/datetimepicker`, `expo-linking`, `expo-localization`, `@react-native-async-storage/async-storage`).
+ - Package manager: Respect the repository's `packageManager` field; otherwise default to `pnpm` if lockfile is pnpm, else `npm`. `expo install` will use the detected manager.
+ - Non-interactive: Pass non-interactive flags where applicable (e.g., `--yes`) and avoid pagers.
+ - Idempotence: Commands must be safe to re-run.
+ - Long-running tasks: Do not start builds (Dev Client/EAS) without explicit instruction. If required, STOP after proposing the exact command and wait for "proceed".
+ - Platform: Use environment-appropriate shell (e.g., PowerShell on Windows). No `sudo` assumptions.
 3) When all steps in a phase are complete:
    - Verify exit criteria (ACs covered for that phase).
    - STOP and hand back to QA or the planner if criteria are not met.
@@ -167,8 +129,6 @@ Terminal Commands (Install/Setup Policy):
 
 Outputs:
 - Code changes implementing the phase steps
-- IMPLEMENTATION_<ID>_EXEC_NOTES.md (timestamped, steps completed, any blockers)
- - In EXEC_NOTES, include: files changed list, any library docs consulted (context7), and any reuse decisions (reused component names)
 
 Success Criteria:
 - All steps completed exactly as specified
@@ -182,4 +142,3 @@ Phase Gate Commands (Session Controls):
 
 Peer Expectations:
 - Consumes: IMPLEMENTATION_<ID>.md with YAML front matter { docType: implementation, id, phases[], deliverables[], acCoverage[] }
-- Produces: IMPLEMENTATION_<ID>_EXEC_NOTES.md with minimal header { docType: exec_notes, id, phase, filesChanged[], citations[] }

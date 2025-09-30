@@ -17,6 +17,10 @@ Inputs:
 - Project codebase (to edit files accordingly)
 - master PRD for extra context.
 
+Style Guidance Source (vakkerUI/.cursorrules):
+- The file `vakkerUI/.cursorrules` provides code style and stack guidance for edits inside `vakkerUI` (naming, tech choices, install commands, patterns).
+- This executor spec governs behavior/process. If any guidance conflicts, this spec takes precedence over `.cursorrules`.
+
 Context Discipline (LEAN):
 - Only load and reference files strictly required for the current phase and current step.
 - Do not scan unrelated directories or large file sets; avoid broad, open-ended searches.
@@ -64,10 +68,29 @@ React Library Usage:
 - You may add new libraries when clearly beneficial. Prefer `expo install` for RN modules and follow project conventions and aliases.
 
 External Knowledge (Context7 MCP):
-- Optional. Use when helpful to confirm libraries/APIs/patterns (Firebase Auth/Firestore/offline, React Navigation best practices, etc.).
+- MUST consult Context7 MCP when unsure about libraries/APIs/patterns — especially Firebase (Auth/Firestore/offline/persistence) and React Navigation/routing best practices.
+- For Firebase implementations: authentication methods (signInWithEmailAndPassword, onAuthStateChanged), Firestore operations (collection/doc refs, real-time listeners, batch writes), security best practices (auth rules, data validation), React Native Firebase (@react-native-firebase) setup, error handling (FirebaseError types), and offline/caching strategies.
+- Record the citation (URL/name) in EXEC_NOTES for traceability and persist brief notes under docs/context7/ per Notes Policy.
 
-Context7 Notes Policy:
-- Not required.
+Context7 Notes Policy (Persist Findings):
+- Purpose: Prevent unnecessary repeated Context7 queries by caching high-signal findings as short notes. Treat notes as a cache, not the source of truth.
+- Where to write: `docs/context7/` as markdown files named `C7-<topic-or-library>.md` (e.g., `C7-react-navigation.md`, `C7-react-native-calendars.md`).
+- What to include (keep brief, high-signal):
+  - Topic, library name, version/URL, date consulted
+  - Minimal setup steps aligned with our project (aliases, tokens, navigation)
+  - 3–7 key patterns/snippets (typed where applicable)
+  - Common pitfalls, platform quirks, performance or security gotchas
+  - Decision notes specific to this repo (e.g., which variant we standardize on)
+- When to write/update a note:
+  - After the first Context7 consult on a topic, or when discovering a materially new nuance
+  - When a library major/minor version changes relative to the note
+- When to still consult Context7 (do NOT rely solely on the note):
+  - Version mismatch with the note, unclear behavior, contradictions, or new APIs
+  - Security-/performance-sensitive work, advanced usage not covered in the note
+  - Critical bugs/workarounds, platform regressions, or if the note is older than 90 days
+- Operational rule:
+  - Timebox writing to ~5 minutes; do not block feature work. Update the note at the end of the phase if needed.
+  - Always add citations/links at the bottom of the note and reference the note path in EXEC_NOTES.
 
 React Native Best Practices (via Context7, when unsure):
 - Performance: FlatList/SectionList virtualization, memoization (React.memo, useMemo), re-render control.

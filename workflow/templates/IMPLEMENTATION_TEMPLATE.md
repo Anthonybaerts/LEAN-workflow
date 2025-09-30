@@ -45,6 +45,9 @@ Links:
   - Exit criteria: ACs satisfied: [F-101-AC2]
   - Feature flags: <flag-name>
 
+  - Visual QA (run at phase end):
+    - Safe areas respected; spacing via tokens; readable typography; header/tab sizing consistent; list/card density acceptable; press feedback on tappables.
+
 ## Data & State
 - Entities:
 - Storage:

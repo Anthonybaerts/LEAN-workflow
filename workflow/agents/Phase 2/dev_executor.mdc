@@ -28,123 +28,54 @@ Context Discipline (LEAN):
 - Keep per-step edits small and focused; avoid large, sweeping diffs.
 
 Operating Rules (STRICT):
-- Do not add scope or optimize beyond what is written.
-- Only modify files/screens/components explicitly mentioned or required by steps.
+- Do not add scope beyond what is written.
+- Only modify files/screens/components explicitly mentioned or required by steps. 
 - Preserve naming conventions and folder structure; reuse existing components first.
 - For each step, produce the minimal change to satisfy the step and referenced AC.
 - If a step is ambiguous, STOP and request a clarification update to IMPLEMENTATION_<ID>.md.
 - Never change ledger; never re-order phases; never skip QA gates.
- - Pause only at the end of each phase (P0, P1, ...). Do not pause after every step.
+ - Pause only at the end of each phase (P0, P1, ...). Do not pause after every step unless told in plan.
  - If a phase introduces linter/type errors, STOP and report until resolved; do not proceed.
  - UI flexibility: You may create/adjust UI as needed to ensure good composition and spacing. Prefer reuse first; create new UI when reuse does not fit.
 
-UI-First Reuse Checklist (BEFORE creating new UI):
-- Reuse from the existing vakkerUI library located at @src/ui:
-  - Screens: import from `@ui/screens` (e.g., LoginScreen, ClientsScreen, ClientInfoScreen, NewClientScreen, CalendarScreen, NewTaskScreen)
-  - Components: import from `@ui/components` (Header, Button, Input, TabButton, CustomerCard, ContactDetailsCard, RecentTasksCard, NotesCard, RoundButton, TabSelection, TimeSlot, HourSelector, InfoCard, ClientBanner, Tag)
-  - Icons/tokens: import from `@ui/icons`, `@ui/tokens`
-- Search for an existing screen/component by name and intent under the aliases before creating anything new.
-- If a suitable component exists, reuse and wire required props/data; do not create duplicates.
-- If none exists, create new files in the correct folder with PascalCase names.
-- If a route is referenced, ensure it exists in NAVIGATION_FLOW.md Spec; if missing, STOP and request an upstream nav update.
- - When mapping designs to components, consult `vakkerUI/specs/UI_MAP.yaml` for the canonical names/paths and `vakkerUI/UI_LIBRARY_DOCS.md` for examples/props.
+UI Reuse (concise):
+- Prefer `@ui/screens` and `@ui/components`; use `@ui/icons` and `@ui/tokens` for visuals.
+- If reuse doesn’t fit, create new UI in correct folders (PascalCase). Ensure routes exist in NAV FLOW.
 
 UI Flex (Simple):
 - Reuse-first, but you are free to compose or create new UI when reuse doesn’t fit.
 - Adjust spacing/typography/layout using tokens for clean, readable screens. Minimal screen-level overrides are fine.
 - Animations/transitions may be added when they improve clarity or perceived performance. Prefer existing tools (navigation transitions/Reanimated). You may introduce a new animation library when it materially helps.
 
-Codebase Consistency Rules:
-- Folder layout: screens in src/screens/<ScreenName>/<ScreenName>.tsx; components in src/components/<ComponentName>/<ComponentName>.tsx
-- Imports: prefer aliases (@screens/*, @components/*, @state/*, @services/*, @types/*) over deep relative paths.
-- Naming: components/screens PascalCase; files/folders match the exported symbol.
-- Props: define clear prop types; map props to data sources in plan steps.
-- State: use @state selectors/slices; avoid ad-hoc Context unless plan specifies.
-- Services: put API/storage/auth in @services; keep UI free of side-effect code.
-- No drive-by refactors; only change what the step targets.
+Code style (concise):
+- Use aliases (@screens, @components, @services, @state, @types); PascalCase names; file matches export; no unrelated refactors.
 
-React Library Usage:
-- If the plan references a library, use its recommended patterns. Consult docs when helpful (React Navigation, react-native-calendars, datetimepicker, Redux Toolkit, Firebase).
-- You may add new libraries when clearly beneficial. Prefer `expo install` for RN modules and follow project conventions and aliases.
+Libraries:
+- Follow recommended patterns; consult docs when helpful. You may add libs when beneficial (use `expo install`).
 
-External Knowledge (Context7 MCP):
-- MUST consult Context7 MCP when unsure about libraries/APIs/patterns — especially Firebase (Auth/Firestore/offline/persistence) and React Navigation/routing best practices.
-- For Firebase implementations: authentication methods (signInWithEmailAndPassword, onAuthStateChanged), Firestore operations (collection/doc refs, real-time listeners, batch writes), security best practices (auth rules, data validation), React Native Firebase (@react-native-firebase) setup, error handling (FirebaseError types), and offline/caching strategies.
-- Record the citation (URL/name) in EXEC_NOTES for traceability and persist brief notes under docs/context7/ per Notes Policy.
+External Knowledge:
+- Use MCP/docs when helpful to confirm libraries/APIs or patterns. No note-writing required.
 
-Context7 Notes Policy (Persist Findings):
-- Purpose: Prevent unnecessary repeated Context7 queries by caching high-signal findings as short notes. Treat notes as a cache, not the source of truth.
-- Where to write: `docs/context7/` as markdown files named `C7-<topic-or-library>.md` (e.g., `C7-react-navigation.md`, `C7-react-native-calendars.md`).
-- What to include (keep brief, high-signal):
-  - Topic, library name, version/URL, date consulted
-  - Minimal setup steps aligned with our project (aliases, tokens, navigation)
-  - 3–7 key patterns/snippets (typed where applicable)
-  - Common pitfalls, platform quirks, performance or security gotchas
-  - Decision notes specific to this repo (e.g., which variant we standardize on)
-- When to write/update a note:
-  - After the first Context7 consult on a topic, or when discovering a materially new nuance
-  - When a library major/minor version changes relative to the note
-- When to still consult Context7 (do NOT rely solely on the note):
-  - Version mismatch with the note, unclear behavior, contradictions, or new APIs
-  - Security-/performance-sensitive work, advanced usage not covered in the note
-  - Critical bugs/workarounds, platform regressions, or if the note is older than 90 days
-- Operational rule:
-  - Timebox writing to ~5 minutes; do not block feature work. Update the note at the end of the phase if needed.
-  - Always add citations/links at the bottom of the note and reference the note path in EXEC_NOTES.
 
-React Native Best Practices (via Context7, when unsure):
-- Performance: FlatList/SectionList virtualization, memoization (React.memo, useMemo), re-render control.
-- Accessibility: roles/labels, focus management, TalkBack/VoiceOver considerations.
-- Navigation (React Navigation v6+): typed params, nested navigators, deep linking, back behavior.
-- State Management: Redux Toolkit patterns (slices, thunks), selectors, avoiding prop drilling; when to prefer local state vs store.
-
-Context7 Topics (quick lookup categories):
-- React Navigation v6 (typed params, nested stacks/tabs, deep linking, back behavior)
-- Calendars & Datetime (react-native-calendars theming/perf; datetimepicker iOS/Android; dayjs timezone)
-- Expo/EAS/Dev Client (when required for native modules; config tips)
-- Firebase (Auth, Firestore modeling/listeners/offline, security rules, indexes, analytics integration)
-- Forms & Validation (React Hook Form + Zod Controller patterns in RN)
-- State (Redux Toolkit slices/thunks/selectors; normalization; RTK Query vs thunks)
-- Localization (expo-localization + dayjs nl-NL, 24h)
-- Storage (AsyncStorage caching/invalidation patterns)
-- Accessibility (roles/labels/focus)
-- Performance (FlatList/SectionList virtualization, memoization)
-- Deep linking (Expo + React Navigation config)
-- Platform quirks (safe areas, keyboard handling, permissions)
-
-Sequential Thinking (MCP):
-- Optional. Use when it helps clarity for complex or ambiguous work (multi-file changes, routing intricacies, Firebase offline/persistence).
+Sequencing:
+- Use your judgment; keep changes scoped to the current phase.
 
 Execution Flow:
-1) Read IMPLEMENTATION_<ID>.md: select the first incomplete phase.
-2) For each phase in order:
-   - Execute all steps in the phase exactly as written.
-   - Identify target files/components/routes per plan.
-   - Make the minimal edits required; avoid refactors unless explicitly specified.
-   - Run local checks relevant to the phase if defined in the plan (e.g., lint/tests).
-   - STOP and request confirmation to proceed ("proceed" / "next"). Do not start the next phase until confirmation is received.
+1) Open IMPLEMENTATION_<ID>.md and select the first incomplete phase.
+2) Execute its steps exactly; make minimal, scoped edits; run lints/tests if defined.
+3) STOP and ask to proceed before starting the next phase.
 
-Visual QA Checklist (run at end of each phase):
-- Safe areas respected; no content under system bars.
-- Spacing scale consistent with tokens; no cramped or excessive gaps.
-- Typography size/line-height/contrast readable; no unintended opacity.
-- Headers/tab bars sized/aligned; no overlapping embedded navs.
-- List item density and card paddings feel balanced.
-- Press states/feedback present on tappables where appropriate.
+Visual QA (end of each phase):
+- Safe areas; spacing via tokens; readable typography; header/tab sizing; list/card density; press feedback.
 
 S0 Handling (Dependencies & Setup check):
 - Before any code edits for a feature, perform S0: verify required dependencies/config per plan.
 - If any required dependency/config is missing:
   - Address the gap directly (add missing dependency or config) following project conventions; prefer `expo install` for RN modules.
 
-Terminal Commands (Install/Setup Policy):
-- Allowed: Run terminal commands for dependency installation and setup when needed by the phase.
- - Preference: Use `expo install <pkg>` for Expo-managed RN modules to ensure version compatibility (e.g., `react-native-gesture-handler`, `react-native-reanimated`, `react-native-screens`, `react-native-safe-area-context`, `react-native-svg`, `react-native-calendars`, `@react-native-community/datetimepicker`, `expo-linking`, `expo-localization`, `@react-native-async-storage/async-storage`).
- - Package manager: Respect the repository's `packageManager` field; otherwise default to `pnpm` if lockfile is pnpm, else `npm`. `expo install` will use the detected manager.
- - Non-interactive: Pass non-interactive flags where applicable (e.g., `--yes`) and avoid pagers.
- - Idempotence: Commands must be safe to re-run.
- - Long-running tasks: Do not start builds (Dev Client/EAS) without explicit instruction. If required, STOP after proposing the exact command and wait for "proceed".
- - Platform: Use environment-appropriate shell (e.g., PowerShell on Windows). No `sudo` assumptions.
+Terminal Commands:
+- Use `expo install <pkg>`; respect packageManager; non-interactive flags; idempotent.
+- Don’t start long builds without instruction. Use PowerShell on Windows (no `sudo`).
 3) When all steps in a phase are complete:
    - Verify exit criteria (ACs covered for that phase).
    - STOP and hand back to QA or the planner if criteria are not met.

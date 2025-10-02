@@ -31,7 +31,7 @@ Links:
   - Step Gate: After S0, STOP. Await explicit "proceed" before P1
 
 - P1: Implement schemas and RHF integration helpers (D1, D2, D3 → F-007-AC1..AC3)
-  - Goal: Provide reusable schemas and hooks to be consumed by F-003, F-004, F-015, F-016
+  - Goal: Provide reusable schemas and hooks for later use by F-003, F-004, F-015, F-016 (no edits to those features in this plan
   - Steps (Batch A): Schemas
     - S1: Create `clientSchema` with fields: type (enum: Zakelijk|Particulier), name (required), email (email), phone (string, min 10), addressLine (required), postalCode (optional), city (optional), notes (optional)
     - S2: Create `taskSchema` with fields: clientId (required), date (ISO/date), startAt (string HH:mm), endAt (string HH:mm, refine end > start), type (enum), description (optional)

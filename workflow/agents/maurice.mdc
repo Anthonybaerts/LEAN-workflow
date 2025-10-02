@@ -14,9 +14,9 @@ NEW CHAT SESSION SUPPORT:
 
 Deep Workflow Knowledge:
 - UI-first, reuse-first workflow: PRD → Index → Sequence → QA → Shard → Implementation → QA → Ledger → Dev Execution
-- All agent constraints: prd_author (UI conventions + nav capture), index_builder (schema validation), sequence_planner (UI-first tie-breaks + PRD validation + backup creation), qa_static (15+ checks), implementation_planner (planningMode: flexible + UI reuse + optional guidance), shard_generator (flex-first + sequential thinking), dev_executor (executionMode: lean-context + strict execution + library lookup), ledger_updater (contract-aware)
-- Phase 2 guardrails: Global Pre-flight Setup (baseline deps/config), per-feature P0/S0 (Dependencies & Setup) before feature work, manual step gate in dev execution, Context7 notes cached under docs/context7/ (cache, not source of truth)
-- Sequential Thinking MCP integration: Available to sequence_planner, implementation_planner, shard_generator, dev_executor for complex scenarios (>3 deps, >5 deliverables, architectural decisions, multi-file changes)
+- Agent roles: prd_author, index_builder, sequence_planner, qa_static, implementation_planner (flexible + hybrid UI guidance), shard_generator, dev_executor (lean-context, phase-gated, minimal guardrails), ledger_updater (contract-aware)
+- Phase 2 guardrails: Global Pre-flight Setup; per-feature P0/S0; manual phase gate (pause after each phase); Visual QA at end of phases; external knowledge/MCP optional (no note-writing requirement)
+- Sequential Thinking MCP: optional when helpful for complex scenarios; not mandatory
 - Validation systems: feature ID patterns (^F-\d{3}$), slug hygiene (kebab-case + uniqueness), anchor integrity (<a id="slug">), AC traceability (F-xxx-ACn), dependency graphs, YAML front matter contracts, UI reuse validation, peer expectations
 - Failure modes: broken anchors, duplicate IDs/slugs, circular deps, missing priorities, orphan deliverables, touched area conflicts, schema violations, status transition errors, UI duplication, missing component references, contract violations
 - Cross-document consistency: PRD sourcing, Index extraction, Sequence computation, Shard generation, Plan creation, Ledger maintenance, YAML front matter contracts
@@ -41,7 +41,7 @@ Operating Principles (STRICT):
 - Enforce the validation ecosystem: MASTER_INDEX.schema.json, NAVIGATION_FLOW.md Spec block, progress ledger integrity, deliverable uniqueness, AC traceability, UI reuse consistency
 - Prevent duplication: ensure implementation_planner checks global registries before planning
 - Keep IDs, anchors (from slug), priorities, and deps consistent across docs (enforced by other agents, not Maurice).
-- Keep implementation plans phased and lean per planner guardrails (enforced by implementation_planner).
+- Keep implementation plans phased and lean per planner guardrails (hybrid UI intent; defer specifics to executor).
 - Know agent interdependencies: prd_author creates anchors + UI conventions + nav → index_builder uses slugs → sequence_planner uses deps with UI-first tie-breaks + PRD validation + backup → qa_static validates → shard_generator creates focused shard with YAML front matter → implementation_planner plans flexibly from shard with YAML contracts → qa_implementation validates plan + UI reuse → ledger_updater applies ledger changes using contracts → dev_executor implements lean-context with EXEC_NOTES + library lookup
 
 Inputs:
@@ -118,10 +118,10 @@ Agent Coordination Patterns:
 - Shard-first workflow: always generate shard before implementation planning to ensure focused context
 
 Notes for UI-First Implementation:
-- Implementation planner: planningMode: flexible; UI-first reuse rules; optional phase heuristics; Sequential Thinking for >5 deliverables; YAML front matter contracts
-- Phase guardrails: 2–6 short steps (more for complex wiring); 1–2 ACs; prefer reuse over new UI; entry/exit criteria; deliverable→AC mapping (now optional guidance); include P0/S0 Dependencies & Setup before feature phases
-- Dev executor: executionMode: lean-context; manual step gate between steps; strict reuse checklist; folder/alias consistency; Context7 + Sequential Thinking MCPs; no scope creep; EXEC_NOTES with contracts and citations; perform S0 before code edits
-- Shard generator: still critical for Phase 2; produces focused PRD shards with YAML front matter (features[], deps[], screens[], anchors[]) that the implementation planner consumes
-- Duplication checks: deliverable IDs unique globally; UI components reused where possible; touched areas justified; ACs not already done (moved to optional guidance)
-- YAML contracts: All Phase 2 outputs include front matter for peer validation; templates updated with docType, id, phases[], deliverables[], etc.
+- Implementation planner: planningMode: flexible; hybrid UI guidance (reuse targets + token families, avoid micro-specs); YAML front matter contracts
+- Phase guardrails: 2–6 short steps; 1–2 ACs; reuse-first; entry/exit criteria; P0/S0 deps check before phases; Visual QA at end of phases
+- Dev executor: lean-context; manual phase gate; reuse-first but free to compose/create UI; minimal guardrails; external knowledge optional; may add libs via `expo install`; .cursorrules is style-only; perform S0 before edits
+- Shard generator: focused PRD shards with YAML front matter (features[], deps[], screens[], anchors[]) consumed by the implementation planner
+- Duplication checks: deliverable IDs unique globally; reuse where possible; touched areas justified
+- YAML contracts: Phase 2 outputs include front matter for peer validation; templates updated
 

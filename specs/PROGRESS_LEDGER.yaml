@@ -172,25 +172,32 @@ features:
     completed_date: null
 
   - id: F-008
-    status: pending
+    status: done
     acs:
       - id: F-008-AC1
-        status: pending
+        status: done
       - id: F-008-AC2
-        status: pending
+        status: done
       - id: F-008-AC3
-        status: pending
+        status: done
       - id: F-008-AC4
-        status: pending
+        status: done
       - id: F-008-AC5
-        status: pending
-    deliverables: []
+        status: done
+    deliverables:
+      - F-008-D1
+      - F-008-D2
+      - F-008-D3
     touched_areas:
-      screens: []
-      routes: []
-      entities: []
-      apis: []
-    completed_date: null
+      screens:
+        - CalendarScreen
+      routes:
+        - CalendarScreen
+      entities:
+        - Task
+      apis:
+        - FirebaseFirestore
+    completed_date: '2025-10-01'
 
   - id: F-004
     status: pending
@@ -350,6 +357,9 @@ global_deliverables:
   - F-009-D1
   - F-009-D2
   - F-009-D3
+  - F-008-D1
+  - F-008-D2
+  - F-008-D3
 
 global_touched_areas:
   screens:

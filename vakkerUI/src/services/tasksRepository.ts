@@ -1,4 +1,5 @@
 import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc, query, where, getDocs, orderBy, onSnapshot, Firestore } from 'firebase/firestore';
+import { removeUndefined } from './forms/getErrorMessage';
 import { Firebase } from './firebase';
 
 export type TaskEntity = {
@@ -34,12 +35,12 @@ export const tasksRepository = {
     assertRequired(input.clientId, 'clientId is required');
     assertRequired(input.date, 'date is required');
 
-    const payload = {
+    const payload = removeUndefined({
       ...input,
       ownerId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-    } as const;
+    });
 
     const ref = await addDoc(collection(getDb(), COLLECTION), payload);
     const snap = await getDoc(ref);
@@ -53,7 +54,7 @@ export const tasksRepository = {
     assertRequired(ownerId, 'Not authenticated');
 
     const ref = doc(getDb(), COLLECTION, id);
-    await updateDoc(ref, { ...input, updatedAt: serverTimestamp() });
+    await updateDoc(ref, removeUndefined({ ...input, updatedAt: serverTimestamp() }));
     const snap = await getDoc(ref);
     return { id, ...(snap.data() as Omit<TaskEntity, 'id'>) };
   },

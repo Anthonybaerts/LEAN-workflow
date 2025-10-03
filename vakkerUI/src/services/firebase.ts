@@ -4,6 +4,7 @@ import Env from '@env';
 import { getApps, initializeApp, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, initializeFirestore, persistentLocalCache, Firestore } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type FirebaseExtra = {
   apiKey: string;
@@ -34,16 +35,25 @@ function ensureWebApp() {
   return getApp();
 }
 
+const isWeb = typeof window !== 'undefined' && typeof document !== 'undefined';
+
 export const Firebase = {
-  auth: () => getAuth(ensureWebApp()),
+  auth: () => {
+    const app = ensureWebApp();
+    return getAuth(app);
+  },
   firestore: (() => {
     let cached: Firestore | undefined;
     return () => {
       if (cached) return cached;
       const app = ensureWebApp();
       try {
-        // Initialize Firestore once with persistent local cache for offline support
-        cached = initializeFirestore(app, { localCache: persistentLocalCache() });
+        // On web, enable IndexedDB cache; on RN, skip persistentLocalCache due to RN IndexedDB shims.
+        if (isWeb) {
+          cached = initializeFirestore(app, { localCache: persistentLocalCache() });
+        } else {
+          cached = getFirestore(app);
+        }
       } catch (_err) {
         // Fallback to default instance (no persistent cache)
         cached = getFirestore(app);

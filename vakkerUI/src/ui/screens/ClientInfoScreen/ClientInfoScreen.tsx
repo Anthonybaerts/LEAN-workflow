@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, SafeAreaView, Linking } from 'react-native';
 import {
   Header,
   Button,
@@ -22,109 +22,165 @@ import {
   Location,
 } from '../../icons';
 import { theme } from '../../tokens';
+import { clientsRepository, type ClientEntity } from '../../../services/clientsRepository';
+import { tasksRepository, type TaskEntity } from '../../../services/tasksRepository';
+import { useRouter } from 'expo-router';
+
+type Props = {
+  clientId?: string;
+};
 
 // Context: Displays detailed client information with contact details,
 // recent tasks, notes, and quick action buttons
-export function ClientInfoScreen() {
-  // Sample client data - in real app this would come from props/navigation params
-  const clientData = {
-    id: '1',
-    name: 'Bakker Appartementen',
-    type: 'Zakelijk',
-    since: 'Sinds 2019',
-    status: 'Actief',
-    contactPerson: 'Mevr. Emma Bakker',
-    phone: '+31 6 45678901',
-    email: 'emma@bakker-app.nl',
-    address: 'Herengracht 89, Amsterdam',
-  };
+export function ClientInfoScreen({ clientId }: Props) {
+  const router = useRouter();
+  const [client, setClient] = React.useState<ClientEntity | null>(null);
+  const [recentTasks, setRecentTasks] = React.useState<
+    {
+      name: string;
+      date: string;
+      time: string;
+      color: 'blue' | 'green' | 'yellow' | 'gray';
+      tag?: { label: string; color: 'blue' | 'green' | 'yellow' | 'gray' };
+    }[]
+  >([]);
 
-  const recentTasks = [
-    {
-      id: '1',
-      name: 'Onderhoud verwarmingssysteem',
-      date: '15 Jan 2024',
-      time: '09:00',
-      color: 'blue' as const,
-      tag: { label: 'Label', color: 'green' as const },
-    },
-    {
-      id: '2',
-      name: 'Renovatie badkamer app 3A',
-      date: '22 Jan 2024',
-      time: '14:00',
-      color: 'yellow' as const,
-      tag: { label: 'Label', color: 'green' as const },
-    },
-    {
-      id: '3',
-      name: 'Klantbezoek nieuw project',
-      date: '28 Jan 2024',
-      time: '11:00',
-      color: 'green' as const,
-      tag: { label: 'Label', color: 'blue' as const },
-    },
-  ];
+  React.useEffect(() => {
+    if (!clientId) {
+      setClient(null);
+      return;
+    }
+    const unsubscribe = clientsRepository.observeById(clientId, (c) => {
+      setClient(c);
+    });
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, [clientId]);
 
-  const notes = [
-    {
-      id: '1',
-      text: 'Voorkeur voor werkzaamheden in de ochtend. Altijd vooraf bellen.',
-      date: '12 Jan 2024',
-    },
-    {
-      id: '2',
-      text: 'Sleutels ophalen bij de receptie. Vraag naar Piet.',
-      date: '8 Jan 2024',
-    },
-  ];
+  React.useEffect(() => {
+    if (!clientId) {
+      setRecentTasks([]);
+      return;
+    }
+    const unsubscribe = tasksRepository.observeListByClientId(
+      clientId,
+      undefined,
+      (tasks: TaskEntity[]) => {
+        const toEpoch = (t: TaskEntity) => {
+          const [y, m, d] = (t.date ?? '1970-01-01').split('-').map((n) => parseInt(n, 10));
+          const [hh, mm] = (t.startAt ?? '00:00').split(':').map((n) => parseInt(n, 10));
+          return new Date(y || 1970, (m || 1) - 1, d || 1, hh || 0, mm || 0).getTime();
+        };
+
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const formatDate = (ymd?: string) => {
+          if (!ymd) return '';
+          const [y, m, d] = ymd.split('-').map((n) => parseInt(n, 10));
+          if (!y || !m || !d) return ymd;
+          return `${d} ${months[m - 1]} ${y}`;
+        };
+
+        const items = [...tasks]
+          .sort((a, b) => toEpoch(b) - toEpoch(a))
+          .slice(0, 5)
+          .map((t) => ({
+            name: t.description || 'Taak',
+            date: formatDate(t.date),
+            time: t.startAt || '',
+            color: 'blue' as const,
+          }));
+        setRecentTasks(items);
+      }
+    );
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, [clientId]);
+
+  const clientName = client?.name ?? 'Client';
+  const contactPhone = client?.phone ?? '';
+  const contactEmail = client?.email ?? '';
+  const addressLine = client?.addressLine ?? '';
+  const city = client?.city ?? '';
+  const postalCode = client?.postalCode ?? '';
+  const fullAddress = [addressLine, postalCode, city].filter(Boolean).join(', ');
+
+  const notes = React.useMemo(() => {
+    if (!client?.notes) return [] as { text: string; date: string }[];
+    if (Array.isArray(client.notes)) {
+      return (client.notes as unknown[])
+        .map((n) => (typeof n === 'string' ? { text: n, date: '' } : null))
+        .filter(Boolean) as { text: string; date: string }[];
+    }
+    if (typeof client.notes === 'string') {
+      return [{ text: client.notes, date: '' }];
+    }
+    return [] as { text: string; date: string }[];
+  }, [client?.notes]);
 
   const contactDetails = [
     {
       icon: <User width={20} height={20} />,
-      label: 'Contact Person',
-      text: clientData.contactPerson,
+      label: 'Contactpersoon',
+      text: clientName,
+      isEmpty: !clientName,
     },
     {
       icon: <Call width={20} height={20} />,
       label: 'Telefoon',
-      text: clientData.phone,
+      text: contactPhone,
+      isEmpty: !contactPhone,
     },
     {
       icon: <Email width={20} height={20} />,
       label: 'E-mail',
-      text: clientData.email,
+      text: contactEmail,
+      isEmpty: !contactEmail,
     },
     {
       icon: <Location width={20} height={20} />,
       label: 'Adres',
-      text: clientData.address,
+      text: fullAddress,
+      isEmpty: !fullAddress,
     },
   ];
 
   const handleBack = () => {
-    // Context: Navigate back to clients list
-    console.log('Navigate back');
+    try {
+      router.back();
+    } catch {
+      // noop fallback
+    }
   };
 
   const handleMenu = () => {
-    // Context: Show client actions menu
-    console.log('Show menu');
+    // Placeholder for actions menu
+    console.log('Menu pressed');
   };
 
   const handleCall = () => {
-    // Context: Initiate phone call to client
-    console.log('Call client');
+    if (!contactPhone) return;
+    const url = `tel:${contactPhone}`;
+    Linking.openURL(url).catch(() => {
+      // best-effort, avoid crash
+    });
   };
 
   const handleEmail = () => {
-    // Context: Open email client to send email
-    console.log('Email client');
+    if (!contactEmail) return;
+    const url = `mailto:${contactEmail}`;
+    Linking.openURL(url).catch(() => {
+      // best-effort, avoid crash
+    });
   };
 
   const handleAddTask = () => {
-    // Context: Navigate to add new task screen
-    console.log('Add task');
+    try {
+      router.push({ pathname: '/(tabs)/calendar/new-task', params: clientId ? { clientId } : {} } as any);
+    } catch {
+      // noop fallback
+    }
   };
 
   const handleEditContact = () => {
@@ -133,8 +189,11 @@ export function ClientInfoScreen() {
   };
 
   const handleViewAllTasks = () => {
-    // Context: Navigate to all tasks view
-    console.log('View all tasks');
+    try {
+      router.push('/(tabs)/calendar' as any);
+    } catch {
+      // noop fallback
+    }
   };
 
   const handleAddNote = () => {
@@ -146,7 +205,7 @@ export function ClientInfoScreen() {
     <SafeAreaView style={styles.container}>
       {/* Context: Header with navigation and client name */}
       <Header
-        title={clientData.name}
+        title={clientName}
         leftIcon={<ArrowLeft width={28} height={28} />}
         rightIcon={<ThreeDotsVertical width={28} height={28} />}
         onLeftPress={handleBack}
@@ -157,10 +216,10 @@ export function ClientInfoScreen() {
         {/* Context: Client information banner with status */}
         <View style={styles.bannerSection}>
           <ClientBanner
-            name={clientData.name}
-            type={clientData.type}
-            date={clientData.since}
-            tagLabel={clientData.status}
+            name={clientName}
+            type={client?.type}
+            date={undefined}
+            tagLabel={undefined}
             tagColor="green"
           />
         </View>

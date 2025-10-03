@@ -175,3 +175,25 @@ features:
     epic: E-200
     mvp: false
 
+  - id: F-017
+    title: Offline Cache (RN)
+    type: nfr
+    priority: 6
+    deps: [F-001, F-006]
+    source: MASTER_PRD.md#offline-cache-rn
+    screens: []
+    ac_ids: [F-017-AC1, F-017-AC2, F-017-AC3]
+    epic: E-300
+    mvp: false
+
+  - id: F-018
+    title: Calendar: Timeline Adoption
+    type: enhancement
+    priority: 3
+    deps: [F-001, F-006, F-008]
+    source: MASTER_PRD.md#calendar-timeline-adoption
+    screens: [CalendarScreen]
+    ac_ids: [F-018-AC1, F-018-AC2, F-018-AC3, F-018-AC4, F-018-AC5]
+    epic: E-200
+    mvp: true
+

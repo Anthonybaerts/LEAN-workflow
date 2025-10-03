@@ -14,4 +14,14 @@ export function getErrorMessage(errors: FieldErrors, name: string): string | und
   }
 }
 
+// Remove keys with undefined values to satisfy Firestore data rules
+export function removeUndefined<T extends Record<string, any>>(obj: T): T {
+  const result: Record<string, any> = {};
+  for (const key of Object.keys(obj)) {
+    const value = (obj as any)[key];
+    if (value !== undefined) result[key] = value;
+  }
+  return result as T;
+}
+
 

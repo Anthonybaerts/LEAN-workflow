@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
+import { Controller } from 'react-hook-form';
 import { Input, Button } from '../../components';
 import {
   ArrowLeft,
@@ -18,42 +19,65 @@ import {
   Close,
 } from '../../icons';
 import { theme } from '../../tokens';
+import { useZodForm } from '../../../services/forms/useZodForm';
+import { clientSchema } from '../../../services/validation/clientSchema';
+import { getErrorMessage } from '../../../services/forms/getErrorMessage';
+import { clientsRepository } from '../../../services/clientsRepository';
+import { useRouter } from 'expo-router';
 
 // Context: Form screen for adding a new client with type selection and contact details
 export function NewClientScreen() {
-  const [clientType, setClientType] = React.useState<'business' | 'personal'>(
-    'personal'
-  );
-  const [formData, setFormData] = React.useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    postalCode: '',
+  const router = useRouter();
+  const form = useZodForm(clientSchema, {
+    defaultValues: {
+      type: 'Particulier',
+      name: '',
+      email: '',
+      phone: '',
+      addressLine: '',
+      postalCode: '',
+      city: '',
+      notes: '',
+    },
+    mode: 'onChange',
   });
+
+  const selectedType = form.watch('type');
 
   const handleBack = () => {
     // Context: Navigate back to previous screen
     console.log('Navigate back');
   };
 
-  const handleSave = () => {
-    // Context: Save new client data
-    console.log('Save client', { clientType, ...formData });
-  };
+  const handleSave = form.handleSubmit(async (values) => {
+    try {
+      const payload = {
+        type: values.type,
+        name: values.name,
+        email: values.email || undefined,
+        phone: values.phone || undefined,
+        addressLine: values.addressLine,
+        postalCode: values.postalCode || undefined,
+        city: values.city || undefined,
+        notes: values.notes || undefined,
+      } as const;
+      const created = await clientsRepository.create(payload as any);
+      const id = (created as any).id as string | undefined;
+      if (id) {
+        router.replace({ pathname: '/(tabs)/clients/[clientId]', params: { clientId: id } } as any);
+      }
+    } catch (err) {
+      console.log('Create client failed', err);
+    }
+  });
 
   const handleCancel = () => {
     // Context: Cancel form and go back
     console.log('Cancel form');
   };
 
-  const updateField = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const clearField = (field: keyof typeof formData) => {
-    setFormData((prev) => ({ ...prev, [field]: '' }));
-  };
+  const setTypeBusiness = () => form.setValue('type', 'Zakelijk', { shouldValidate: true, shouldDirty: true });
+  const setTypePersonal = () => form.setValue('type', 'Particulier', { shouldValidate: true, shouldDirty: true });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -83,15 +107,15 @@ export function NewClientScreen() {
               <TouchableOpacity
                 style={[
                   styles.tabButton,
-                  clientType === 'business' && styles.activeTab,
+                  selectedType === 'Zakelijk' && styles.activeTab,
                 ]}
-                onPress={() => setClientType('business')}
+                onPress={setTypeBusiness}
               >
                 <Briefcase
                   width={24}
                   height={24}
                   color={
-                    clientType === 'business'
+                    selectedType === 'Zakelijk'
                       ? theme.colors.primary.main
                       : theme.colors.gray[500]
                   }
@@ -99,7 +123,7 @@ export function NewClientScreen() {
                 <Text
                   style={[
                     styles.tabText,
-                    clientType === 'business' && styles.activeTabText,
+                    selectedType === 'Zakelijk' && styles.activeTabText,
                   ]}
                 >
                   Zakelijk
@@ -109,15 +133,15 @@ export function NewClientScreen() {
               <TouchableOpacity
                 style={[
                   styles.tabButton,
-                  clientType === 'personal' && styles.activeTab,
+                  selectedType === 'Particulier' && styles.activeTab,
                 ]}
-                onPress={() => setClientType('personal')}
+                onPress={setTypePersonal}
               >
                 <User
                   width={24}
                   height={24}
                   color={
-                    clientType === 'personal'
+                    selectedType === 'Particulier'
                       ? theme.colors.primary.main
                       : theme.colors.gray[500]
                   }
@@ -125,7 +149,7 @@ export function NewClientScreen() {
                 <Text
                   style={[
                     styles.tabText,
-                    clientType === 'personal' && styles.activeTabText,
+                    selectedType === 'Particulier' && styles.activeTabText,
                   ]}
                 >
                   Particulier
@@ -139,92 +163,128 @@ export function NewClientScreen() {
             {/* Context: Client name input */}
             <View style={styles.fieldGroup}>
               <Text style={styles.fieldLabel}>Naam</Text>
-              <Input
-                placeholder="Voer naam in"
-                value={formData.name}
-                onChangeText={(text) => updateField('name', text)}
-                leftIcon={<User width={16} height={16} />}
-                rightIcon={
-                  formData.name ? <Close width={20} height={20} /> : undefined
-                }
-                showRightIcon={!!formData.name}
-                iconStyle="bordered"
-                state="filled"
+              <Controller
+                control={form.control}
+                name="name"
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <Input
+                    placeholder="Voer naam in"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    leftIcon={<User width={16} height={16} />}
+                    showRightIcon={Boolean(value)}
+                    rightIcon={Boolean(value) ? <Close width={20} height={20} /> : undefined}
+                    iconStyle="bordered"
+                    state={value ? 'filled' : undefined}
+                  />
+                )}
               />
+              {getErrorMessage(form.formState.errors, 'name') && (
+                <Text style={styles.errorText}>{getErrorMessage(form.formState.errors, 'name')}</Text>
+              )}
             </View>
 
             {/* Context: Email address input */}
             <View style={styles.fieldGroup}>
               <Text style={styles.fieldLabel}>E-mailadres</Text>
-              <Input
-                placeholder="voorbeeld@email.com"
-                value={formData.email}
-                onChangeText={(text) => updateField('email', text)}
-                leftIcon={<Email width={16} height={16} />}
-                rightIcon={
-                  formData.email ? <Close width={20} height={20} /> : undefined
-                }
-                showRightIcon={!!formData.email}
-                iconStyle="bordered"
-                state="filled"
-                keyboardType="email-address"
+              <Controller
+                control={form.control}
+                name="email"
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <Input
+                    placeholder="voorbeeld@email.com"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    leftIcon={<Email width={16} height={16} />}
+                    showRightIcon={Boolean(value)}
+                    rightIcon={Boolean(value) ? <Close width={20} height={20} /> : undefined}
+                    iconStyle="bordered"
+                    state={value ? 'filled' : undefined}
+                    keyboardType="email-address"
+                  />
+                )}
               />
+              {getErrorMessage(form.formState.errors, 'email') && (
+                <Text style={styles.errorText}>{getErrorMessage(form.formState.errors, 'email')}</Text>
+              )}
             </View>
 
             {/* Context: Phone number input */}
             <View style={styles.fieldGroup}>
               <Text style={styles.fieldLabel}>Telefoonnummer</Text>
-              <Input
-                placeholder="+31 6 12345678"
-                value={formData.phone}
-                onChangeText={(text) => updateField('phone', text)}
-                leftIcon={<Call width={16} height={16} />}
-                rightIcon={
-                  formData.phone ? <Close width={20} height={20} /> : undefined
-                }
-                showRightIcon={!!formData.phone}
-                iconStyle="bordered"
-                state="filled"
-                keyboardType="phone-pad"
+              <Controller
+                control={form.control}
+                name="phone"
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <Input
+                    placeholder="+31 6 12345678"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    leftIcon={<Call width={16} height={16} />}
+                    showRightIcon={Boolean(value)}
+                    rightIcon={Boolean(value) ? <Close width={20} height={20} /> : undefined}
+                    iconStyle="bordered"
+                    state={value ? 'filled' : undefined}
+                    keyboardType="phone-pad"
+                  />
+                )}
               />
+              {getErrorMessage(form.formState.errors, 'phone') && (
+                <Text style={styles.errorText}>{getErrorMessage(form.formState.errors, 'phone')}</Text>
+              )}
             </View>
 
             {/* Context: Street address input */}
             <View style={styles.fieldGroup}>
               <Text style={styles.fieldLabel}>Adres</Text>
-              <Input
-                placeholder="Straatnaam en huisnummer"
-                value={formData.address}
-                onChangeText={(text) => updateField('address', text)}
-                leftIcon={<Location width={16} height={16} />}
-                rightIcon={
-                  formData.address ? (
-                    <Close width={20} height={20} />
-                  ) : undefined
-                }
-                showRightIcon={!!formData.address}
-                iconStyle="bordered"
-                state="filled"
+              <Controller
+                control={form.control}
+                name="addressLine"
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <Input
+                    placeholder="Straatnaam en huisnummer"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    leftIcon={<Location width={16} height={16} />}
+                    showRightIcon={Boolean(value)}
+                    rightIcon={Boolean(value) ? <Close width={20} height={20} /> : undefined}
+                    iconStyle="bordered"
+                    state={value ? 'filled' : undefined}
+                  />
+                )}
               />
+              {getErrorMessage(form.formState.errors, 'addressLine') && (
+                <Text style={styles.errorText}>{getErrorMessage(form.formState.errors, 'addressLine')}</Text>
+              )}
             </View>
 
             {/* Context: Postal code and city input */}
             <View style={styles.fieldGroup}>
               <Text style={styles.fieldLabel}>Postcode en Plaats</Text>
-              <Input
-                placeholder="1234 AB Amsterdam"
-                value={formData.postalCode}
-                onChangeText={(text) => updateField('postalCode', text)}
-                leftIcon={<Location width={16} height={16} />}
-                rightIcon={
-                  formData.postalCode ? (
-                    <Close width={20} height={20} />
-                  ) : undefined
-                }
-                showRightIcon={!!formData.postalCode}
-                iconStyle="bordered"
-                state="filled"
+              <Controller
+                control={form.control}
+                name="postalCode"
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <Input
+                    placeholder="1234 AB Amsterdam"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    leftIcon={<Location width={16} height={16} />}
+                    showRightIcon={Boolean(value)}
+                    rightIcon={Boolean(value) ? <Close width={20} height={20} /> : undefined}
+                    iconStyle="bordered"
+                    state={value ? 'filled' : undefined}
+                  />
+                )}
               />
+              {getErrorMessage(form.formState.errors, 'postalCode') && (
+                <Text style={styles.errorText}>{getErrorMessage(form.formState.errors, 'postalCode')}</Text>
+              )}
             </View>
           </View>
         </View>
@@ -236,6 +296,7 @@ export function NewClientScreen() {
           variant="primary"
           size="large"
           onPress={handleSave}
+          disabled={!form.isValid}
           showIcon={false}
         >
           Opslaan
@@ -292,6 +353,9 @@ const styles = StyleSheet.create({
     color: theme.colors.primary.main,
     fontSize: 14,
     fontWeight: '500',
+  },
+  saveTextDisabled: {
+    color: theme.colors.gray[600],
   },
   content: {
     flex: 1,
@@ -356,5 +420,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing[5],
     paddingBottom: theme.spacing[5],
     gap: theme.spacing[3],
+  },
+  errorText: {
+    color: theme.colors.warning.main,
+    fontSize: 12,
+    marginTop: 4,
   },
 });

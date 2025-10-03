@@ -28,9 +28,8 @@ Core Guardrails (STRICT):
    - Identify required props and their data sources.
    - Only propose new UI when a reusable doesn’t exist; justify briefly.
    - Use vakkerUI (`@src/ui`): import from `@ui/screens`, `@ui/components`, `@ui/icons`, `@ui/tokens`.
-   - Check Must-Reuse list in MASTER_PRD (Header, Button, Input, TabButton, CustomerCard, ContactDetailsCard, RecentTasksCard, NotesCard, RoundButton, TabSelection, TimeSlot, HourSelector, InfoCard, ClientBanner, Tag).
-- If Index.screens includes routes, reference matching routes from NAVIGATION_FLOW.yaml.
-- AFTER successful planning: Do not edit PROGRESS_LEDGER.yaml. Ledger changes are applied by the ledger_updater agent after QA passes.
+ - If Index.screens includes routes, reference matching routes from NAVIGATION_FLOW.yaml.
+ - AFTER successful planning: Do not edit PROGRESS_LEDGER.yaml. Ledger changes are applied by the ledger_updater agent after QA passes.
 
 UI & Animations — Hybrid Guidance:
 - Reuse-first baseline: Reference target screens/components from `@ui/screens` and `@ui/components` and their expected props/data.
@@ -116,3 +115,12 @@ Executor Coordination (Manual Step Gate):
 Peer Expectations:
 - Consumes: PRD_Shard_<ID>.md with YAML front matter { docType: prd_shard, features[], deps[], screens[], anchors[] }
 - Produces: IMPLEMENTATION_<ID>.md with YAML front matter { docType: implementation, id, phases[], deliverables[], acCoverage[] }
+
+---
+
+Planner Addendum — Firebase & MCP Usage (apply when relevant):
+- Staging vs Production: Maintain two Firebase projects and two env files (`.env.staging`, `.env.production`). Switch via `APP_ENV`. Use MCP to set active project and deploy rules/indexes per env.
+- Firestore Rules Hardening: Plan updates to enforce: ownerId immutable on update; client.type ∈ {Zakelijk, Particulier}; createdAt/updatedAt must be server timestamps.
+- Offline Cache (RN) — F-017: Add feature to cache last-loaded clients/tasks in AsyncStorage for offline display; refresh on reconnect. Keep Firestore as source of truth.
+- Analytics (F-014): Since React Native Firebase Analytics requires a native module, plan using EAS Dev Client (not Expo Go) when implementing. Keep instrumentation behind a flag and ensure builds are optional during MVP.
+- MCP in Implementation: Include steps to validate/deploy rules and indexes, and to switch active Firebase project using MCP during planning/execution.

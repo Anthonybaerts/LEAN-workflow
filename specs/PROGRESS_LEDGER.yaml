@@ -217,21 +217,29 @@ features:
     completed_date: null
 
   - id: F-010
-    status: pending
+    status: done
     acs:
       - id: F-010-AC1
-        status: pending
+        status: done
       - id: F-010-AC2
-        status: pending
+        status: done
       - id: F-010-AC3
-        status: pending
-    deliverables: []
+        status: done
+    deliverables:
+      - F-010-D1
+      - F-010-D2
+      - F-010-D3
     touched_areas:
-      screens: []
-      routes: []
-      entities: []
-      apis: []
-    completed_date: null
+      screens:
+        - ClientInfoScreen
+      routes:
+        - ClientInfoScreen
+      entities:
+        - Client
+        - Task
+      apis:
+        - FirebaseFirestore
+    completed_date: '2025-10-02'
 
   - id: F-011
     status: pending
@@ -360,6 +368,9 @@ global_deliverables:
   - F-008-D1
   - F-008-D2
   - F-008-D3
+  - F-010-D1
+  - F-010-D2
+  - F-010-D3
 
 global_touched_areas:
   screens:

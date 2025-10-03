@@ -1,4 +1,4 @@
-sequence: [F-001, F-005, F-014, F-006, F-002, F-007, F-009, F-008, F-010, F-003, F-004, F-011, F-012, F-013, F-015, F-016]
+sequence: [F-001, F-005, F-014, F-006, F-002, F-007, F-009, F-008, F-018, F-010, F-003, F-004, F-011, F-012, F-013, F-015, F-016]
 ---
 
 # Build Sequence
@@ -72,6 +72,14 @@ Deliverables:
 - `NewClientScreen` form with validation and submit
 - Navigate to `ClientInfoScreen` on success
 
+## F-018 Calendar: Timeline Adoption
+Why now: Adopt built-in Timeline to reduce custom code and improve overlap handling (post-F-008, pre-F-004).
+Deliverables:
+- Feature-flagged TimelineList integrated under existing month header
+- TaskEntity → event mapping (start/end, color by type)
+- Interactions: tap empty → NewTask prefill; tap event → details
+- Theming parity with vakkerUI tokens
+
 ## F-004 Tasks: Create
 Why now: Key workflow depending on clients and calendar (p4; screens).
 Deliverables:
@@ -107,6 +115,14 @@ Why now: Completes core task workflow following create (p9).
 Deliverables:
 - `EditTaskScreen` with validation and submit
 - Persistence updates and navigation back to context
+
+
+## F-017 Offline Cache (RN)
+Why now: Improves resilience for brief offline moments; minimal scope, leveraged by Clients and Calendar. (p6)
+Deliverables:
+- AsyncStorage-backed cache for clients and tasks (read-through)
+- Startup load uses cache first, then refreshes from Firestore
+- Cache invalidation on create/update
 
 
 

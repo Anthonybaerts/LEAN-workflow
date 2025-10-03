@@ -25,6 +25,8 @@ const ClientEnv = {
   FIREBASE_MESSAGING_SENDER_ID: firebase.messagingSenderId || '',
   FIREBASE_APP_ID: firebase.appId || '',
   FIREBASE_MEASUREMENT_ID: firebase.measurementId,
+  // Platform hint for Firebase setup
+  PLATFORM: typeof navigator !== 'undefined' && navigator.product === 'ReactNative' ? 'native' : 'web',
 };
 
 module.exports = ClientEnv;

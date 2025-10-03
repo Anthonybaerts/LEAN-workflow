@@ -38,7 +38,9 @@ type Props = {
   onEndTimePress?: () => void;
   onWorkTypeSelect?: (type: WorkType) => void;
   onClientChange?: (query: string) => void;
+  onClientFocus?: () => void;
   onDescriptionChange?: (description: string) => void;
+  saveDisabled?: boolean;
 };
 
 export function NewTaskScreen({
@@ -56,7 +58,9 @@ export function NewTaskScreen({
   onEndTimePress,
   onWorkTypeSelect,
   onClientChange,
+  onClientFocus,
   onDescriptionChange,
+  saveDisabled = false,
 }: Props) {
   const workTypes = [
     { id: 'maintenance', label: 'Onderhoud', color: 'blue' as const },
@@ -132,6 +136,7 @@ export function NewTaskScreen({
                 showRightIcon={clientQuery.length > 0}
                 value={clientQuery}
                 onChangeText={onClientChange}
+                onFocus={onClientFocus}
               />
             </View>
 
@@ -216,6 +221,7 @@ export function NewTaskScreen({
           variant="primary"
           size="large"
           showIcon={false}
+          disabled={saveDisabled}
           onPress={onSave}
         >
           Taak Opslaan

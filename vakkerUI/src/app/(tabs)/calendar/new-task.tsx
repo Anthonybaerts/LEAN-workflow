@@ -1,6 +1,6 @@
 import React from 'react';
 import { NewTaskScreen } from '@/ui/screens';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, useNavigation, useFocusEffect } from 'expo-router';
 import dayjs from 'dayjs';
 import 'dayjs/locale/nl';
 import { Platform, Alert, ToastAndroid } from 'react-native';
@@ -9,6 +9,7 @@ import { useZodForm } from '@/services/forms/useZodForm';
 import { taskSchema } from '@/services/validation/taskSchema';
 import { ClientsScreen } from '@/ui/screens';
 import { tasksRepository } from '@/services/tasksRepository';
+import { theme } from '@/ui/tokens';
 
 function capitalize(value: string): string {
   if (!value) return value;
@@ -26,6 +27,7 @@ function formatDurationLabel(start: dayjs.Dayjs, end: dayjs.Dayjs): string {
 
 export default function NewTaskRoute() {
   const router = useRouter();
+  const navigation = useNavigation();
   const params = useLocalSearchParams<{ date?: string; startAt?: string }>();
 
   // Initialize state from params with sensible defaults
@@ -179,6 +181,22 @@ export default function NewTaskRoute() {
     setShowEndPicker(false);
   }, [handleEndTimePicked]);
 
+  // Hide tab bar while on this screen; restore on blur
+  useFocusEffect(
+    React.useCallback(() => {
+      const parent = navigation.getParent?.();
+      parent?.setOptions({ tabBarStyle: { display: 'none' } });
+      return () => {
+        parent?.setOptions({
+          tabBarStyle: {
+            backgroundColor: theme.colors.gray[900],
+            borderTopColor: theme.colors.gray[700],
+          },
+        });
+      };
+    }, [navigation])
+  );
+
   // P2e: Validation and Save disabled state
   const form = useZodForm(taskSchema, { defaultValues: {
     clientId: '',
@@ -277,6 +295,8 @@ export default function NewTaskRoute() {
         startTime={startTime}
         endTime={endTime}
         duration={duration}
+        startActive={showStartPicker}
+        endActive={showEndPicker}
         onStartTimePress={onStartTimePress}
         onEndTimePress={onEndTimePress}
         selectedWorkType={selectedWorkType}

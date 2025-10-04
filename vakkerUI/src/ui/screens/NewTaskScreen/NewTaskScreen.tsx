@@ -28,6 +28,8 @@ type Props = {
   startTime?: string;
   endTime?: string;
   duration?: string;
+  startActive?: boolean;
+  endActive?: boolean;
   selectedWorkType?: WorkType;
   clientQuery?: string;
   description?: string;
@@ -48,6 +50,8 @@ export function NewTaskScreen({
   startTime = '08:00',
   endTime = '09:00|',
   duration = 'Duur: 1 uur',
+  startActive = false,
+  endActive = false,
   selectedWorkType = 'maintenance',
   clientQuery = '',
   description = '',
@@ -73,6 +77,7 @@ export function NewTaskScreen({
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.content}>
@@ -100,6 +105,7 @@ export function NewTaskScreen({
                 <HourSelector
                   label="Starttijd"
                   time={startTime}
+                selected={startActive}
                   onPress={onStartTimePress}
                 />
 
@@ -108,7 +114,7 @@ export function NewTaskScreen({
                 <HourSelector
                   label="Eindtijd"
                   time={endTime}
-                  selected
+                selected={endActive}
                   onPress={onEndTimePress}
                 />
               </View>
@@ -212,29 +218,28 @@ export function NewTaskScreen({
               />
             </View>
           </View>
+          {/* Action Buttons */}
+          <View style={styles.actionButtons}>
+            <Button
+              variant="primary"
+              size="large"
+              showIcon={false}
+              disabled={saveDisabled}
+              onPress={onSave}
+            >
+              Taak Opslaan
+            </Button>
+            <Button
+              variant="outline"
+              size="large"
+              showIcon={false}
+              onPress={onCancel}
+            >
+              Annuleren
+            </Button>
+          </View>
         </View>
       </ScrollView>
-
-      {/* Action Buttons */}
-      <View style={styles.actionButtons}>
-        <Button
-          variant="primary"
-          size="large"
-          showIcon={false}
-          disabled={saveDisabled}
-          onPress={onSave}
-        >
-          Taak Opslaan
-        </Button>
-        <Button
-          variant="outline"
-          size="large"
-          showIcon={false}
-          onPress={onCancel}
-        >
-          Annuleren
-        </Button>
-      </View>
     </View>
   );
 }
@@ -247,6 +252,11 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
+    paddingBottom: theme.spacing[5],
+  },
   content: {
     gap: theme.spacing[10], // 40px gap between main sections
   },
@@ -255,7 +265,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing[5],
   },
   dateHeader: {
-    paddingVertical: theme.spacing[8],
+    paddingVertical: theme.spacing[6],
   },
   dateText: {
     color: theme.colors.white,

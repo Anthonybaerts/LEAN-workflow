@@ -72,13 +72,6 @@ Deliverables:
 - `NewClientScreen` form with validation and submit
 - Navigate to `ClientInfoScreen` on success
 
-## F-018 Calendar: Timeline Adoption
-Why now: Adopt built-in Timeline to reduce custom code and improve overlap handling (post-F-008, pre-F-004).
-Deliverables:
-- Feature-flagged TimelineList integrated under existing month header
-- TaskEntity → event mapping (start/end, color by type)
-- Interactions: tap empty → NewTask prefill; tap event → details
-- Theming parity with vakkerUI tokens
 
 ## F-004 Tasks: Create
 Why now: Key workflow depending on clients and calendar (p4; screens).

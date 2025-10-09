@@ -507,24 +507,6 @@ Copy (Dutch)
 - task_create_opened
 - search_clients
 
-## [F-018] Calendar: Timeline Adoption
-<a id="calendar-timeline-adoption"></a>
-Slug: calendar-timeline-adoption
-Epic: E-200
-Type: enhancement
-Priority: 3
-Deps: [F-001, F-006, F-008]
-Screens: [CalendarScreen]
-Why: Use the built-in Timeline (with CalendarProvider/ExpandableCalendar) from react-native-calendars to accelerate delivery and reduce custom timeline code.
-Scope: Replace custom FlatList day timeline with library TimelineList under a feature flag; maintain month header; map TaskEntity to events.
-Acceptance Criteria
-- F-018-AC1: Overlapping tasks render side-by-side in the day timeline.
-- F-018-AC2: Initial view focuses around 07:00; timeline scrolls smoothly through the day.
-- F-018-AC3: Tapping empty background opens NewTask prefilled with date/time; tapping an event opens details.
-- F-018-AC4: Theming aligns with vakkerUI tokens; colors map to task types.
-- F-018-AC5: Feature is gated behind a flag; parity QA passes before enabling by default.
-Notes
-- Non-goals: drag/resize events, week view, recurring rules.
 
 ## [F-017] Offline Cache (RN)
 <a id="offline-cache-rn"></a>

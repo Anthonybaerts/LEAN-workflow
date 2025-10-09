@@ -1,13 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Platform, ToastAndroid, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import dayjs from 'dayjs';
 import 'dayjs/locale/nl';
 import { Calendar as RNCalendar, LocaleConfig, DateData } from 'react-native-calendars';
-import { useRouter } from 'expo-router';
 import { theme } from '@/ui/tokens';
 import { ChevronLeft, ChevronRight, Pencil } from '@/ui/icons';
-import { Header, TimeSlot } from '@/ui/components';
+import { Header } from '@/ui/components';
 import { tasksRepository, type TaskEntity } from '@/services/tasksRepository';
+import { TimelineGrid } from '@ui/components/Timeline/TimelineGrid';
+import { EventsLayer } from '@ui/components/Timeline/EventsLayer';
+import { TimelineHourLabels } from '@ui/components/Timeline/TimelineHourLabels';
+import { createTimelineConfig, getWindowMinutes, getPxPerMinute, parseHHmmToMinutesFromMidnight, computeYAndHeight, minutesToHHmmFromWindowStart } from '@ui/components/Timeline/timelineUtils';
+import { useRouter } from 'expo-router';
 
 // Feature flag to enable task creation navigation (P3)
 const enableTaskCreate = true;
@@ -113,128 +117,109 @@ export default function CalendarIndex() {
     };
   }, [selectedDate]);
 
-  // Generate 30-minute slots between 07:00 and 19:00 inclusive
-  const slots = React.useMemo(() => {
-    const start = dayjs(selectedDate).hour(7).minute(0).second(0);
-    const end = dayjs(selectedDate).hour(19).minute(0).second(0);
-    const arr: string[] = [];
-    let t = start;
-    while (t.isBefore(end) || t.isSame(end)) {
-      arr.push(t.format('HH:mm'));
-      t = t.add(30, 'minute');
-    }
-    return arr;
-  }, [selectedDate]);
+  // P1 timeline config (parametric window and grid density only affects lines)
+  const timelineConfig = React.useMemo(() => createTimelineConfig({ startHour: 7, endHour: 19, slotMinutes: 30 }), []);
+  const windowMinutes = React.useMemo(() => getWindowMinutes(timelineConfig), [timelineConfig]);
+  const pxPerMinute = React.useMemo(() => getPxPerMinute({ baselineSlotMinutes: 30, baselineSlotPx: 36 }), []);
 
-  // Map tasks to slot events
-  const slotToEvents = React.useMemo(() => {
-    const map = new Map<string, { id: string; title: string; color?: 'yellow' | 'blue' | 'gray' | 'green' }[]>();
-    for (const s of slots) map.set(s, []);
-    for (const task of tasks) {
-      const timeKey = (task.startAt ?? '').slice(0, 5);
-      if (!map.has(timeKey)) continue;
-      const title = task.description || 'Taak';
-      const color: 'yellow' | 'blue' | 'gray' | 'green' = task.type === 'green' ? 'green' : task.type === 'yellow' ? 'yellow' : task.type === 'gray' ? 'gray' : 'blue';
-      map.get(timeKey)!.push({ id: task.id || `${timeKey}-${Math.random()}`, title, color });
-    }
-    return map;
-  }, [slots, tasks]);
+  // P2: compute sample positions for validation (no rendering yet)
+  const sampleLayouts = React.useMemo(() => {
+    const examples = ['07:15', '08:10', '09:45'];
+    return examples.map((t) => {
+      const start = parseHHmmToMinutesFromMidnight(t) ?? timelineConfig.startHour * 60;
+      const end = start + 60; // 1 hour sample
+      const { y, height } = computeYAndHeight({
+        startAtMinutesFromMidnight: start,
+        endAtMinutesFromMidnight: end,
+        config: timelineConfig,
+        pxPerMinute,
+      });
+      return { t, y, height };
+    });
+  }, [timelineConfig, pxPerMinute]);
 
-  const handleSlotPress = React.useCallback(
-    (startAt: string, hasEvents: boolean) => {
-      if (hasEvents) return; // Only tap-to-add on empty slots per spec
-      if (!enableTaskCreate) {
-        const msg = 'Taak aanmaken binnenkort beschikbaar';
-        if (Platform.OS === 'android') {
-          ToastAndroid.show(msg, ToastAndroid.SHORT);
-        } else {
-          Alert.alert(msg);
-        }
-        return;
-      }
-      router.push({
-        pathname: '/(tabs)/calendar/new-task',
-        params: { date: selectedDate, startAt },
-      } as any);
-    },
-    [router, selectedDate]
-  );
+  // No tap-to-add behavior in P1 (added in later phases)
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.gray[900] }}>
-      <FlatList
-        data={slots}
-        keyExtractor={(time) => time}
-        renderItem={({ item: time }) => {
-          const events = slotToEvents.get(time) || [];
-          const hasEvents = events.length > 0;
-          const displayEvents =
-            events.length > 2
-              ? [...events.slice(0, 2), { id: `${time}-overflow`, title: `+${events.length - 2}`, color: 'gray' as const }]
-              : events;
-          const content = (
-            <View style={styles.timeSlotWrapper}>
-              <TimeSlot time={time} events={displayEvents} />
+      <View style={styles.headerSection}>
+        <Header title="Kalender" />
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: theme.spacing[6] }}>
+        <RNCalendar
+          current={visibleMonth}
+          onDayPress={onDayPress}
+          onMonthChange={(month: DateData) => setVisibleMonth(month.dateString)}
+          firstDay={1}
+          markedDates={markedDates}
+          hideExtraDays
+          enableSwipeMonths
+          renderArrow={(direction: 'left' | 'right') =>
+            direction === 'left' ? (
+              <ChevronLeft width={24} height={24} color={theme.colors.white} />
+            ) : (
+              <ChevronRight width={24} height={24} color={theme.colors.white} />
+            )
+          }
+          theme={{
+            backgroundColor: theme.colors.gray[900],
+            calendarBackground: theme.colors.gray[900],
+            textSectionTitleColor: theme.colors.gray[500],
+            selectedDayBackgroundColor: theme.colors.primary.main,
+            selectedDayTextColor: theme.colors.white,
+            todayTextColor: theme.colors.primary.main,
+            dayTextColor: theme.colors.white,
+            textDisabledColor: theme.colors.gray[600],
+            arrowColor: theme.colors.white,
+            monthTextColor: theme.colors.white,
+            indicatorColor: theme.colors.primary.main,
+          }}
+          style={{
+            marginHorizontal: theme.spacing[5],
+            marginTop: theme.spacing[4],
+            marginBottom: theme.spacing[4],
+            borderRadius: theme.radius.lg,
+            backgroundColor: theme.colors.gray[900],
+          }}
+        />
+        <View style={styles.dateSelection}>
+          <Text style={styles.selectedDate}>{selectedDateLabel}</Text>
+          <Pencil width={24} height={24} color={theme.colors.primary.main} />
+        </View>
+
+        {/* Timeline container with parametric height and grid overlay (events added in later phases) */}
+        <View style={{ marginHorizontal: theme.spacing[5], flexDirection: 'row', gap: theme.spacing[4] }}>
+          {/* Left labels */}
+          <View style={{ width: 48 }}>
+            <View style={{ height: Math.round(windowMinutes * pxPerMinute) + Math.round(theme.spacing[3]), position: 'relative' }}>
+              <TimelineHourLabels startHour={timelineConfig.startHour} endHour={timelineConfig.endHour} pxPerMinute={pxPerMinute} topOffsetPx={Math.round(theme.spacing[3])} />
             </View>
-          );
-          return hasEvents ? (
-            content
-          ) : (
-            <TouchableOpacity activeOpacity={0.8} onPress={() => handleSlotPress(time, hasEvents)}>
-              {content}
-            </TouchableOpacity>
-          );
-        }}
-        ListHeaderComponent={() => (
-          <>
-            <View style={styles.headerSection}>
-              <Header title="Kalender" />
-            </View>
-            <RNCalendar
-              current={visibleMonth}
-              onDayPress={onDayPress}
-              onMonthChange={(month: DateData) => setVisibleMonth(month.dateString)}
-              firstDay={1}
-              markedDates={markedDates}
-              hideExtraDays
-              enableSwipeMonths
-              renderArrow={(direction: 'left' | 'right') =>
-                direction === 'left' ? (
-                  <ChevronLeft width={24} height={24} color={theme.colors.white} />
-                ) : (
-                  <ChevronRight width={24} height={24} color={theme.colors.white} />
-                )
-              }
-              theme={{
-                backgroundColor: theme.colors.gray[900],
-                calendarBackground: theme.colors.gray[900],
-                textSectionTitleColor: theme.colors.gray[500],
-                selectedDayBackgroundColor: theme.colors.primary.main,
-                selectedDayTextColor: theme.colors.white,
-                todayTextColor: theme.colors.primary.main,
-                dayTextColor: theme.colors.white,
-                textDisabledColor: theme.colors.gray[600],
-                arrowColor: theme.colors.white,
-                monthTextColor: theme.colors.white,
-                indicatorColor: theme.colors.primary.main,
+          </View>
+          {/* Grid + events */}
+          <View style={{ flex: 1 }}>
+            <Pressable
+              onPress={(e) => {
+                // Convert press Y to minutes from top of the timeline container
+                const y = e.nativeEvent.locationY - Math.round(theme.spacing[3]);
+                const minutesFromTop = Math.max(0, y) / pxPerMinute;
+                const startAt = minutesToHHmmFromWindowStart({ minutesFromTop, config: timelineConfig, rounding: 5 });
+                router.push({ pathname: '/(tabs)/calendar/new-task', params: { date: selectedDate, startAt } } as any);
               }}
-              style={{
-                marginHorizontal: theme.spacing[5],
-                marginTop: theme.spacing[4],
-                marginBottom: theme.spacing[4],
-                borderRadius: theme.radius.lg,
-                backgroundColor: theme.colors.gray[900],
-              }}
-            />
-            <View style={styles.dateSelection}>
-              <Text style={styles.selectedDate}>{selectedDateLabel}</Text>
-              <Pencil width={24} height={24} color={theme.colors.primary.main} />
-            </View>
-          </>
-        )}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: theme.spacing[6] }}
-      />
+            >
+              <View style={{ height: Math.round(windowMinutes * pxPerMinute) + Math.round(theme.spacing[3]) }}>
+              <TimelineGrid
+                startHour={timelineConfig.startHour}
+                endHour={timelineConfig.endHour}
+                slotMinutes={timelineConfig.slotMinutes}
+                pxPerMinute={pxPerMinute}
+                  topOffsetPx={Math.round(theme.spacing[3])}
+              />
+                <EventsLayer tasks={tasks} config={timelineConfig} pxPerMinute={pxPerMinute} topOffsetPx={Math.round(theme.spacing[3])} />
+              </View>
+            </Pressable>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }

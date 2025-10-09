@@ -9,7 +9,10 @@ import { useZodForm } from '@/services/forms/useZodForm';
 import { taskSchema } from '@/services/validation/taskSchema';
 import { ClientsScreen } from '@/ui/screens';
 import { tasksRepository } from '@/services/tasksRepository';
+import { clientsRepository } from '@/services/clientsRepository';
 import { theme } from '@/ui/tokens';
+import { useAppDispatch, useAppSelector } from '@/state/store';
+import { clientsLoading, clientsLoaded, clientsError } from '@/state/slices/clientsSlice';
 
 function capitalize(value: string): string {
   if (!value) return value;
@@ -26,6 +29,10 @@ function formatDurationLabel(start: dayjs.Dayjs, end: dayjs.Dayjs): string {
 }
 
 export default function NewTaskRoute() {
+  const dispatch = useAppDispatch();
+  const uid = useAppSelector((s) => s.auth.uid);
+  const clientsItems = useAppSelector((s) => s.clients.items);
+  const clientsStatus = useAppSelector((s) => s.clients.status);
   const router = useRouter();
   const navigation = useNavigation();
   const params = useLocalSearchParams<{ date?: string; startAt?: string }>();
@@ -245,17 +252,55 @@ export default function NewTaskRoute() {
     form.setValue('type', workTypeToColor[selectedWorkType], { shouldValidate: true });
   }, []);
 
-  // P3a: Client selection modal
-  const [showClientPicker, setShowClientPicker] = React.useState(false);
+  // Inline clients: observe list (Redux) and debounce local filter
+  const [clientQuery, setClientQuery] = React.useState('');
   const [clientLabel, setClientLabel] = React.useState('');
-  const onClientFocus = React.useCallback(() => {
-    setShowClientPicker(true);
-  }, []);
-  const handleClientSelected = React.useCallback((clientId: string) => {
-    // For now, set the id and use it as label placeholder
+  React.useEffect(() => {
+    if (!uid) return;
+    let unsub: undefined | (() => void);
+    dispatch(clientsLoading());
+    try {
+      unsub = clientsRepository.observeListByOwnerId(uid, (list) => {
+        const sanitized = list.map((c) => ({
+          ...c,
+          createdAt: (c as any).createdAt && typeof (c as any).createdAt.toDate === 'function'
+            ? (c as any).createdAt.toDate().toISOString()
+            : (c as any).createdAt,
+          updatedAt: (c as any).updatedAt && typeof (c as any).updatedAt.toDate === 'function'
+            ? (c as any).updatedAt.toDate().toISOString()
+            : (c as any).updatedAt,
+        }));
+        dispatch(clientsLoaded(sanitized as any));
+      });
+    } catch (e: any) {
+      dispatch(clientsError(e?.message ?? 'Failed to subscribe clients'));
+    }
+    return () => {
+      try { unsub && unsub(); } catch {}
+    };
+  }, [uid, dispatch]);
+  const [debouncedQuery, setDebouncedQuery] = React.useState('');
+  React.useEffect(() => {
+    const id = setTimeout(() => setDebouncedQuery(clientQuery.trim().toLowerCase()), 250);
+    return () => clearTimeout(id);
+  }, [clientQuery]);
+  const filteredClients = React.useMemo(() => {
+    if (debouncedQuery.length === 0) return clientsItems;
+    return clientsItems.filter((c: { name: string; email?: string; phone?: string; addressLine?: string; city?: string }) =>
+      [c.name, c.email, c.phone, c.addressLine, c.city]
+        .filter((v): v is string => Boolean(v))
+        .some((v) => v.toLowerCase().includes(debouncedQuery))
+    );
+  }, [clientsItems, debouncedQuery]);
+  const inlineClients = React.useMemo(
+    () => filteredClients.map((c: any) => ({ id: c.id as string, label: c.name as string, subtitle: (c.city || c.email || c.phone) as string | undefined })),
+    [filteredClients]
+  );
+  const handleClientSelected = React.useCallback((clientId: string, label: string) => {
     form.setValue('clientId', clientId, { shouldValidate: true, shouldDirty: true });
-    setClientLabel(clientId);
-    setShowClientPicker(false);
+    setClientLabel(label);
+    // Clear query so the field shows the selected label and results collapse
+    setClientQuery('');
   }, [form]);
 
   // P3b: Save flow + error handling
@@ -301,8 +346,19 @@ export default function NewTaskRoute() {
         onEndTimePress={onEndTimePress}
         selectedWorkType={selectedWorkType}
         onWorkTypeSelect={onWorkTypeSelect as any}
-        clientQuery={clientLabel}
-        onClientFocus={onClientFocus}
+        clientQuery={clientQuery}
+        clientDisplay={clientQuery.length > 0 ? clientQuery : clientLabel}
+        onClientFocus={undefined as any}
+        onClientChange={(q: string) => {
+          setClientQuery(q);
+          // If the user starts typing, clear previous selection
+          setClientLabel('');
+          form.setValue('clientId', '', { shouldDirty: true, shouldValidate: true });
+        }}
+        inlineClients={inlineClients}
+        onInlineClientPress={(id, label) => handleClientSelected(id, label)}
+        onInlineAddClient={() => router.push('/(tabs)/clients/new-client')}
+        isClientsLoading={clientsStatus === 'loading'}
         description={description}
         onDescriptionChange={onDescriptionChange}
         saveDisabled={saveDisabled || isSaving}
@@ -330,13 +386,7 @@ export default function NewTaskRoute() {
           onChange={onEndPickerChange}
         />
       )}
-      {showClientPicker && (
-        // Minimal selection mode: reuse ClientsScreen and close on select
-        <ClientsScreen
-          hideEmbeddedNav
-          onClientPress={handleClientSelected}
-        />
-      )}
+      {/* Inline clients list is rendered inside NewTaskScreen via clientQuery/clientLabel props */}
     </>
   );
 }

@@ -9,7 +9,7 @@
  */
 
 import * as React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import {
   Header,
   HourSelector,
@@ -32,6 +32,7 @@ type Props = {
   endActive?: boolean;
   selectedWorkType?: WorkType;
   clientQuery?: string;
+  clientDisplay?: string;
   description?: string;
   onBack?: () => void;
   onSave?: () => void;
@@ -43,6 +44,11 @@ type Props = {
   onClientFocus?: () => void;
   onDescriptionChange?: (description: string) => void;
   saveDisabled?: boolean;
+  // Inline clients props
+  inlineClients?: { id: string; label: string; subtitle?: string }[];
+  onInlineClientPress?: (clientId: string, label: string) => void;
+  onInlineAddClient?: () => void;
+  isClientsLoading?: boolean;
 };
 
 export function NewTaskScreen({
@@ -54,6 +60,7 @@ export function NewTaskScreen({
   endActive = false,
   selectedWorkType = 'maintenance',
   clientQuery = '',
+  clientDisplay = '',
   description = '',
   onBack,
   onSave,
@@ -65,7 +72,12 @@ export function NewTaskScreen({
   onClientFocus,
   onDescriptionChange,
   saveDisabled = false,
+  inlineClients,
+  onInlineClientPress,
+  onInlineAddClient,
+  isClientsLoading = false,
 }: Props) {
+  const [isClientFocused, setIsClientFocused] = React.useState(false);
   const workTypes = [
     { id: 'maintenance', label: 'Onderhoud', color: 'blue' as const },
     { id: 'project', label: 'Project', color: 'yellow' as const },
@@ -74,10 +86,12 @@ export function NewTaskScreen({
   ];
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.container}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.content}>
@@ -140,10 +154,40 @@ export function NewTaskScreen({
                 }
                 iconStyle="bordered"
                 showRightIcon={clientQuery.length > 0}
-                value={clientQuery}
+              value={clientDisplay || clientQuery}
                 onChangeText={onClientChange}
-                onFocus={onClientFocus}
+              onFocus={() => { setIsClientFocused(true); onClientFocus?.(); }}
+              onBlur={() => { setIsClientFocused(false); }}
               />
+            {!!inlineClients && ((clientQuery?.length ?? 0) >= 2) && (
+              <View style={styles.inlineListWrapper}>
+                {isClientsLoading ? (
+                  <Text style={styles.inlineEmpty}>Laden...</Text>
+                ) : inlineClients.length === 0 ? (
+                  <Text style={styles.inlineEmpty}>Geen klanten gevonden</Text>
+                ) : (
+                  <View>
+                    {(inlineClients.slice(0, 5)).map((item) => (
+                      <TouchableOpacity
+                        key={item.id}
+                        activeOpacity={0.8}
+                        style={styles.inlineRow}
+                        onPress={() => { onInlineClientPress?.(item.id, item.label); setIsClientFocused(false); Keyboard.dismiss(); }}
+                      >
+                        <Text style={styles.inlineLabel} numberOfLines={1}>{item.label}</Text>
+                        {item.subtitle ? <Text style={styles.inlineSub} numberOfLines={1}>{item.subtitle}</Text> : null}
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
+                {/* CTA when no match */}
+                {!isClientsLoading && inlineClients.length === 0 ? (
+                  <TouchableOpacity activeOpacity={0.8} style={styles.inlineCta} onPress={onInlineAddClient}>
+                    <Text style={styles.inlineCtaText}>Nieuwe klant toevoegen</Text>
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+            )}
             </View>
 
             {/* Work Type Selection */}
@@ -240,7 +284,7 @@ export function NewTaskScreen({
           </View>
         </View>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -301,6 +345,45 @@ const styles = StyleSheet.create({
   },
   fieldGroup: {
     gap: theme.spacing[1], // 2px gap as in design
+  },
+  inlineListWrapper: {
+    marginTop: theme.spacing[2],
+    borderWidth: 1,
+    borderColor: theme.colors.gray[700],
+    borderRadius: 12,
+    backgroundColor: theme.colors.gray[800],
+    overflow: 'hidden',
+  },
+  inlineRow: {
+    paddingHorizontal: theme.spacing[3],
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.gray[700],
+  },
+  inlineLabel: {
+    color: theme.colors.white,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  inlineSub: {
+    color: theme.colors.gray[400],
+    fontSize: 12,
+    marginTop: 2,
+  },
+  inlineCta: {
+    paddingHorizontal: theme.spacing[3],
+    paddingVertical: 12,
+  },
+  inlineCtaText: {
+    color: theme.colors.primary.main,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  inlineEmpty: {
+    color: theme.colors.gray[400],
+    fontSize: 14,
+    paddingHorizontal: theme.spacing[3],
+    paddingVertical: 12,
   },
   fieldLabel: {
     color: theme.colors.white,

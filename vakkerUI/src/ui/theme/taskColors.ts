@@ -21,19 +21,17 @@ export const variantToToken: Record<
   },
   yellow: {
     text: theme.colors.warning.main,
-    // F-012 may add warning['20']; keep safe RGBA for now
-    bg: (theme.colors as any)?.warning?.['20'] ?? 'rgba(255, 215, 0, 0.2)',
+    bg: theme.colors.warning['20'],
     border: theme.colors.warning.main,
   },
   green: {
     text: theme.colors.success.main,
-    bg: (theme.colors as any)?.success?.['20'] ?? 'rgba(76, 175, 80, 0.2)',
+    bg: theme.colors.success['20'],
     border: theme.colors.success.main,
   },
   gray: {
     text: theme.colors.gray['500'],
-    // F-012 may add gray['20']; keep safe RGBA for now
-    bg: (theme.colors as any)?.gray?.['20'] ?? 'rgba(156, 163, 175, 0.2)',
+    bg: theme.colors.gray['20'],
     border: theme.colors.gray['500'],
   },
 };

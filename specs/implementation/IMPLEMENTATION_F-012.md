@@ -29,10 +29,12 @@ Extend and normalize vakkerUI tokens, remove remaining inline RGBA/hex usages, a
       - `warning`: add `'20'`, `'40'`, `'60'`
       - `success`: ensure `'20'` and add `'40'`, `'60'`
       - `gray`: add `'20'` if missing for subtle backgrounds
-      - MCP (run now): Evaluate needed shades, validate dark-theme contrast, and confirm naming consistency for new keys.
+      - Sequential Thinking MCP (run now): Evaluate needed shades, validate dark-theme contrast, and confirm naming consistency for new keys.
+      - Micro Gate: After S0, STOP. Provide token diffs and await "proceed".
     - S1: Confirm `theme.ts` exports updated tokens and no breaking changes to downstream imports
     - S2: Add or confirm `theme.colors.text.*` and `theme.border.*` usage guidelines
-      - MCP (run now): Decide which text/border tokens to standardize on for dark theme and define fallback rules.
+      - Sequential Thinking MCP (run now): Decide which text/border tokens to standardize on for dark theme and define fallback rules.
+      - Micro Gate: After S2, STOP. Share chosen text/border tokens and await "proceed".
   - Entry criteria: None
   - Exit criteria: Tokens compile; `theme.ts` exports updated map; test import in one component
   - Step Gate: After P0, STOP. Provide a brief summary and await "proceed" before starting P1. FORCED : use Sequential Thinking MCP to validate shade selections for contrast in dark mode and to agree on naming consistency.
@@ -41,17 +43,22 @@ Extend and normalize vakkerUI tokens, remove remaining inline RGBA/hex usages, a
   - Goal: Replace inline RGBA/hex and adopt typography/radius tokens in key components
   - Steps:
     - S1: `Tag.tsx` — replace RGBA bg with `theme.colors.*['20'|'40']` equivalents; prefer `theme.colors.text.*` for text
-      - MCP (run now): Inventory all inline RGBA/hex in Tag and map each to token shades.
+      - Sequential Thinking MCP (run now): Inventory all inline RGBA/hex in Tag and map each to token shades.
+      - Micro Gate: After S1, STOP. Provide a short diff and await "proceed".
     - S2: `TabSelection.tsx` — replace RGBA bg/border; ensure selected/unselected states derive from tokens
-      - MCP (run now): Plan selected/unselected state tokens to ensure adequate contrast and visual hierarchy.
+      - Sequential Thinking MCP (run now): Plan selected/unselected state tokens to ensure adequate contrast and visual hierarchy.
+      - Micro Gate: After S2, STOP. Provide a short diff and await "proceed".
     - S3: `HourSelector.tsx` — replace selected border RGBA with a token border color
-      - MCP (run now): Choose border token consistent with selection patterns used elsewhere.
+      - Sequential Thinking MCP (run now): Choose border token consistent with selection patterns used elsewhere.
     - S4: `EventBlock.tsx` — remove inline RGBA fallbacks; use token shades for bg/border; align with F-011 mapping
-      - MCP (run now): Cross-check F-011 variant→token mapping and pick matching background/border shades.
+      - Sequential Thinking MCP (run now): Cross-check F-011 variant→token mapping and pick matching background/border shades.
+      - Micro Gate: After S4, STOP. Provide screenshots/notes and await "proceed".
     - S5: Promote `theme.typography.*` in frequently touched files (e.g., `NewTaskScreen.tsx`) where raw font sizes/weights appear
-      - MCP (run now): Map current font sizes/weights to `theme.typography.*` and note any gaps.
+      - Sequential Thinking MCP (run now): Map current font sizes/weights to `theme.typography.*` and note any gaps.
+      - Micro Gate: After S5, STOP. Provide a short diff and await "proceed".
     - S6: Normalize any remaining hardcoded radii to `theme.radius.*`
-      - MCP (run now): Scan for non-token radii across modified files and define replacements.
+      - Sequential Thinking MCP (run now): Scan for non-token radii across modified files and define replacements.
+      - Micro Gate: After S6, STOP. Provide a short diff and await "proceed".
   - Entry criteria: P0 complete
   - Exit criteria: Listed components free of inline RGBA/hex; typography/radius tokens adopted; dark theme remains default and consistent
   - Step Gate (Mid): After S3 edits, STOP. Share diffs/notes and await "proceed" before S4–S6. FORCED: run Sequential Thinking MCP to plan the remainder and double-check for any missed inline colors.

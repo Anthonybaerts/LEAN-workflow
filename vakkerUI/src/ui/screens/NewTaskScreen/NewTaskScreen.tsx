@@ -312,8 +312,8 @@ const styles = StyleSheet.create({
   },
   dateText: {
     color: theme.colors.white,
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: theme.typography.fontSize.xl,
+    fontWeight: theme.typography.fontWeight.bold,
     textAlign: 'center',
   },
   timeSection: {
@@ -335,8 +335,8 @@ const styles = StyleSheet.create({
   timeDivider: {
     width: 24,
     height: 2,
-    borderRadius: 9999,
-    backgroundColor: '#2774F1', // Dark-Blue from design
+    borderRadius: theme.radius.pill,
+    backgroundColor: theme.colors.primary.main,
   },
   formSection: {
     gap: theme.spacing[5],
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing[2],
     borderWidth: 1,
     borderColor: theme.colors.gray[700],
-    borderRadius: 12,
+    borderRadius: theme.radius.xl,
     backgroundColor: theme.colors.gray[800],
     overflow: 'hidden',
   },
@@ -361,12 +361,12 @@ const styles = StyleSheet.create({
   },
   inlineLabel: {
     color: theme.colors.white,
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: theme.typography.fontSize.sm,
+    fontWeight: theme.typography.fontWeight.medium,
   },
   inlineSub: {
     color: theme.colors.gray[400],
-    fontSize: 12,
+    fontSize: theme.typography.fontSize.xs,
     marginTop: 2,
   },
   inlineCta: {
@@ -375,19 +375,19 @@ const styles = StyleSheet.create({
   },
   inlineCtaText: {
     color: theme.colors.primary.main,
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: theme.typography.fontSize.sm,
+    fontWeight: theme.typography.fontWeight.semibold,
   },
   inlineEmpty: {
     color: theme.colors.gray[400],
-    fontSize: 14,
+    fontSize: theme.typography.fontSize.sm,
     paddingHorizontal: theme.spacing[3],
     paddingVertical: 12,
   },
   fieldLabel: {
     color: theme.colors.white,
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: theme.typography.fontSize.base,
+    fontWeight: theme.typography.fontWeight.medium,
     lineHeight: 28,
   },
   workTypeHeader: {

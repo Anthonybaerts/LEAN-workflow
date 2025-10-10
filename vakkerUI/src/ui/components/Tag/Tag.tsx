@@ -14,6 +14,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { theme } from '../../tokens';
+import { variantToToken } from '@/ui/theme/taskColors';
 
 export interface TagProps {
   /**
@@ -33,22 +34,10 @@ export interface TagProps {
 }
 
 const colorMap = {
-  blue: {
-    background: theme.colors.primary['20'],
-    text: theme.colors.primary.main,
-  },
-  green: {
-    background: theme.colors.success['20'],
-    text: theme.colors.success.main,
-  },
-  yellow: {
-    background: 'rgba(255, 215, 0, 0.2)',
-    text: theme.colors.warning.main,
-  },
-  gray: {
-    background: 'rgba(156, 163, 175, 0.2)',
-    text: theme.colors.gray[500],
-  },
+  blue: { background: variantToToken.blue.bg, text: variantToToken.blue.text },
+  green: { background: variantToToken.green.bg, text: variantToToken.green.text },
+  yellow: { background: variantToToken.yellow.bg, text: variantToToken.yellow.text },
+  gray: { background: variantToToken.gray.bg, text: variantToToken.gray.text },
 } as const;
 
 export function Tag({ label, color = 'blue', style }: TagProps) {

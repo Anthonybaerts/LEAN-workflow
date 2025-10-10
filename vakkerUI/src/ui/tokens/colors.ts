@@ -10,17 +10,23 @@ export const colors = {
     light: '#4285F3',
     '40': '#4285F3CC', // 40% opacity
     '20': 'rgba(66, 133, 243, 0.2)', // 20% opacity
+    '60': 'rgba(66, 133, 243, 0.6)', // 60% opacity
   },
 
   // Success/Green
   success: {
     main: '#4CAF50',
     '20': 'rgba(76, 175, 80, 0.2)', // 20% opacity
+    '40': 'rgba(76, 175, 80, 0.4)', // 40% opacity
+    '60': 'rgba(76, 175, 80, 0.6)', // 60% opacity
   },
 
   // Warning/Yellow
   warning: {
     main: '#FFD700',
+    '20': 'rgba(255, 215, 0, 0.2)', // 20% opacity
+    '40': 'rgba(255, 215, 0, 0.4)', // 40% opacity
+    '60': 'rgba(255, 215, 0, 0.6)', // 60% opacity
   },
 
   // Grayscale
@@ -34,6 +40,7 @@ export const colors = {
     '300': '#CED4DA',
     '200': '#D1D5DB',
     '100': '#E5E7EB',
+    '20': 'rgba(156, 163, 175, 0.2)', // 20% opacity based on gray[500]
   },
 
   // Base colors

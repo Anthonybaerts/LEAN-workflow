@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Keyboard, Platform, TextInput, findNodeHandle, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard, Platform, TextInput, findNodeHandle, ScrollView, KeyboardAvoidingView } from 'react-native';
 import {
   Header,
   HourSelector,
@@ -102,7 +102,11 @@ export function NewTaskScreen({
   ];
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 96 : 64}
+    >
       <ScrollView
         ref={scrollRef}
         style={styles.scrollView}
@@ -315,7 +319,7 @@ export function NewTaskScreen({
           </View>
         </View>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

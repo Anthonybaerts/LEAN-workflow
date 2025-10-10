@@ -6,6 +6,7 @@ import {
   CustomerCard,
   TabButton,
   RoundButton,
+  EmptyState,
 } from '../../components';
 import {
   Search,
@@ -130,7 +131,13 @@ export function ClientsScreen({
         {/* Context: List of client cards displaying contact information */}
         <View style={styles.clientsList}>
           {clients.length === 0 ? (
-            <Text style={styles.emptyText}>Geen klanten gevonden</Text>
+            <EmptyState
+              title="No clients yet"
+              description="Add your first client to get started."
+              actionLabel="Add client"
+              onAction={handleAddClient}
+              iconName="AddUser"
+            />
           ) : (
             clients.map((client) => (
               <CustomerCard

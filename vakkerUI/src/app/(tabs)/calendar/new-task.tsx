@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter, useNavigation, useFocusEffect } from '
 import dayjs from 'dayjs';
 import 'dayjs/locale/nl';
 import { Platform, Alert, ToastAndroid } from 'react-native';
+import { useToast } from '@/ui/components';
 import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useZodForm } from '@/services/forms/useZodForm';
 import { taskSchema } from '@/services/validation/taskSchema';
@@ -36,6 +37,7 @@ export default function NewTaskRoute() {
   const clientsStatus = useAppSelector((s) => s.clients.status);
   const router = useRouter();
   const navigation = useNavigation();
+  const { success: toastSuccess, error: toastError } = useToast();
   const params = useLocalSearchParams<{ date?: string; startAt?: string }>();
 
   // Initialize state from params with sensible defaults
@@ -301,9 +303,8 @@ export default function NewTaskRoute() {
   // P3b: Save flow + error handling
   const [isSaving, setIsSaving] = React.useState(false);
   const showError = React.useCallback((msg: string) => {
-    if (Platform.OS === 'android') ToastAndroid.show(msg, ToastAndroid.SHORT);
-    else Alert.alert(msg);
-  }, []);
+    toastError(msg);
+  }, [toastError]);
   const onSave = React.useMemo(() => form.handleSubmit(
     async (values) => {
       if (isSaving) return;
@@ -317,6 +318,7 @@ export default function NewTaskRoute() {
           type: resolveVariant(values.type),
           description: values.description || undefined,
         });
+        toastSuccess('Taak opgeslagen.');
         router.back();
       } catch (_err) {
         showError('Opslaan mislukt. Controleer je verbinding en probeer opnieuw.');

@@ -30,12 +30,16 @@ Introduce a reusable `EmptyState` pattern for Clients and lightweight Toast noti
       - Provide `useToast()` hook with helpers: `success(message)`, `error(message)`, `info(message)`
       - Style with tokens; default dark theme visuals
       - Sequential Thinking MCP (run now): Outline provider placement, hook API, and dismissal/auto-timeout behavior.
+      - Context7 MCP (docs lookup):
+        - expo-router portals in `_layout.tsx` (best practices for global overlays)
+        - React Native accessibility: polite live announcements for transient toasts
       - Micro Gate: After S0, STOP. Post the approach summary and await "proceed".
     - S1: Define `EmptyState` component API
       - Location: `vakkerUI/src/ui/components/EmptyState/EmptyState.tsx`
       - Props: `title`, `description?`, `actionLabel?`, `onAction?`, `iconName?`
       - Styling: use `theme.colors`, `theme.typography`, `theme.radius`, `theme.spacing` (dark-first)
       - Sequential Thinking MCP (run now): Map AC copy to props and decide defaults for each target screen.
+      - Context7 MCP (docs lookup): Concise empty-state copy guidance aligned to PRD tone.
       - Micro Gate: After S1, STOP. Share the props/interface and a sketch, await "proceed".
   - Entry criteria: None
   - Exit criteria: Decision on toast approach; `EmptyState` API defined with tokens
@@ -64,12 +68,14 @@ Introduce a reusable `EmptyState` pattern for Clients and lightweight Toast noti
     - S1: Wire in-house toast provider/root
       - Add `ToastProvider` at `vakkerUI/src/app/_layout.tsx` and export `useToast()` under `vakkerUI/src/ui/components/Toast`
       - Sequential Thinking MCP (run now): Enumerate top 3 error sources to hook first (e.g., repository create/update failures, network fetch failures, form validation edge cases)
+      - Context7 MCP (docs lookup): RN `AccessibilityInfo` recommendations for announcing toast messages
       - Micro Gate: After S1, STOP. Share hook signature and await "proceed".
     - S2: Trigger toasts from errors and success
       - Update targeted screens/actions to call `useToast().error(message)` on catch paths with PRD copy
       - Add `useToast().success(message)` on successful client/task create/update flows
       - Ensure no API changes to shared components; keep changes localized
       - Sequential Thinking MCP (run now): Validate copy consistency and avoid duplicate toasts on rapid failures.
+      - Context7 MCP (docs lookup): Style guides for concise success/error copy (avoid jargon; action-oriented).
   - Entry criteria: P1 approved
   - Exit criteria: AC [F-013-AC3] met; consistent copy; tokens styling where applicable
   - Step Gate: After P2, STOP. Provide validation notes; request approval to close feature.

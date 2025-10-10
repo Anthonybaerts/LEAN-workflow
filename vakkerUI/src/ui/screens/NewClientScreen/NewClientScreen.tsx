@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Controller } from 'react-hook-form';
-import { Input, Button } from '../../components';
+import { Input, Button, useToast } from '../../components';
 import {
   ArrowLeft,
   Briefcase,
@@ -28,6 +28,7 @@ import { useRouter } from 'expo-router';
 // Context: Form screen for adding a new client with type selection and contact details
 export function NewClientScreen() {
   const router = useRouter();
+  const { success: toastSuccess, error: toastError } = useToast();
   const form = useZodForm(clientSchema, {
     defaultValues: {
       type: 'Particulier',
@@ -64,10 +65,12 @@ export function NewClientScreen() {
       const created = await clientsRepository.create(payload as any);
       const id = (created as any).id as string | undefined;
       if (id) {
+        toastSuccess('Klant aangemaakt.');
         router.replace({ pathname: '/(tabs)/clients/[clientId]', params: { clientId: id } } as any);
       }
     } catch (err) {
       console.log('Create client failed', err);
+      toastError('Klant opslaan mislukt. Probeer opnieuw.');
     }
   });
 
@@ -366,7 +369,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing[10],
   },
   section: {
-    gap: theme.spacing[1.5],
+    gap: theme.spacing[2],
   },
   sectionTitle: {
     color: theme.colors.white,
@@ -408,13 +411,13 @@ const styles = StyleSheet.create({
     gap: theme.spacing[5],
   },
   fieldGroup: {
-    gap: theme.spacing[0.5],
+    gap: theme.spacing[1],
   },
   fieldLabel: {
     color: theme.colors.white,
     fontSize: 16,
     fontWeight: '500',
-    marginBottom: theme.spacing[0.5],
+    marginBottom: theme.spacing[1],
   },
   actionButtons: {
     paddingHorizontal: theme.spacing[5],

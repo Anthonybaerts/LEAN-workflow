@@ -20,13 +20,14 @@
  * ```
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   TextInput,
   StyleSheet,
   TextInputProps,
   ViewStyle,
+  Animated,
 } from 'react-native';
 import { theme } from '../../tokens';
 
@@ -107,6 +108,7 @@ export function Input({
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [hasText, setHasText] = useState(Boolean(value));
+  const focusAnim = useRef(new Animated.Value(0)).current;
 
   // Determine current state
   const currentState =
@@ -114,11 +116,21 @@ export function Input({
 
   const handleFocus = (e: any) => {
     setIsFocused(true);
+    Animated.timing(focusAnim, {
+      toValue: 1,
+      duration: 150,
+      useNativeDriver: false,
+    }).start();
     onFocus?.(e);
   };
 
   const handleBlur = (e: any) => {
     setIsFocused(false);
+    Animated.timing(focusAnim, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: false,
+    }).start();
     onBlur?.(e);
   };
 
@@ -135,6 +147,17 @@ export function Input({
 
   const contentStyles = [styles.content, multiline && styles.multilineContent];
 
+  const animatedStyle = {
+    borderColor: isFocused ? theme.colors.primary['60'] : theme.colors.gray[600],
+    borderWidth: focusAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 2] }),
+    shadowColor: theme.colors.primary.main,
+    shadowOpacity: focusAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 0.2] }),
+    shadowRadius: focusAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 8] }),
+    shadowOffset: { width: 0, height: 0 },
+    // Android elevation as subtle fallback for glow
+    ...(isFocused ? { elevation: 2 } : null),
+  } as const;
+
   const textInputStyles = [
     styles.textInput,
     styles[`${currentState}Text`],
@@ -148,7 +171,7 @@ export function Input({
 
   return (
     <View style={containerStyles}>
-      <View style={contentStyles}>
+      <Animated.View style={[...contentStyles, animatedStyle]}>
         {showLeftIcon && leftIcon && (
           <View style={leftIconContainerStyles}>{leftIcon}</View>
         )}
@@ -177,7 +200,7 @@ export function Input({
             {rightIcon}
           </View>
         )}
-      </View>
+      </Animated.View>
     </View>
   );
 }

@@ -55,28 +55,28 @@ export interface TabSelectionProps
 
 const colorConfig = {
   blue: {
-    border: theme.colors.primary.main,
-    background: 'rgba(66, 133, 243, 0.10)',
+    border: theme.colors.primary['40'],
+    background: theme.colors.primary['20'],
     activeBorder: theme.colors.primary.main,
-    activeBackground: 'rgba(66, 133, 243, 0.10)',
+    activeBackground: theme.colors.primary['20'],
   },
   green: {
-    border: 'rgba(76, 175, 80, 0.40)',
-    background: 'rgba(76, 175, 80, 0.10)',
+    border: theme.colors.success['40'],
+    background: theme.colors.success['20'],
     activeBorder: theme.colors.success.main,
-    activeBackground: 'rgba(76, 175, 80, 0.10)',
+    activeBackground: theme.colors.success['20'],
   },
   yellow: {
-    border: 'rgba(255, 215, 0, 0.40)',
-    background: 'rgba(255, 215, 0, 0.10)',
-    activeBorder: '#FFD700',
-    activeBackground: 'rgba(255, 215, 0, 0.10)',
+    border: theme.colors.warning['40'],
+    background: theme.colors.warning['20'],
+    activeBorder: theme.colors.warning.main,
+    activeBackground: theme.colors.warning['20'],
   },
   gray: {
-    border: 'rgba(209, 213, 219, 0.40)',
-    background: 'rgba(209, 213, 219, 0.10)',
-    activeBorder: theme.colors.gray[200],
-    activeBackground: 'rgba(209, 213, 219, 0.10)',
+    border: theme.colors.gray['300'],
+    background: theme.colors.gray['20'],
+    activeBorder: theme.colors.gray['200'],
+    activeBackground: theme.colors.gray['20'],
   },
 } as const;
 

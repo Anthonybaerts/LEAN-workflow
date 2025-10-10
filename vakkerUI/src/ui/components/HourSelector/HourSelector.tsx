@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray[900],
   },
   selected: {
-    borderColor: 'rgba(66, 133, 243, 0.60)', // blue-60 from design
+    borderColor: theme.colors.primary['60'], // blue-60 token
   },
   label: {
     color: theme.colors.gray[500],

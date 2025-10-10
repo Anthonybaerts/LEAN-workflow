@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import { store } from '@/state/store';
 import { setUser, clearUser } from '@/state/slices/authSlice';
 import { rehydrateUiPrefs } from '@/state/middleware/persistUiPrefs';
+import { ToastProvider } from '@/ui/components';
 
 export default function RootLayout() {
   const router = useRouter();
@@ -36,7 +37,9 @@ export default function RootLayout() {
     <Provider store={store}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
-          <Slot />
+          <ToastProvider>
+            <Slot />
+          </ToastProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </Provider>

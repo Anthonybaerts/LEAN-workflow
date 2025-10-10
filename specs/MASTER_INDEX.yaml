@@ -160,7 +160,7 @@ features:
     deps: [F-003, F-010, F-007]
     source: MASTER_PRD.md#clients-edit-basic
     screens: [EditClientScreen]
-    ac_ids: [F-015-AC1, F-015-AC2, F-015-AC3]
+    ac_ids: [F-015-AC1, F-015-AC2, F-015-AC3, F-015-AC4, F-015-AC5, F-015-AC6]
     epic: E-100
     mvp: false
 

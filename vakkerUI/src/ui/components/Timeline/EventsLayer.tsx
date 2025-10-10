@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { EventBlock } from '@ui/components';
 import type { TaskEntity } from '@/services/tasksRepository';
+import { resolveVariant } from '@/ui/theme/taskColors';
 import {
   type TimelineConfig,
   parseHHmmToMinutesFromMidnight,
@@ -17,13 +18,6 @@ type Props = {
 };
 
 type Color = 'yellow' | 'blue' | 'gray' | 'green';
-
-function mapTypeToColor(type?: string): Color {
-  if (type === 'green') return 'green';
-  if (type === 'yellow') return 'yellow';
-  if (type === 'gray') return 'gray';
-  return 'blue';
-}
 
 export const EventsLayer = React.memo(function EventsLayer({ tasks, config, pxPerMinute, minTouchPx = 44, topOffsetPx = 0 }: Props) {
   const items = React.useMemo(() => {
@@ -56,7 +50,7 @@ export const EventsLayer = React.memo(function EventsLayer({ tasks, config, pxPe
         start,
         end,
         title: task.description || 'Taak',
-        color: mapTypeToColor(task.type),
+        color: resolveVariant(task.type),
       } as const;
       })
       .filter(Boolean) as Array<{
@@ -116,7 +110,11 @@ export const EventsLayer = React.memo(function EventsLayer({ tasks, config, pxPe
   return (
     <View pointerEvents="box-none" style={styles.layer}>
       {items.map((ev) => {
-        const containerWidthStyle = ev.width === 1 ? { left: 0, right: 0 } : ev.columnIndex === 0 ? { left: 0, right: '50%' } : { left: '50%', right: 0 };
+        const containerWidthStyle = ev.width === 1
+          ? { left: 0, right: 0 as const, width: '100%' as const }
+          : ev.columnIndex === 0
+            ? { left: 0, width: '50%' as const }
+            : { right: 0, width: '50%' as const };
         const horizontalGapStyle = ev.width === 0.5 ? (ev.columnIndex === 0 ? { paddingRight: ev.gap / 2 } : { paddingLeft: ev.gap / 2 }) : null;
         return (
           <View

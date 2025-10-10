@@ -24,6 +24,7 @@ import {
 import { theme } from '../../tokens';
 import { clientsRepository, type ClientEntity } from '../../../services/clientsRepository';
 import { tasksRepository, type TaskEntity } from '../../../services/tasksRepository';
+import { resolveVariant } from '@/ui/theme/taskColors';
 import { useRouter } from 'expo-router';
 
 type Props = {
@@ -88,8 +89,8 @@ export function ClientInfoScreen({ clientId }: Props) {
             name: t.description || 'Taak',
             date: formatDate(t.date),
             time: t.startAt || '',
-            color: 'blue' as const,
-          }));
+            color: resolveVariant(t.type),
+          } as const));
         setRecentTasks(items);
       }
     );

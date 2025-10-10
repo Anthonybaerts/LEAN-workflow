@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Calendar, Clock, Group, Briefcase } from '../../icons';
 import { theme } from '../../tokens';
+import { variantToToken } from '@/ui/theme/taskColors';
 
 type Color = 'yellow' | 'blue' | 'gray' | 'green';
 
@@ -30,19 +31,7 @@ export function EventBlock({
   containerStyle,
 }: EventBlockProps) {
   const Icon = ICON_MAP[color];
-  const borderColor =
-    color === 'yellow'
-      ? theme.colors.warning.main
-      : color === 'green'
-        ? theme.colors.success.main
-        : theme.colors.primary.main;
-
-  const background =
-    color === 'yellow'
-      ? ((theme.colors as any)?.warning?.['20'] ?? 'rgba(255,215,0,0.2)')
-      : color === 'green'
-        ? ((theme.colors as any)?.success?.['20'] ?? 'rgba(16,185,129,0.2)')
-        : ((theme.colors as any)?.primary?.['20'] ?? 'rgba(59,130,246,0.2)');
+  const tokens = variantToToken[color];
 
   return (
     <TouchableOpacity
@@ -53,8 +42,8 @@ export function EventBlock({
       style={[
         styles.wrapper,
         {
-          backgroundColor: background,
-          borderLeftColor: borderColor,
+          backgroundColor: tokens.bg,
+          borderLeftColor: tokens.border,
           opacity: pressed ? 0.9 : 1,
         },
         containerStyle,

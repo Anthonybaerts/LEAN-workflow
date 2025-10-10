@@ -7,6 +7,7 @@ import { Platform, Alert, ToastAndroid } from 'react-native';
 import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useZodForm } from '@/services/forms/useZodForm';
 import { taskSchema } from '@/services/validation/taskSchema';
+import { workTypeToVariant, resolveVariant } from '@/ui/theme/taskColors';
 import { ClientsScreen } from '@/ui/screens';
 import { tasksRepository } from '@/services/tasksRepository';
 import { clientsRepository } from '@/services/clientsRepository';
@@ -234,22 +235,16 @@ export default function NewTaskRoute() {
     form.setValue('description', text, { shouldValidate: true, shouldDirty: true });
   }, [form]);
 
-  // Work type mapping (domain → color semantics)
+  // Work type mapping (domain → shared color variant)
   type WorkType = 'maintenance' | 'project' | 'client_visit' | 'free_task';
-  const workTypeToColor: Record<WorkType, 'blue' | 'yellow' | 'green' | 'gray'> = {
-    maintenance: 'blue',
-    project: 'yellow',
-    client_visit: 'green',
-    free_task: 'gray',
-  };
   const [selectedWorkType, setSelectedWorkType] = React.useState<WorkType>('maintenance');
   const onWorkTypeSelect = React.useCallback((wt: WorkType) => {
     setSelectedWorkType(wt);
-    form.setValue('type', workTypeToColor[wt], { shouldValidate: true, shouldDirty: true });
+    form.setValue('type', workTypeToVariant[wt], { shouldValidate: true, shouldDirty: true });
   }, [form]);
   // Initialize type
   React.useEffect(() => {
-    form.setValue('type', workTypeToColor[selectedWorkType], { shouldValidate: true });
+    form.setValue('type', workTypeToVariant[selectedWorkType], { shouldValidate: true });
   }, []);
 
   // Inline clients: observe list (Redux) and debounce local filter
@@ -319,7 +314,7 @@ export default function NewTaskRoute() {
           date: values.date,
           startAt: values.startAt,
           endAt: values.endAt,
-          type: values.type,
+          type: resolveVariant(values.type),
           description: values.description || undefined,
         });
         router.back();

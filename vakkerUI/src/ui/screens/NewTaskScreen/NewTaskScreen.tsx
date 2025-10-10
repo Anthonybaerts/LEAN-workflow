@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Keyboard, Platform, TextInput, findNodeHandle, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard, Platform, ScrollView } from 'react-native';
 import {
   Header,
   HourSelector,
@@ -78,22 +78,7 @@ export function NewTaskScreen({
   onInlineAddClient,
   isClientsLoading = false,
 }: Props) {
-  const [isClientFocused, setIsClientFocused] = React.useState(false);
-  const [isDescriptionFocused, setIsDescriptionFocused] = React.useState(false);
-  const scrollRef = React.useRef<any>(null);
-
-  const ensureFocusedFieldVisible = React.useCallback(() => {
-    if (Platform.OS !== 'android') return;
-    const responder = scrollRef.current?.getScrollResponder?.();
-    const currentlyFocused = (TextInput as any).State?.currentlyFocusedInput
-      ? (TextInput as any).State.currentlyFocusedInput()
-      : (TextInput as any).State?.currentlyFocusedField?.();
-    const node = currentlyFocused ? findNodeHandle(currentlyFocused) : null;
-    if (responder && node) {
-      // 64px comfortable gap above keyboard
-      responder.scrollResponderScrollNativeHandleToKeyboard(node, 64, true);
-    }
-  }, []);
+  
   const workTypes = [
     { id: 'maintenance', label: 'Onderhoud', color: 'blue' as const },
     { id: 'project', label: 'Project', color: 'yellow' as const },
@@ -102,20 +87,10 @@ export function NewTaskScreen({
   ];
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 96 : 64}
-    >
+    <View style={styles.container}>
       <ScrollView
-        ref={scrollRef}
-        style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
-        onScrollBeginDrag={ensureFocusedFieldVisible}
-        onContentSizeChange={ensureFocusedFieldVisible}
-        onLayout={ensureFocusedFieldVisible}
         scrollEventThrottle={16}
       >
         <View style={styles.content}>
@@ -178,10 +153,9 @@ export function NewTaskScreen({
                 }
                 iconStyle="bordered"
                 showRightIcon={clientQuery.length > 0}
-              value={clientDisplay || clientQuery}
+                value={clientDisplay || clientQuery}
                 onChangeText={onClientChange}
-              onFocus={() => { setIsClientFocused(true); onClientFocus?.(); }}
-              onBlur={() => { setIsClientFocused(false); }}
+                onFocus={onClientFocus}
               />
             {!!inlineClients && ((clientQuery?.length ?? 0) >= 2) && (
               <View style={styles.inlineListWrapper}>
@@ -196,7 +170,7 @@ export function NewTaskScreen({
                         key={item.id}
                         activeOpacity={0.8}
                         style={styles.inlineRow}
-                        onPress={() => { onInlineClientPress?.(item.id, item.label); setIsClientFocused(false); Keyboard.dismiss(); }}
+                        onPress={() => { onInlineClientPress?.(item.id, item.label); Keyboard.dismiss(); }}
                       >
                         <Text style={styles.inlineLabel} numberOfLines={1}>{item.label}</Text>
                         {item.subtitle ? <Text style={styles.inlineSub} numberOfLines={1}>{item.subtitle}</Text> : null}
@@ -288,11 +262,6 @@ export function NewTaskScreen({
                 onChangeText={onDescriptionChange}
                 scrollEnabled={Platform.OS === 'android' ? true : false}
                 disableFullscreenUI={Platform.OS === 'android'}
-                onFocus={() => {
-                  setIsDescriptionFocused(true);
-                  ensureFocusedFieldVisible();
-                }}
-                onBlur={() => setIsDescriptionFocused(false)}
               />
             </View>
             
@@ -319,7 +288,7 @@ export function NewTaskScreen({
           </View>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -327,9 +296,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.gray[900],
-  },
-  scrollView: {
-    flex: 1,
   },
   scrollContent: {
     paddingBottom: theme.spacing[8],

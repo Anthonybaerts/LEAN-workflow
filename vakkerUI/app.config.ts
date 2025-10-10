@@ -18,7 +18,7 @@ export default ({ config }: any): any => {
     android: {
       ...config?.android,
       package: Env.PACKAGE,
-      softwareKeyboardLayoutMode: 'pan',
+      softwareKeyboardLayoutMode: 'resize',
     },
     extra: {
       appEnv: ClientEnv.APP_ENV,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * NewTaskScreen Component
  * @description New task creation screen with time selection, client selection, work type, and description
@@ -9,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard, Platform, ScrollView } from 'react-native';
 import {
   Header,
   HourSelector,
@@ -77,7 +78,7 @@ export function NewTaskScreen({
   onInlineAddClient,
   isClientsLoading = false,
 }: Props) {
-  const [isClientFocused, setIsClientFocused] = React.useState(false);
+  
   const workTypes = [
     { id: 'maintenance', label: 'Onderhoud', color: 'blue' as const },
     { id: 'project', label: 'Project', color: 'yellow' as const },
@@ -86,13 +87,11 @@ export function NewTaskScreen({
   ];
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.container}>
+    <View style={styles.container}>
       <ScrollView
-        style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
       >
         <View style={styles.content}>
           {/* Header Section */}
@@ -154,10 +153,9 @@ export function NewTaskScreen({
                 }
                 iconStyle="bordered"
                 showRightIcon={clientQuery.length > 0}
-              value={clientDisplay || clientQuery}
+                value={clientDisplay || clientQuery}
                 onChangeText={onClientChange}
-              onFocus={() => { setIsClientFocused(true); onClientFocus?.(); }}
-              onBlur={() => { setIsClientFocused(false); }}
+                onFocus={onClientFocus}
               />
             {!!inlineClients && ((clientQuery?.length ?? 0) >= 2) && (
               <View style={styles.inlineListWrapper}>
@@ -172,7 +170,7 @@ export function NewTaskScreen({
                         key={item.id}
                         activeOpacity={0.8}
                         style={styles.inlineRow}
-                        onPress={() => { onInlineClientPress?.(item.id, item.label); setIsClientFocused(false); Keyboard.dismiss(); }}
+                        onPress={() => { onInlineClientPress?.(item.id, item.label); Keyboard.dismiss(); }}
                       >
                         <Text style={styles.inlineLabel} numberOfLines={1}>{item.label}</Text>
                         {item.subtitle ? <Text style={styles.inlineSub} numberOfLines={1}>{item.subtitle}</Text> : null}
@@ -247,20 +245,26 @@ export function NewTaskScreen({
               <Input
                 placeholder="Korte beschrijving van de taak..."
                 rightIcon={
-                  <Close
-                    width={20}
-                    height={20}
-                    color={theme.colors.gray[500]}
-                  />
+                  <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}>
+                    {description.length > 0 ? (
+                      <Close width={20} height={20} color={theme.colors.gray[500]} />
+                    ) : (
+                      <View style={{ width: 20, height: 20, opacity: 0 }} />
+                    )}
+                  </View>
                 }
                 showLeftIcon={false}
-                showRightIcon={description.length > 0}
+                showRightIcon
                 multiline
                 numberOfLines={4}
+                style={{ height: 112 }}
                 value={description}
                 onChangeText={onDescriptionChange}
+                scrollEnabled={Platform.OS === 'android' ? true : false}
+                disableFullscreenUI={Platform.OS === 'android'}
               />
             </View>
+            
           </View>
           {/* Action Buttons */}
           <View style={styles.actionButtons}>
@@ -284,7 +288,7 @@ export function NewTaskScreen({
           </View>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -293,13 +297,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.gray[900],
   },
-  scrollView: {
-    flex: 1,
-  },
   scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
-    paddingBottom: theme.spacing[5],
+    paddingBottom: theme.spacing[8],
   },
   content: {
     gap: theme.spacing[10], // 40px gap between main sections

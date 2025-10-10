@@ -96,4 +96,84 @@ export function minutesToHHmmFromWindowStart(params: {
   return `${hh.toString().padStart(2, '0')}:${mm.toString().padStart(2, '0')}`;
 }
 
+// Lane-based overlap layout utility
+export type PositionedEvent = {
+  id: string;
+  start: number; // minutes from midnight
+  end: number;   // minutes from midnight
+  y: number;
+  height: number;
+  title: string;
+  color: string;
+};
+
+export type LanePosition = {
+  id: string;
+  laneIndex: number;
+  laneCount: number;
+};
+
+/**
+ * Assigns lanes (columns) to overlapping events within their overlap groups.
+ * Greedy algorithm: place each event in the first lane that is free; otherwise, open a new lane.
+ */
+export function computeLaneLayout<T extends PositionedEvent>(events: T[]): Array<T & LanePosition> {
+  if (!events.length) return [] as Array<T & LanePosition>;
+
+  // Sort by start time (stable by original order for deterministic lanes)
+  const sorted = [...events].sort((a, b) => (a.start - b.start) || a.end - b.end);
+
+  // Build overlap groups (connected components in interval graph via sweep)
+  const groups: T[][] = [];
+  let currentGroup: T[] = [];
+  let currentMaxEnd = -Infinity;
+  for (const ev of sorted) {
+    if (currentGroup.length === 0) {
+      currentGroup.push(ev);
+      currentMaxEnd = ev.end;
+      continue;
+    }
+    const overlaps = ev.start < currentMaxEnd; // overlaps any in group if before max end
+    if (overlaps) {
+      currentGroup.push(ev);
+      currentMaxEnd = Math.max(currentMaxEnd, ev.end);
+    } else {
+      groups.push(currentGroup);
+      currentGroup = [ev];
+      currentMaxEnd = ev.end;
+    }
+  }
+  if (currentGroup.length) groups.push(currentGroup);
+
+  const result: Array<T & LanePosition> = [];
+
+  for (const group of groups) {
+    // Assign lanes within this group
+    // Track lane end times
+    const laneEnds: number[] = [];
+    const groupPositions: Array<T & LanePosition> = [];
+    for (const ev of group) {
+      let placedLane = -1;
+      for (let i = 0; i < laneEnds.length; i += 1) {
+        if (laneEnds[i] <= ev.start) {
+          placedLane = i;
+          laneEnds[i] = ev.end;
+          break;
+        }
+      }
+      if (placedLane === -1) {
+        placedLane = laneEnds.length;
+        laneEnds.push(ev.end);
+      }
+      groupPositions.push({ ...ev, laneIndex: placedLane, laneCount: 0 });
+    }
+    const laneCount = Math.max(1, laneEnds.length);
+    for (const pos of groupPositions) {
+      result.push({ ...pos, laneCount });
+    }
+  }
+
+  return result;
+}
+
 

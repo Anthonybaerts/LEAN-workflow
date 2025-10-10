@@ -7,6 +7,7 @@ import {
   type TimelineConfig,
   parseHHmmToMinutesFromMidnight,
   computeYAndHeight,
+  computeLaneLayout,
 } from '@ui/components/Timeline/timelineUtils';
 
 type Props = {
@@ -63,59 +64,32 @@ export const EventsLayer = React.memo(function EventsLayer({ tasks, config, pxPe
         color: Color;
       }>;
     // Overlap grouping: naive sweep for 2-way columns
-    const sorted = [...normalized].sort((a, b) => a.start - b.start);
-    let active: typeof normalized = [];
-    const result: Array<typeof normalized[number] & { columnIndex: number; columnCount: number; x: number; width: number }> = [];
-    const gap = 8; // will match theme spacing 2 approx
-
-    const flushActive = () => {
-      if (active.length === 0) return;
-      if (active.length === 1) {
-        const a = active[0];
-        result.push({ ...a, columnIndex: 0, columnCount: 1, x: 0, width: 1 });
-      } else if (active.length === 2) {
-        // two columns side-by-side
-        active.forEach((item, idx) => {
-          result.push({ ...item, columnIndex: idx, columnCount: 2, x: idx, width: 0.5 });
-        });
-      } else {
-        // >2: allow visual overlap; stack with z-order by start time
-        active.forEach((item) => {
-          result.push({ ...item, columnIndex: 0, columnCount: active.length, x: 0, width: 1 });
-        });
-      }
-      active = [];
-    };
-
-    for (let i = 0; i < sorted.length; i += 1) {
-      const curr = sorted[i];
-      if (active.length === 0) {
-        active.push(curr);
-        continue;
-      }
-      const last = active[active.length - 1];
-      const overlaps = curr.start < last.end && last.start < curr.end;
-      if (overlaps) {
-        active.push(curr);
-      } else {
-        flushActive();
-        active.push(curr);
-      }
-    }
-    flushActive();
-
-    return result.map((it, idx) => ({ ...it, gap, zIndex: idx + 1 }));
+    const gap = 8; // ~ theme.spacing[2]
+    const withLanes = computeLaneLayout(normalized);
+    return withLanes.map((it, idx) => ({
+      ...it,
+      columnIndex: it.laneIndex,
+      columnCount: it.laneCount,
+      x: it.laneIndex,
+      width: it.laneCount > 0 ? 1 / it.laneCount : 1,
+      gap,
+      zIndex: idx + 1,
+    }));
   }, [tasks, config, pxPerMinute, minTouchPx]);
 
   return (
     <View pointerEvents="box-none" style={styles.layer}>
       {items.map((ev) => {
-        const containerWidthStyle = ev.width === 1
-          ? { left: 0, right: 0 as const, width: '100%' as const }
-          : ev.columnIndex === 0
-            ? { left: 0, width: '50%' as const }
-            : { right: 0, width: '50%' as const };
-        const horizontalGapStyle = ev.width === 0.5 ? (ev.columnIndex === 0 ? { paddingRight: ev.gap / 2 } : { paddingLeft: ev.gap / 2 }) : null;
+        const leftPct = `${Math.round(ev.columnIndex * ev.width * 100)}%` as const;
+        const widthPct = `${Math.round(ev.width * 100)}%` as const;
+        const containerWidthStyle = { left: leftPct, width: widthPct } as const;
+        const horizontalGapStyle = ev.laneCount > 1
+          ? (ev.columnIndex === 0
+            ? { paddingRight: ev.gap / 2 }
+            : ev.columnIndex === ev.laneCount - 1
+              ? { paddingLeft: ev.gap / 2 }
+              : { paddingHorizontal: ev.gap / 2 })
+          : null;
         return (
           <View
             key={ev.id}

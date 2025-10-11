@@ -9,3 +9,4 @@ export * from './NewClientScreen';
 export * from './CalendarScreen';
 export * from './NewTaskScreen';
 export * from './LoginScreen';
+export * from './EditClientScreen';

@@ -1,4 +1,4 @@
-import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc, query, where, getDocs, onSnapshot, Firestore } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc, query, where, getDocs, onSnapshot, Firestore, deleteDoc } from 'firebase/firestore';
 import { removeUndefined } from './forms/getErrorMessage';
 import { Firebase } from './firebase';
 
@@ -66,6 +66,13 @@ export const clientsRepository = {
     const snap = await getDoc(ref);
     if (!snap.exists()) return null;
     return { id: snap.id, ...(snap.data() as Omit<ClientEntity, 'id'>) } as ClientEntity;
+  },
+
+  async delete(id: string) {
+    assertRequired(id, 'Client id is required');
+    const ref = doc(getDb(), COLLECTION, id);
+    await deleteDoc(ref);
+    return true;
   },
 
   async listByOwnerId(ownerId?: string) {

@@ -18,7 +18,7 @@ interface EmailProps extends SvgProps {
 
 export function Email({
   size = 24,
-  color = 'white',
+  color = '#4285F3',
   width = size,
   height = size,
   ...props

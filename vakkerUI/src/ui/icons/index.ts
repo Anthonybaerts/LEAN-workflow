@@ -22,3 +22,4 @@ export { Email } from './Email';
 export { ContactCard } from './ContactCard';
 export { Pencil } from './Pencil';
 export { ThreeDotsVertical } from './ThreeDotsVertical';
+export { Trash } from './Trash';

@@ -20,12 +20,15 @@ import {
   Clock,
   User,
   Location,
+  Trash,
 } from '../../icons';
 import { theme } from '../../tokens';
 import { clientsRepository, type ClientEntity } from '../../../services/clientsRepository';
 import { tasksRepository, type TaskEntity } from '../../../services/tasksRepository';
 import { resolveVariant } from '@/ui/theme/taskColors';
 import { useRouter } from 'expo-router';
+import { Alert } from 'react-native';
+import { useToast } from '../../components';
 
 type Props = {
   clientId?: string;
@@ -35,6 +38,7 @@ type Props = {
 // recent tasks, notes, and quick action buttons
 export function ClientInfoScreen({ clientId }: Props) {
   const router = useRouter();
+  const { success: toastSuccess, error: toastError } = useToast();
   const [client, setClient] = React.useState<ClientEntity | null>(null);
   const [recentTasks, setRecentTasks] = React.useState<
     {
@@ -185,8 +189,13 @@ export function ClientInfoScreen({ clientId }: Props) {
   };
 
   const handleEditContact = () => {
-    // Context: Navigate to edit contact details
-    console.log('Edit contact');
+    try {
+      if (clientId) {
+        router.push({ pathname: '/(tabs)/clients/edit-client', params: { clientId } } as any);
+      }
+    } catch {
+      // noop fallback
+    }
   };
 
   const handleViewAllTasks = () => {
@@ -202,15 +211,44 @@ export function ClientInfoScreen({ clientId }: Props) {
     console.log('Add note');
   };
 
+  const confirmAndDelete = React.useCallback(() => {
+    if (!clientId) return;
+    Alert.alert(
+      'Bevestigen',
+      'Weet je zeker dat je deze klant wilt verwijderen?',
+      [
+        { text: 'Annuleren', style: 'cancel' },
+        {
+          text: 'Verwijderen',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const tasks = await tasksRepository.listByClientId(clientId);
+              if ((tasks?.length ?? 0) > 0) {
+                toastError(
+                  `Klant heeft ${(tasks?.length ?? 0)} gekoppelde taken. Verwijder of verplaats taken eerst.`
+                );
+                return;
+              }
+              await clientsRepository.delete(clientId);
+              toastSuccess('Klant verwijderd');
+              router.replace('/(tabs)/clients' as any);
+            } catch (e) {
+              toastError('Verwijderen mislukt. Probeer opnieuw.');
+            }
+          },
+        },
+      ]
+    );
+  }, [clientId, router, toastError, toastSuccess]);
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Context: Header with navigation and client name */}
       <Header
         title={clientName}
         leftIcon={<ArrowLeft width={28} height={28} />}
-        rightIcon={<ThreeDotsVertical width={28} height={28} />}
         onLeftPress={handleBack}
-        onRightPress={handleMenu}
       />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -222,6 +260,7 @@ export function ClientInfoScreen({ clientId }: Props) {
             date={undefined}
             tagLabel={undefined}
             tagColor="green"
+            onDelete={confirmAndDelete}
           />
         </View>
 
@@ -234,6 +273,7 @@ export function ClientInfoScreen({ clientId }: Props) {
               size="large"
               icon={<Call width={24} height={24} />}
               onPress={handleCall}
+              style={styles.actionButton}
             >
               Bellen
             </Button>
@@ -242,6 +282,7 @@ export function ClientInfoScreen({ clientId }: Props) {
               size="large"
               icon={<Email width={24} height={24} />}
               onPress={handleEmail}
+              style={styles.actionButton}
             >
               E-mail
             </Button>
@@ -250,6 +291,7 @@ export function ClientInfoScreen({ clientId }: Props) {
               size="large"
               icon={<Add width={24} height={24} />}
               onPress={handleAddTask}
+              style={styles.actionButton}
             >
               Taak
             </Button>
@@ -287,6 +329,8 @@ export function ClientInfoScreen({ clientId }: Props) {
           />
         </View>
       </ScrollView>
+
+      {/* bottom delete button removed per design */}
     </SafeAreaView>
   );
 }
@@ -315,6 +359,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: theme.spacing[5],
     gap: theme.spacing[3],
+    justifyContent: 'space-between',
+  },
+  actionButton: {
+    flex: 1,
   },
   cardsSection: {
     paddingHorizontal: theme.spacing[5],

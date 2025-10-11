@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Briefcase } from '../../icons';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Briefcase, Trash } from '../../icons';
 import { theme } from '../../tokens';
 
 type Props = {
@@ -9,6 +9,7 @@ type Props = {
   date?: string;
   tagLabel?: string;
   tagColor?: 'green' | 'blue' | 'gray';
+  onDelete?: () => void;
 };
 
 export function ClientBanner({
@@ -17,6 +18,7 @@ export function ClientBanner({
   date,
   tagLabel,
   tagColor = 'green',
+  onDelete,
 }: Props) {
   return (
     <View style={styles.container}>
@@ -58,6 +60,19 @@ export function ClientBanner({
           </Text>
         </View>
       ) : null}
+
+      {onDelete ? (
+        <TouchableOpacity
+          onPress={onDelete}
+          activeOpacity={0.8}
+          style={styles.actionButton}
+          hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
+          accessibilityRole="button"
+          accessibilityLabel="Verwijder klant"
+        >
+          <Trash width={20} height={20} />
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
@@ -72,6 +87,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray[900],
     borderWidth: 1,
     borderColor: theme.colors.gray[700],
+    position: 'relative',
   } as any,
   iconWrap: {
     width: 64,
@@ -88,4 +104,19 @@ const styles = StyleSheet.create({
   tag: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   dot: { width: 8, height: 8, borderRadius: 9999 },
   tagText: { fontSize: 12, fontWeight: '500' },
+
+  actionButton: {
+    position: 'absolute',
+    top: '50%',
+    right: 8,
+    height: 36,
+    width: 36,
+    borderRadius: theme.radius.md,
+    borderWidth: 1,
+    borderColor: theme.colors.gray[600],
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    transform: [{ translateY: -14 }],
+  },
 });

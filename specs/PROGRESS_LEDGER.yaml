@@ -320,6 +320,12 @@ features:
         status: pending
       - id: F-015-AC3
         status: pending
+      - id: F-015-AC4
+        status: pending
+      - id: F-015-AC5
+        status: pending
+      - id: F-015-AC6
+        status: pending
     deliverables: []
     touched_areas:
       screens: []

@@ -87,7 +87,14 @@ export function ContactDetailsCard({
         </View>
 
         {editIcon && onEdit && (
-          <TouchableOpacity onPress={onEdit} activeOpacity={0.7}>
+          <TouchableOpacity
+            onPress={onEdit}
+            activeOpacity={0.8}
+            style={styles.editButton}
+            hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
+            accessibilityRole="button"
+            accessibilityLabel="Bewerk contactgegevens"
+          >
             {editIcon}
           </TouchableOpacity>
         )}
@@ -136,5 +143,16 @@ const styles = StyleSheet.create({
 
   content: {
     gap: theme.spacing[3],
+  },
+
+  editButton: {
+    height: 36,
+    width: 36,
+    borderRadius: theme.radius.md,
+    borderWidth: 1,
+    borderColor: theme.colors.gray[600],
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
 });

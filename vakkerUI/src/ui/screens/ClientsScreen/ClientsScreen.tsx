@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Header,
   Input,
@@ -49,6 +50,7 @@ export function ClientsScreen({
   onAddClientPress,
   onClientPress,
 }: ClientsScreenProps) {
+  const insets = useSafeAreaInsets();
   const [uncontrolledSearch, setUncontrolledSearch] = React.useState('');
   const searchQuery = controlledSearch ?? uncontrolledSearch;
   const setSearchQuery = onSearchQueryChange ?? setUncontrolledSearch;
@@ -188,7 +190,7 @@ export function ClientsScreen({
       )}
 
       {/* Context: Floating action button to add new clients */}
-      <View style={styles.fab}>
+      <View style={[styles.fab, { bottom: (hideEmbeddedNav ? insets.bottom : insets.bottom) + 8 }]}> 
         <RoundButton
           icon={<AddUser width={28} height={28} />}
           onPress={handleAddClient}
@@ -262,7 +264,6 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    bottom: 32 + 64 + 12, // Bottom nav height + button height + margin
     right: theme.spacing[8],
   },
 });

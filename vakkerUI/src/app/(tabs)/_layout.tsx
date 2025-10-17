@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
+import { Platform } from 'react-native';
 import { Calendar, Group } from '@/ui/icons';
 import { theme } from '@/ui/tokens';
 
@@ -8,7 +9,7 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarHideOnKeyboard: true,
+        tabBarHideOnKeyboard: Platform.OS === 'ios',
         tabBarStyle: {
           backgroundColor: theme.colors.gray[900],
           borderTopColor: theme.colors.gray[700],

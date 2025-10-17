@@ -3,10 +3,10 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Controller } from 'react-hook-form';
 import { Input, Button, useToast } from '../../components';
 import {
@@ -19,6 +19,7 @@ import {
   Close,
 } from '../../icons';
 import { theme } from '../../tokens';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useZodForm } from '../../../services/forms/useZodForm';
 import { clientSchema } from '../../../services/validation/clientSchema';
 import { getErrorMessage } from '../../../services/forms/getErrorMessage';
@@ -26,7 +27,8 @@ import { clientsRepository } from '../../../services/clientsRepository';
 import { useRouter } from 'expo-router';
 
 // Context: Form screen for adding a new client with type selection and contact details
-export function NewClientScreen() {
+export function NewClientScreen({ from, hideBackArrow }: { from?: string; hideBackArrow?: boolean }) {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const { success: toastSuccess, error: toastError } = useToast();
   const form = useZodForm(clientSchema, {
@@ -46,8 +48,7 @@ export function NewClientScreen() {
   const selectedType = form.watch('type');
 
   const handleBack = () => {
-    // Context: Navigate back to previous screen
-    console.log('Navigate back');
+    router.back();
   };
 
   const handleSave = form.handleSubmit(async (values) => {
@@ -66,7 +67,13 @@ export function NewClientScreen() {
       const id = (created as any).id as string | undefined;
       if (id) {
         toastSuccess('Klant aangemaakt.');
-        router.replace({ pathname: '/(tabs)/clients/[clientId]', params: { clientId: id } } as any);
+        // If opened from NewTask, navigate back to it with selectClientId to auto-select
+        if (from === 'new-task') {
+          // Let NewTask auto-select via Redux subscription then return to NewTask (already open beneath)
+          router.replace({ pathname: '/(tabs)/calendar/new-task', params: { selectClientId: id } } as any);
+        } else {
+          router.back();
+        }
       }
     } catch (err) {
       console.log('Create client failed', err);
@@ -75,8 +82,7 @@ export function NewClientScreen() {
   });
 
   const handleCancel = () => {
-    // Context: Cancel form and go back
-    console.log('Cancel form');
+    router.back();
   };
 
   const setTypeBusiness = () => form.setValue('type', 'Zakelijk', { shouldValidate: true, shouldDirty: true });
@@ -84,24 +90,29 @@ export function NewClientScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Context: Header with back navigation and save action */}
-      <View style={styles.header}>
-        <View style={styles.leftSection}>
-          <TouchableOpacity onPress={handleBack} style={styles.iconButton}>
-            <ArrowLeft width={28} height={28} />
-          </TouchableOpacity>
+      {/* Context: Header (no top-right save) */}
+      {!hideBackArrow ? (
+        <View style={styles.header}>
+          <View style={styles.leftSection}>
+            <TouchableOpacity onPress={handleBack} style={styles.iconButton}>
+              <ArrowLeft width={28} height={28} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.title}>Nieuwe Klant</Text>
+          <View style={styles.rightSection} />
         </View>
-
-        <Text style={styles.title}>Nieuwe Klant</Text>
-
-        <View style={styles.rightSection}>
-          <TouchableOpacity onPress={handleSave}>
-            <Text style={styles.saveText}>Opslaan</Text>
-          </TouchableOpacity>
+      ) : (
+        <View style={styles.headerNoBack}>
+          <Text style={styles.title}>Nieuwe Klant</Text>
         </View>
-      </View>
+      )}
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <BottomSheetScrollView
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ paddingBottom: theme.spacing[10] + insets.bottom }}
+      >
         <View style={styles.formContainer}>
           {/* Context: Client type selection tabs */}
           <View style={styles.section}>
@@ -291,28 +302,27 @@ export function NewClientScreen() {
             </View>
           </View>
         </View>
-      </ScrollView>
-
-      {/* Context: Action buttons for save and cancel */}
-      <View style={styles.actionButtons}>
-        <Button
-          variant="primary"
-          size="large"
-          onPress={handleSave}
-          disabled={!form.isValid}
-          showIcon={false}
-        >
-          Opslaan
-        </Button>
-        <Button
-          variant="outline"
-          size="large"
-          onPress={handleCancel}
-          showIcon={false}
-        >
-          Annuleren
-        </Button>
-      </View>
+        {/* Action buttons now scroll with content */}
+        <View style={[styles.actionButtons, { marginTop: theme.spacing[6] }]}>
+          <Button
+            variant="primary"
+            size="large"
+            onPress={handleSave}
+            disabled={!form.isValid}
+            showIcon={false}
+          >
+            Opslaan
+          </Button>
+          <Button
+            variant="outline"
+            size="large"
+            onPress={handleCancel}
+            showIcon={false}
+          >
+            Annuleren
+          </Button>
+        </View>
+      </BottomSheetScrollView>
     </SafeAreaView>
   );
 }
@@ -330,6 +340,22 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing[8],
     paddingHorizontal: theme.spacing[5],
     height: 60,
+  },
+  headerNoBack: {
+    backgroundColor: theme.colors.gray[900],
+    paddingVertical: theme.spacing[8],
+    paddingHorizontal: theme.spacing[5],
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rightActionAbs: {
+    position: 'absolute',
+    right: theme.spacing[5],
+    top: '50%',
+    transform: [{ translateY: -10 }],
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   leftSection: {
     flex: 1,
@@ -360,9 +386,7 @@ const styles = StyleSheet.create({
   saveTextDisabled: {
     color: theme.colors.gray[600],
   },
-  content: {
-    flex: 1,
-  },
+  content: {},
   formContainer: {
     paddingHorizontal: theme.spacing[5],
     paddingTop: theme.spacing[4],

@@ -1,5 +1,6 @@
 import React from 'react';
 import { AccessibilityInfo } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../tokens';
 
 export type ToastType = 'info' | 'success' | 'error';
@@ -40,6 +41,7 @@ export function useToast(): ToastControls {
 type Props = { children: React.ReactNode };
 
 export function ToastProvider({ children }: Props) {
+  const insets = useSafeAreaInsets();
   const [items, setItems] = React.useState<ToastItem[]>([]);
   const timersRef = React.useRef<Record<string, ReturnType<typeof setTimeout>>>({});
   const lastMessageRef = React.useRef<{ message: string; at: number } | null>(null);
@@ -117,17 +119,35 @@ export function ToastProvider({ children }: Props) {
     <ToastContext.Provider value={value}>
       {children}
       {/* Overlay viewport */}
-      <ToastViewport items={items} onDismiss={dismiss} closingMap={closingMap} onFinalizeRemove={finalizeRemove} />
+      <ToastViewport
+        items={items}
+        onDismiss={dismiss}
+        closingMap={closingMap}
+        onFinalizeRemove={finalizeRemove}
+        topInset={insets.top}
+      />
     </ToastContext.Provider>
   );
 }
 
 
 // Inline viewport and card to avoid module resolution issues
-function ToastViewport({ items, onDismiss, closingMap, onFinalizeRemove }: { items: ToastItem[]; onDismiss: (id: string) => void; closingMap: Record<string, boolean>; onFinalizeRemove: (id: string) => void }) {
+function ToastViewport({
+  items,
+  onDismiss,
+  closingMap,
+  onFinalizeRemove,
+  topInset,
+}: {
+  items: ToastItem[];
+  onDismiss: (id: string) => void;
+  closingMap: Record<string, boolean>;
+  onFinalizeRemove: (id: string) => void;
+  topInset: number;
+}) {
   return (
     <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-      <View style={viewportStyles.stack} pointerEvents="box-none">
+      <View style={[viewportStyles.stack, { top: topInset + 32 }]} pointerEvents="box-none">
         {items.map((t) => (
           <ToastCard key={t.id} item={t} isClosing={Boolean(closingMap[t.id])} onDismiss={onDismiss} onFinalizeRemove={onFinalizeRemove} />
         ))}
@@ -197,7 +217,6 @@ import { Animated, PanResponder, StyleSheet, Text, View } from 'react-native';
 const viewportStyles = StyleSheet.create({
   stack: {
     position: 'absolute',
-    top: 8 + 24,
     left: 0,
     right: 0,
     alignItems: 'center',

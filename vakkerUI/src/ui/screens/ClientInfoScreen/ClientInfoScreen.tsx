@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView, Linking } from 'react-native';
+import { View, StyleSheet, ScrollView, Linking } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Header,
   Button,
@@ -243,7 +244,7 @@ export function ClientInfoScreen({ clientId }: Props) {
   }, [clientId, router, toastError, toastSuccess]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top','bottom']}>
       {/* Context: Header with navigation and client name */}
       <Header
         title={clientName}

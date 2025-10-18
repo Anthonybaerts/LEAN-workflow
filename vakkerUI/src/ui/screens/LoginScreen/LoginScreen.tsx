@@ -10,6 +10,7 @@
 
 import * as React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Header, Input, Button } from '../../components';
 import { Email, Lock } from '../../icons';
 import { theme } from '../../tokens';
@@ -35,8 +36,9 @@ export function LoginScreen({
   isSubmitting = false,
   errorMessage,
 }: Props) {
+  const insets = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top','bottom']}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -119,13 +121,13 @@ export function LoginScreen({
         </View>
 
         {/* Footer */}
-        <View style={styles.footer}>
+        <View style={[styles.footer, { paddingBottom: theme.spacing[5] + insets.bottom }]}>
           <Text style={styles.footerText}>
             © 2023 Vakker. Voor professionele service planning.
           </Text>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

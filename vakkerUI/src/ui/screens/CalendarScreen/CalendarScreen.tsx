@@ -10,6 +10,7 @@
 
 import * as React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 import { Header, TimeSlot } from '../../components';
 import {
   Calendar,
@@ -37,6 +38,7 @@ export function CalendarScreen({
   onNextMonth,
   hideEmbeddedNav = false,
 }: Props) {
+  const safeAreaEdges: Edge[] = hideEmbeddedNav ? ['top'] : ['top', 'bottom'];
   // Placeholder data for time slots with events
   const timeSlots = [
     { time: '06:00', events: [] },
@@ -70,7 +72,7 @@ export function CalendarScreen({
   ];
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={safeAreaEdges}>
       <View style={styles.content}>
         {/* Main Header */}
         <View style={styles.headerSection}>
@@ -153,7 +155,7 @@ export function CalendarScreen({
           </View>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

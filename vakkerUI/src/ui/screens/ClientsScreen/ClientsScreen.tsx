@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useSafeAreaInsets, SafeAreaView, type Edge } from 'react-native-safe-area-context';
 import {
   Header,
   Input,
@@ -51,6 +51,7 @@ export function ClientsScreen({
   onClientPress,
 }: ClientsScreenProps) {
   const insets = useSafeAreaInsets();
+  const safeAreaEdges: Edge[] = hideEmbeddedNav ? ['top'] : ['top', 'bottom'];
   const [uncontrolledSearch, setUncontrolledSearch] = React.useState('');
   const searchQuery = controlledSearch ?? uncontrolledSearch;
   const setSearchQuery = onSearchQueryChange ?? setUncontrolledSearch;
@@ -103,7 +104,7 @@ export function ClientsScreen({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={safeAreaEdges}>
       {/* Context: Main header with screen title */}
       <Header title="Klanten" />
 

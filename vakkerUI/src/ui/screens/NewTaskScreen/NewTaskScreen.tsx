@@ -11,6 +11,7 @@
 
 import * as React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Keyboard, Platform, ScrollView } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Header,
   HourSelector,
@@ -78,7 +79,7 @@ export function NewTaskScreen({
   onInlineAddClient,
   isClientsLoading = false,
 }: Props) {
-  
+  const insets = useSafeAreaInsets();
   const workTypes = [
     { id: 'maintenance', label: 'Onderhoud', color: 'blue' as const },
     { id: 'project', label: 'Project', color: 'yellow' as const },
@@ -87,9 +88,9 @@ export function NewTaskScreen({
   ];
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top','bottom']}>
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: theme.spacing[8] + insets.bottom }]}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
       >
@@ -267,7 +268,7 @@ export function NewTaskScreen({
             
           </View>
           {/* Action Buttons */}
-          <View style={styles.actionButtons}>
+          <View style={[styles.actionButtons, { paddingBottom: theme.spacing[5] + insets.bottom }] }>
             <Button
               variant="primary"
               size="large"
@@ -288,7 +289,7 @@ export function NewTaskScreen({
           </View>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NewTaskScreen } from '@/ui/screens';
-import { useLocalSearchParams, useRouter, useNavigation, useFocusEffect } from 'expo-router';
+import { useLocalSearchParams, useRouter, useNavigation, useFocusEffect, usePathname } from 'expo-router';
 import dayjs from 'dayjs';
 import 'dayjs/locale/nl';
 import { Platform, Alert, ToastAndroid } from 'react-native';
@@ -14,6 +14,7 @@ import { tasksRepository } from '@/services/tasksRepository';
 import { clientsRepository } from '@/services/clientsRepository';
 import { theme } from '@/ui/tokens';
 import { useAppDispatch, useAppSelector } from '@/state/store';
+import { clearSelection } from '@/state/slices/taskFormSlice';
 import { clientsLoading, clientsLoaded, clientsError } from '@/state/slices/clientsSlice';
 
 function capitalize(value: string): string {
@@ -38,7 +39,7 @@ export default function NewTaskRoute() {
   const router = useRouter();
   const navigation = useNavigation();
   const { success: toastSuccess, error: toastError } = useToast();
-  const params = useLocalSearchParams<{ date?: string; startAt?: string }>();
+  const params = useLocalSearchParams<{ date?: string; startAt?: string; selectClientId?: string }>();
 
   // Initialize state from params with sensible defaults
   const initialDateStr =
@@ -300,6 +301,21 @@ export default function NewTaskRoute() {
     setClientQuery('');
   }, [form]);
 
+  // Apply client selection when returning from New Client modal
+  const appliedClientRef = React.useRef<string | null>(null);
+  // Apply transient selection from Redux and clear it
+  const pendingSelectedClientId = useAppSelector((s) => (s as any).taskForm.pendingSelectedClientId as string | undefined);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!pendingSelectedClientId) return;
+      if (appliedClientRef.current === pendingSelectedClientId) return;
+      const match = (clientsItems as any[]).find((c) => c.id === pendingSelectedClientId);
+      handleClientSelected(pendingSelectedClientId, match?.name || '');
+      appliedClientRef.current = pendingSelectedClientId;
+      dispatch(clearSelection());
+    }, [pendingSelectedClientId, clientsItems, handleClientSelected, dispatch])
+  );
+
   // P3b: Save flow + error handling
   const [isSaving, setIsSaving] = React.useState(false);
   const showError = React.useCallback((msg: string) => {
@@ -354,7 +370,9 @@ export default function NewTaskRoute() {
         }}
         inlineClients={inlineClients}
         onInlineClientPress={(id, label) => handleClientSelected(id, label)}
-        onInlineAddClient={() => router.push('/(tabs)/clients/new-client')}
+        onInlineAddClient={() => {
+          router.push('/(tabs)/calendar/new-task/new-client');
+        }}
         isClientsLoading={clientsStatus === 'loading'}
         description={description}
         onDescriptionChange={onDescriptionChange}

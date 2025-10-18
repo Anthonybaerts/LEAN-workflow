@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Controller } from 'react-hook-form';
 import { Input, Button, useToast, Header } from '../../components';
 import { ArrowLeft, User, Email, Call, Location } from '../../icons';
@@ -15,6 +16,7 @@ type LocalParams = { clientId?: string };
 // Basic shell for editing a client's core fields.
 // Prefill, validation, and save are added in later phases.
 export function EditClientScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const { clientId } = useLocalSearchParams<LocalParams>();
   const { success: toastSuccess, error: toastError } = useToast();
@@ -101,7 +103,7 @@ export function EditClientScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top','bottom']}>
       <Header
         title="Klant bewerken"
         leftIcon={<ArrowLeft width={28} height={28} />}
@@ -248,7 +250,7 @@ export function EditClientScreen() {
         </View>
       </ScrollView>
 
-      <View style={styles.actionButtons}>
+      <View style={[styles.actionButtons, { paddingBottom: theme.spacing[5] + insets.bottom }]}>
         <Button variant="primary" size="large" onPress={handleSave} showIcon={false} disabled={!form.isValid}>
           Opslaan
         </Button>

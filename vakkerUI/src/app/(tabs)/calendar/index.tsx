@@ -12,6 +12,7 @@ import { EventsLayer } from '@ui/components/Timeline/EventsLayer';
 import { TimelineHourLabels } from '@ui/components/Timeline/TimelineHourLabels';
 import { createTimelineConfig, getWindowMinutes, getPxPerMinute, parseHHmmToMinutesFromMidnight, computeYAndHeight, minutesToHHmmFromWindowStart } from '@ui/components/Timeline/timelineUtils';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Feature flag to enable task creation navigation (P3)
 const enableTaskCreate = true;
@@ -141,11 +142,14 @@ export default function CalendarIndex() {
   // No tap-to-add behavior in P1 (added in later phases)
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.gray[900] }}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.headerSection}>
         <Header title="Kalender" />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: theme.spacing[6] }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: theme.spacing[6] }}
+      >
         <RNCalendar
           current={visibleMonth}
           onDayPress={onDayPress}
@@ -220,11 +224,15 @@ export default function CalendarIndex() {
           </View>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.gray[900],
+  },
   headerSection: {
     paddingHorizontal: theme.spacing[5],
   },
@@ -251,5 +259,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing[5],
   },
 });
-
-

@@ -9,7 +9,7 @@ import { theme } from '@/ui/tokens';
 
 export const options = { presentation: 'modal' } as const;
 
-export default function ClientsNewClientModalRoute() {
+export default function NewTaskNewClientModalRoute() {
   const router = useRouter();
 
   return (
@@ -27,7 +27,7 @@ export default function ClientsNewClientModalRoute() {
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 0 }}>
-          <NewClientScreen hideBackArrow />
+          <NewClientScreen from="new-task" hideBackArrow />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

@@ -3,10 +3,9 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Controller } from 'react-hook-form';
 import { Input, Button, useToast } from '../../components';
 import {
@@ -19,17 +18,20 @@ import {
   Close,
 } from '../../icons';
 import { theme } from '../../tokens';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { useZodForm } from '../../../services/forms/useZodForm';
 import { clientSchema } from '../../../services/validation/clientSchema';
 import { getErrorMessage } from '../../../services/forms/getErrorMessage';
 import { clientsRepository } from '../../../services/clientsRepository';
 import { useRouter } from 'expo-router';
+import { useAppDispatch } from '@/state/store';
+import { selectClient as selectClientAction } from '@/state/slices/taskFormSlice';
 
 // Context: Form screen for adding a new client with type selection and contact details
 export function NewClientScreen({ from, hideBackArrow }: { from?: string; hideBackArrow?: boolean }) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { success: toastSuccess, error: toastError } = useToast();
   const form = useZodForm(clientSchema, {
     defaultValues: {
@@ -69,8 +71,9 @@ export function NewClientScreen({ from, hideBackArrow }: { from?: string; hideBa
         toastSuccess('Klant aangemaakt.');
         // If opened from NewTask, navigate back to it with selectClientId to auto-select
         if (from === 'new-task') {
-          // Let NewTask auto-select via Redux subscription then return to NewTask (already open beneath)
-          router.replace({ pathname: '/(tabs)/calendar/new-task', params: { selectClientId: id } } as any);
+          // Dispatch transient selection and dismiss modal
+          dispatch(selectClientAction(id));
+          router.back();
         } else {
           router.back();
         }
@@ -89,7 +92,7 @@ export function NewClientScreen({ from, hideBackArrow }: { from?: string; hideBa
   const setTypePersonal = () => form.setValue('type', 'Particulier', { shouldValidate: true, shouldDirty: true });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top','bottom']}>
       {/* Context: Header (no top-right save) */}
       {!hideBackArrow ? (
         <View style={styles.header}>
@@ -107,11 +110,11 @@ export function NewClientScreen({ from, hideBackArrow }: { from?: string; hideBa
         </View>
       )}
 
-      <BottomSheetScrollView
-        style={{ flex: 1 }}
+      <ScrollView
+        style={{ flex: 1, backgroundColor: theme.colors.gray[900] }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: theme.spacing[10] + insets.bottom }}
+        contentContainerStyle={{ paddingBottom: theme.spacing[10] + theme.spacing[4] + insets.bottom }}
       >
         <View style={styles.formContainer}>
           {/* Context: Client type selection tabs */}
@@ -322,7 +325,7 @@ export function NewClientScreen({ from, hideBackArrow }: { from?: string; hideBa
             Annuleren
           </Button>
         </View>
-      </BottomSheetScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 }

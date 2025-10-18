@@ -50,7 +50,11 @@ export function NewClientScreen({ from, hideBackArrow }: { from?: string; hideBa
   const selectedType = form.watch('type');
 
   const handleBack = () => {
-    router.back();
+    try {
+      router.dismiss();
+    } catch {
+      router.back();
+    }
   };
 
   const handleSave = form.handleSubmit(async (values) => {
@@ -73,9 +77,9 @@ export function NewClientScreen({ from, hideBackArrow }: { from?: string; hideBa
         if (from === 'new-task') {
           // Dispatch transient selection and dismiss modal
           dispatch(selectClientAction(id));
-          router.back();
+          try { router.dismiss(); } catch { router.back(); }
         } else {
-          router.back();
+          try { router.dismiss(); } catch { router.back(); }
         }
       }
     } catch (err) {

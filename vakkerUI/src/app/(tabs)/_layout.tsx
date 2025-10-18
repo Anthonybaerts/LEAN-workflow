@@ -10,6 +10,7 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarHideOnKeyboard: Platform.OS === 'ios',
+        sceneStyle: { backgroundColor: theme.colors.gray[900] },
         tabBarStyle: {
           backgroundColor: theme.colors.gray[900],
           borderTopColor: theme.colors.gray[700],

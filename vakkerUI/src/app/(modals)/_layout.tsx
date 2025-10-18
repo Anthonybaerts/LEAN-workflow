@@ -10,6 +10,7 @@ export default function ModalStackLayout() {
         headerBackVisible: false,
         presentation: 'modal',
         animation: 'slide_from_bottom',
+        freezeOnBlur: true,
         gestureEnabled: false,
         contentStyle: { backgroundColor: theme.colors.gray[900] },
       }}
